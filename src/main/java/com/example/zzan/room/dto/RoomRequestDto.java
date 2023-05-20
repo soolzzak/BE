@@ -1,0 +1,19 @@
+package com.example.zzan.room.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class RoomRequestDto {
+
+    private String title;
+//    private String image;
+    private String category;
+//    private String runntinTime;
+//    private String genderSetting;
+//    private Boolean isPrivate;
+//    private String roomPassword;
+//    private String createdAt;
+
+}

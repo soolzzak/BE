@@ -9,7 +9,7 @@ import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
-import com.example.zzan.global.exception.Message;
+import com.example.zzan.global.dto.BasicResponseDto;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.global.util.JwtUtil;
@@ -40,8 +40,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseEntity<Message> signup(UserRequestDto requestDto) {
-        String userName = requestDto.getUserName();
+    public ResponseEntity<BasicResponseDto> signup(UserRequestDto requestDto) {
+        String username = requestDto.getUsername();
         String userEmail = requestDto.getEmail();
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
         String userRole = requestDto.getAdmin();
@@ -62,30 +62,30 @@ public class UserService {
 //            role =  UserRole.USER;
 //        }
 
-        User user = new User(userEmail, userPassword,userName, role);
+        User user = new User(userEmail, userPassword,username, role);
 
         userRepository.save(user);
 
-        Message message = Message.setSuccess(StatusEnum.OK, "회원가입성공");
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "회원가입성공");
+        return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
     }
 
 
     @Transactional
-    public ResponseEntity<Message> login(UserloginDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<BasicResponseDto> login(UserloginDto requestDto, HttpServletResponse response) {
 
         String userEmail = requestDto.getEmail();
         String userPassword = requestDto.getPassword();
 
         try {
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                    () -> new ApiException(ExceptionEnum.NOT_FOUND_USER)
+                    () -> new ApiException(ExceptionEnum.USER_NOT_FOUND)
 //                    () -> new IllegalArgumentException("없는 이메일 입니다.")
             );
 
             // 비밀번호 확인
             if(!passwordEncoder.matches(userPassword, user.getPassword())){
-                throw new ApiException(ExceptionEnum.BAD_REQUEST);
+                throw new ApiException(ExceptionEnum.INVALID_PASSWORD);
 //                return new ResponseDto("비밀번호를 확인해주세요!!", HttpStatus.BAD_REQUEST);
             }
 
@@ -108,9 +108,9 @@ public class UserService {
 
             //응답 헤더에 토큰 추가
             setHeader(response, tokenDto, user.getEmail());
-            Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공");
+            BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "로그인 성공");
 
-            return new ResponseEntity<>(message, HttpStatus.OK);
+            return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -125,13 +125,13 @@ public class UserService {
 
 
     @Transactional
-    public ResponseEntity<Message> logout(String userEmail) {
+    public ResponseEntity<BasicResponseDto> logout(String userEmail) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
-                .orElseThrow(() -> new ApiException(ExceptionEnum.NOT_FOUND_REFRESH_TOKEN)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.TOKEN_NOT_FOUND)
                 );
         refreshTokenRepository.delete(refreshToken);
-        Message message = Message.setSuccess(StatusEnum.OK, "로그 아웃");
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "로그 아웃");
+        return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
     }
 }
 

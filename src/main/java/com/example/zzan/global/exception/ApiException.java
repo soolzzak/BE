@@ -4,7 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+
 public class ApiException extends RuntimeException{
-    private ExceptionEnum errorCode;
+
+    private final ExceptionEnum exceptionEnum;
+
+    public ApiException (ExceptionEnum exceptionEnum){
+        super(exceptionEnum.getMessage());
+        this.exceptionEnum = exceptionEnum;
+    }
 }
