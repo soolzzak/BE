@@ -3,7 +3,7 @@ package com.example.zzan.user.controller;
 
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.dto.UserloginDto;
-import com.example.zzan.global.exception.Message;
+import com.example.zzan.global.dto.BasicResponseDto;
 import com.example.zzan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Message> signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
+    public ResponseEntity<BasicResponseDto> signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             for(FieldError fieldError: bindingResult.getFieldErrors()) {
@@ -36,12 +36,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Message> login(@RequestBody UserloginDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<BasicResponseDto> login(@RequestBody UserloginDto requestDto, HttpServletResponse response) {
         return userService.login(requestDto, response);
     }
 
     @GetMapping("/logout/{userEmail}")
-    public ResponseEntity<Message> logout(@PathVariable String userEmail) {
+    public ResponseEntity<BasicResponseDto> logout(@PathVariable String userEmail) {
        return userService.logout(userEmail);
     }
 
