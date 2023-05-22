@@ -14,6 +14,7 @@ public class RoomResponseDto {
     private Long roomId;
     private Long userId;
     private String title;
+    //private String image;
     private String username;
     private String category;
 //    private String runningTime;

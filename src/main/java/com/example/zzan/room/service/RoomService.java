@@ -1,23 +1,16 @@
 package com.example.zzan.room.service;
 
-import com.example.zzan.global.StatusEnum;
-import com.example.zzan.global.dto.BasicResponseDto;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.user.entity.User;
-import com.example.zzan.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +44,6 @@ public class RoomService {
         if (!room.getUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED);
         }
-
         room.update(roomRequestDto);
 
 //        if (image != null && !image.isEmpty()) {
@@ -77,5 +69,4 @@ public class RoomService {
             throw new ApiException(UNAUTHORIZED);
         }
     }
-
 }

@@ -1,15 +1,15 @@
 package com.example.zzan.user.service;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.user.dto.UserRequestDto;
-import com.example.zzan.user.dto.UserloginDto;
+import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.StatusEnum;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
-import com.example.zzan.global.dto.BasicResponseDto;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.global.util.JwtUtil;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 import static com.example.zzan.user.entity.UserRole.USER;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
@@ -35,68 +36,51 @@ import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private static final String ADMIN_TOKEN = "adminToken";
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+
     @Transactional
-    public ResponseEntity<BasicResponseDto> signup(UserRequestDto requestDto) {
+    public ResponseEntity signup(UserRequestDto requestDto) {
         String username = requestDto.getUsername();
         String userEmail = requestDto.getEmail();
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
-        String userRole = requestDto.getAdmin();
 
-//        Optional<User> found = userRepository.findUserByEmail(userEmail);
-//
-//        if (found.isPresent()) {
-////            return new ResponseDto("아이디 중복", HttpStatus.BAD_REQUEST);
-//        }
+        Optional<User> found = userRepository.findUserByEmail(userEmail);
+        if (found.isPresent()) {
+          return ResponseEntity.badRequest().body(new ApiException(USER_NOT_FOUND));
+        }
 
-        UserRole role = USER;
-//        if (userRole.equals("admin")) {
-//            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-////                return new ResponseDto("토큰값이 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
-//            }
-//            role =  UserRole.ADMIN;
-//        }else{
-//            role =  UserRole.USER;
-//        }
-
+        UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
+        if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
+            throw new ApiException(TOKEN_NOT_FOUND);
+        }
         User user = new User(userEmail, userPassword,username, role);
-
         userRepository.save(user);
 
-        BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "회원가입성공");
-        return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
+        return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));
     }
 
-
     @Transactional
-    public ResponseEntity<BasicResponseDto> login(UserloginDto requestDto, HttpServletResponse response) {
+    public ResponseEntity login(UserLoginDto requestDto, HttpServletResponse response) {
 
         String userEmail = requestDto.getEmail();
         String userPassword = requestDto.getPassword();
 
         try {
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                    () -> new ApiException(ExceptionEnum.USER_NOT_FOUND)
-//                    () -> new IllegalArgumentException("없는 이메일 입니다.")
+                    () -> new ApiException(USER_NOT_FOUND)
             );
 
-            // 비밀번호 확인
             if(!passwordEncoder.matches(userPassword, user.getPassword())){
-                throw new ApiException(ExceptionEnum.INVALID_PASSWORD);
-//                return new ResponseDto("비밀번호를 확인해주세요!!", HttpStatus.BAD_REQUEST);
+                throw new ApiException(INVALID_PASSWORD);
             }
 
-            //username (ID) 정보로 Token 생성
             TokenDto tokenDto = jwtUtil.createAllToken(requestDto.getEmail(), user.getRole());
-
-            //Refresh 토큰 있는지 확인
             Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(requestDto.getEmail());
 
-            //Refresh 토큰이 있다면 새로 발급 후 업데이트
-            //없다면 새로 만들고 DB에 저장
             if (refreshToken.isPresent()) {
                 RefreshToken savedRefreshToken = refreshToken.get();
                 RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
@@ -105,14 +89,13 @@ public class UserService {
                 RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail);
                 refreshTokenRepository.save(newToken);
             }
-
-            //응답 헤더에 토큰 추가
             setHeader(response, tokenDto, user.getEmail());
-            BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "로그인 성공");
 
-            return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
+            ResponseDto responseDto = ResponseDto.setSuccess("로그인에 성공하였습니다.", null);
+            return new ResponseEntity(responseDto, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -125,13 +108,13 @@ public class UserService {
 
 
     @Transactional
-    public ResponseEntity<BasicResponseDto> logout(String userEmail) {
+    public ResponseEntity logout(String userEmail) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
-                .orElseThrow(() -> new ApiException(ExceptionEnum.TOKEN_NOT_FOUND)
+                .orElseThrow(() -> new ApiException(TOKEN_NOT_FOUND)
                 );
         refreshTokenRepository.delete(refreshToken);
-        BasicResponseDto basicResponseDto = BasicResponseDto.setSuccess(StatusEnum.OK, "로그 아웃");
-        return new ResponseEntity<>(basicResponseDto, HttpStatus.OK);
+        ResponseDto responseDto = ResponseDto.setSuccess("로그아웃하였습니다.", null);
+        return new ResponseEntity(responseDto, HttpStatus.OK);
     }
 }
 

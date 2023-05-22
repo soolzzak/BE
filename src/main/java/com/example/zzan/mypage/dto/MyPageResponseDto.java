@@ -11,12 +11,12 @@ import lombok.Getter;
 public class MyPageResponseDto {
 
 	private String imgUrl;
-	private String nickname;
+	private String username;
 
 	public MyPageResponseDto(User myPage){
 
 		this.imgUrl= myPage.getImg();
-		this.nickname= myPage.getNickname();
+		this.username= myPage.getUsername();
 	}
 
 }

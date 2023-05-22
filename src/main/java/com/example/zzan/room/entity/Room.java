@@ -26,6 +26,8 @@ public class Room extends Timestamped {
 
     private String username;
 
+    //private String image;
+
     @NotNull(message = "카테고리를 설정해주세요.")
     private String category;
 
@@ -55,16 +57,11 @@ public class Room extends Timestamped {
         this.isPrivate = roomRequestDto.getIsPrivate();
         this.roomPassword = roomRequestDto.getRoomPassword();
     }
-
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
         this.category = roomRequestDto.getCategory();
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();
         this.roomPassword = roomRequestDto.getRoomPassword();
-    }
-
-    public void addUser (User user){
-        this.user = user;
     }
 }

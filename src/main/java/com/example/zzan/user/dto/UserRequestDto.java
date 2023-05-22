@@ -1,5 +1,6 @@
 package com.example.zzan.user.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,9 @@ public class UserRequestDto {
     @NotNull(message =  "비밀번호를 입력해주세요.")
     private String password;
 
+    @Column(nullable = false)
     private String username;
 
-    private String admin;
+    private boolean admin = false;
+    private String adminKey = " ";
 }

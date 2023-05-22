@@ -1,6 +1,6 @@
 package com.example.zzan.global.exception;
 
-import com.example.zzan.global.dto.BasicResponseDto;
+import com.example.zzan.global.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
             builder.append("]");
             builder.append(fieldError.getDefaultMessage());
         }
-        return new ResponseEntity(BasicResponseDto.addBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponseDto> handleErrorException (ApiException e){
