@@ -90,7 +90,7 @@ public class UserService {
             }
 
             //username (ID) 정보로 Token 생성
-            TokenDto tokenDto = jwtUtil.createAllToken(requestDto.getEmail(), user.getAdmin());
+            TokenDto tokenDto = jwtUtil.createAllToken(requestDto.getEmail(), user.getRole());
 
             //Refresh 토큰 있는지 확인
             Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(requestDto.getEmail());

@@ -37,14 +37,14 @@ public class RoomController {
 
     // 화상 혼술방 등록
     @PostMapping("/room")
-    public ResponseEntity<BasicResponseDto> createRoom(@RequestBody RoomRequestDto roomRequestDto,
-                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<RoomResponseDto> createRoom(@RequestBody RoomRequestDto roomRequestDto,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return roomService.createRoom(roomRequestDto, userDetails.getUser());
     }
 
     // 화상 혼술방 수정
     @PutMapping("/room/{roomId}")
-    public ResponseEntity<BasicResponseDto> updateRoom(@PathVariable Long roomId,
+    public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
                                                        @RequestBody RoomRequestDto roomRequestDto,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.updateRoom(roomId, roomRequestDto, userDetails.getUser());
@@ -52,7 +52,7 @@ public class RoomController {
 
     // 화상 혼술방 삭제
     @DeleteMapping("/room/{roomId}")
-    public ResponseEntity<BasicResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.deleteroom(roomId, userDetails.getUser());
+    public ResponseDto<RoomResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return roomService.deleteRoom(roomId, userDetails.getUser());
     }
 }
