@@ -1,13 +1,17 @@
 package com.example.zzan.mypage.service;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
-import com.example.zzan.mypage.entity.MyPage;
-import com.example.zzan.mypage.repository.MyPageRepository;
+import com.example.zzan.user.entity.User;
+import com.example.zzan.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +26,43 @@ public class MyPageService {
 	// @Autowired
 	// private S3Uploader s3Uploader;
 
-	private final MyPageRepository myPageRepository;
+	private final UserRepository userRepository;
 	private final S3Uploader s3Uploader;
 
 
+	//s3Uploader.upload(image, "images") 메소드가 IOException을 발생시킬 수 있기 때문에 throws IOException을 메소드 선언에 추가
 	@Transactional
-	public MyPageResponseDto saveMyPage(MultipartFile image, String nickname) throws IOException {
+	public MyPageResponseDto saveMyPage(MultipartFile image, String nickname,String email) throws IOException {
 		String storedFileName = null;
-		if(!image.isEmpty()) {
+		if(image != null && !image.isEmpty()) {
 			storedFileName = s3Uploader.upload(image, "images");
 		}
-		MyPage myPage = new MyPage(nickname, storedFileName);
-		MyPage savedMyPage = myPageRepository.save(myPage);
+
+		User myPage = findUser(email);
+
+		if(myPage != null) {
+			if (nickname != null && !nickname.trim().isEmpty()) {
+				myPage.Usernickname(nickname);//trim()양끝 공백을 제거
+			}
+			if (storedFileName != null) {
+				myPage.Userimg(storedFileName);
+			}
+			userRepository.save(myPage);
+		} else {
+			// handle not found user
+			throw new ApiException(ROOM_NOT_FOUND);
+		}
+
+		// MyPage savedMyPage = myPageRepository.save(myPage);
 		return new MyPageResponseDto(myPage);
 	}
+
+
+	public User findUser(String email) {
+		Optional<User> optionalUser = userRepository.findUserByEmail(email);
+		return optionalUser.orElse(null);
+	}
+
+
 }
 

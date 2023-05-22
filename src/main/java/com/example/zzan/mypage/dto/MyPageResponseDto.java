@@ -1,6 +1,7 @@
 package com.example.zzan.mypage.dto;
 
-import com.example.zzan.mypage.entity.MyPage;
+
+import com.example.zzan.user.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ public class MyPageResponseDto {
 	private String imgUrl;
 	private String nickname;
 
-	public MyPageResponseDto(MyPage myPage){
+	public MyPageResponseDto(User myPage){
 
 		this.imgUrl= myPage.getImg();
 		this.nickname= myPage.getNickname();
