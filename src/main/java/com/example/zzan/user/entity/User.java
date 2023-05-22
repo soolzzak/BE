@@ -36,36 +36,26 @@ public class User{
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
-<<<<<<< HEAD
     @Column(nullable = true)
     private String img;
 
-    @Column(nullable = true)
-    private String nickname;
-
-    public User(String email, String password, String username, UserRole admin) {
-=======
     public User(String email, String password, String username, UserRole role) {
->>>>>>> 9ab9d9e6494b51466b7b2ad6ffc31896e74f204b
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
     }
 
-    public User(String nickname, String img) {
-        this.nickname=nickname;
+    public User(String username, String img) {
+        this.username=username;
         this.img = img;
     }
 
-
-    public void Userimg(String img){
+    public void UserImg(String img){
         this.img = img;
     }
 
-    public void Usernickname(String nickname){
-        this.nickname = nickname;
+    public void username(String username){
+        this.username = username;
     }
-
-
 }

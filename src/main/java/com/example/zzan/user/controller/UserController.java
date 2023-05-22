@@ -2,8 +2,7 @@ package com.example.zzan.user.controller;
 
 
 import com.example.zzan.user.dto.UserRequestDto;
-import com.example.zzan.user.dto.UserloginDto;
-import com.example.zzan.global.dto.BasicResponseDto;
+import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,28 +21,24 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<BasicResponseDto> signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
+    public ResponseEntity signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             for(FieldError fieldError: bindingResult.getFieldErrors()) {
                 sb.append(fieldError.getDefaultMessage());
             }
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//            return new ResponseDto(sb.toString(), HttpStatus.BAD_REQUEST);
         }
-
         return userService.signup(requestDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BasicResponseDto> login(@RequestBody UserloginDto requestDto, HttpServletResponse response) {
+    public ResponseEntity login(@RequestBody UserLoginDto requestDto, HttpServletResponse response) {
         return userService.login(requestDto, response);
     }
 
     @GetMapping("/logout/{userEmail}")
-    public ResponseEntity<BasicResponseDto> logout(@PathVariable String userEmail) {
+    public ResponseEntity logout(@PathVariable String userEmail) {
        return userService.logout(userEmail);
     }
-
-
 }
