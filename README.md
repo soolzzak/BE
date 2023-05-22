@@ -30,7 +30,7 @@
 
 📅 API 명세서
 ---------------------------------------
-[위드인 RESTful API](https://fate-starfish-b23.notion.site/adfd01d3d12a465095c39b7e1a8f796a?v=c4c7b5d149e846bdb61357331bf241ed)
+[혼술짝! RESTful API](https://fate-starfish-b23.notion.site/adfd01d3d12a465095c39b7e1a8f796a?v=c4c7b5d149e846bdb61357331bf241ed)
 
 
 👨‍💻 Userflow
