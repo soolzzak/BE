@@ -17,7 +17,8 @@ import jakarta.persistence.*;
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "USER_ID")
+    private Long id;
 //
 //    @Column
 //    private String loginType;
@@ -30,11 +31,12 @@ public class User{
 
     @Column(nullable = false)
     private String username;
-//
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole admin;
+    private UserRole role;
 
+<<<<<<< HEAD
     @Column(nullable = true)
     private String img;
 
@@ -42,10 +44,13 @@ public class User{
     private String nickname;
 
     public User(String email, String password, String username, UserRole admin) {
+=======
+    public User(String email, String password, String username, UserRole role) {
+>>>>>>> 9ab9d9e6494b51466b7b2ad6ffc31896e74f204b
         this.email = email;
         this.password = password;
         this.username = username;
-        this.admin = admin;
+        this.role = role;
     }
 
     public User(String nickname, String img) {

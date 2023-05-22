@@ -5,6 +5,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 import java.io.IOException;
 import java.util.Optional;
 
+<<<<<<< HEAD
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,13 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
+=======
+import com.example.zzan.mypage.dto.MyPageResponseDto;
+import com.example.zzan.mypage.entity.MyPage;
+import com.example.zzan.mypage.repository.MyPageRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+>>>>>>> 9ab9d9e6494b51466b7b2ad6ffc31896e74f204b
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,7 @@ package com.example.zzan.mypage.controller;
 
 import java.io.IOException;
 
+import com.example.zzan.mypage.dto.MyPageResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+<<<<<<< HEAD
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
+=======
+>>>>>>> 9ab9d9e6494b51466b7b2ad6ffc31896e74f204b
 import com.example.zzan.mypage.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;

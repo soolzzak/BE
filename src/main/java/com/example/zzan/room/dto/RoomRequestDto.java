@@ -10,10 +10,8 @@ public class RoomRequestDto {
     private String title;
 //    private String image;
     private String category;
-//    private String runntinTime;
-//    private String genderSetting;
-//    private Boolean isPrivate;
-//    private String roomPassword;
-//    private String createdAt;
-
+//    private String runningTime;
+    private String genderSetting;
+    private Boolean isPrivate;
+    private String roomPassword;
 }
