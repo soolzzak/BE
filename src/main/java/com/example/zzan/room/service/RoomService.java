@@ -81,7 +81,7 @@ public class RoomService {
         }
 
         roomRepository.save(room);
-        return ResponseDto.setSuccess("방을 수정하였습니다.", new RoomResponseDto(room));
+        return ResponseDto.setSuccess("방을 수정하였습니다.", null);
     }
 
     @Transactional
