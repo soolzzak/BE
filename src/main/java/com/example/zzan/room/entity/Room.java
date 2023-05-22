@@ -8,12 +8,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "TB_ROOM")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Room extends Timestamped {
     @Id
@@ -42,13 +44,13 @@ public class Room extends Timestamped {
     @JsonBackReference
     private User user;
 
-    public Room(RoomRequestDto roomRequestDto){
+    public Room(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
     }
 
     public Room(RoomRequestDto roomRequestDto, User user) {
         this.title = roomRequestDto.getTitle();
-        this.image=user.getImg();
+        this.image = user.getImg();
         this.user = user;
         this.username = user.getUsername();
         this.category = roomRequestDto.getCategory();
@@ -56,9 +58,10 @@ public class Room extends Timestamped {
         this.isPrivate = roomRequestDto.getIsPrivate();
         this.roomPassword = roomRequestDto.getRoomPassword();
     }
+
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
-        this.image=user.getImg();
+        this.image = user.getImg();
         this.category = roomRequestDto.getCategory();
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();

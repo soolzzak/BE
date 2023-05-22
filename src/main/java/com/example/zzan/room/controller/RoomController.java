@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +23,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> getRooms (@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return roomService.getRooms(pageable);
     }
 
@@ -29,16 +31,20 @@ public class RoomController {
 //    public ResponseEntity<ResponseDto> getRoom() {
 //    }
 
-    @PostMapping("/room")
-    public ResponseDto<RoomResponseDto> createRoom(@RequestBody RoomRequestDto roomRequestDto,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return roomService.createRoom(roomRequestDto, userDetails.getUser());
+    @PostMapping(value = "/room", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public ResponseDto<RoomResponseDto> createRoom(@RequestPart RoomRequestDto roomRequestDto,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return roomService.createRoom(roomRequestDto, image, userDetails.getUser());
     }
 
-    @PutMapping("/room/{roomId}")
+    @PutMapping(value = "/room/{roomId}"
+//            , consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE}
+    )
     public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
-                                                       @RequestBody RoomRequestDto roomRequestDto,
-                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                   @RequestPart RoomRequestDto roomRequestDto,
+//                                                   @RequestPart(value = "image", required = false) MultipartFile image,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.updateRoom(roomId, roomRequestDto, userDetails.getUser());
     }
 
