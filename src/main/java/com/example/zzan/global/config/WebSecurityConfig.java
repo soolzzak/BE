@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/user/**", "/main/**").permitAll()
                 .requestMatchers("/test/**").permitAll()
                 .anyRequest().authenticated()
 
