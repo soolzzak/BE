@@ -15,12 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
 import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED;
 
