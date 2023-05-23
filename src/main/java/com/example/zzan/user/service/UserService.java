@@ -63,7 +63,7 @@ public class UserService {
         if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
             throw new ApiException(TOKEN_NOT_FOUND);
         }
-        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK);
+        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK,null);
         userRepository.save(user);
 
         return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));

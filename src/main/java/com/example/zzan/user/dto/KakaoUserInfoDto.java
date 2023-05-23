@@ -14,10 +14,13 @@ public class KakaoUserInfoDto {
 
     private String nickname;
 
-    public KakaoUserInfoDto(Long id, String email, String nickname){
+    private String imgurl;
+
+    public KakaoUserInfoDto(Long id, String email, String nickname,String imgurl){
         this.id = id;
         this.email = email;
         this.nickname = nickname;
+        this.imgurl = imgurl;
     }
 
     public KakaoUserInfoDto(String nickname, Long id) {
