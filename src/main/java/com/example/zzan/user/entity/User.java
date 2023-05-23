@@ -30,6 +30,9 @@ public class User{
     private String password;
 
     @Column(nullable = false)
+    private String providers;
+
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -39,11 +42,12 @@ public class User{
     @Column(nullable = true)
     private String img;
 
-    public User(String email, String password, String username, UserRole role) {
+    public User(String email, String password, String username, UserRole role,String providers) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
+        this.providers =providers;
     }
 
     public User(String username, String img) {
@@ -57,5 +61,9 @@ public class User{
 
     public void username(String username){
         this.username = username;
+    }
+    public static class ProvidersList {
+        public static final String SOOLZZAK = "SOOLZZAK";
+        public static final String KAKAO = "KAKAO";
     }
 }
