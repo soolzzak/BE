@@ -31,6 +31,7 @@ public class JwtUtil {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String ACCESS_KEY = "ACCESS_KEY";
     public static final String REFRESH_KEY = "REFRESH_KEY";
     public static final String AUTHORIZATION_KEY = "auth";
