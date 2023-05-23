@@ -36,6 +36,9 @@ public class User{
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = true)
+    private String imgurl;
+
     private Long kakaoId;
 
     @Column(nullable = false)
@@ -45,12 +48,13 @@ public class User{
     @Column(nullable = true)
     private String img;
 
-    public User(String email, String password, String username, UserRole role,String providers) {
+    public User(String email, String password, String username, UserRole role,String providers,String imgurl) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
         this.providers =providers;
+        this.img = imgurl;
     }
 
     public User(String username, String img) {
@@ -74,6 +78,7 @@ public class User{
         this.username = kakaoUserInfoDto.getNickname();
         this.kakaoId = kakaoUserInfoDto.getId();
         this.email = kakaoUserInfoDto.getEmail();
+        this.imgurl = kakaoUserInfoDto.getImgurl();
     }
 
 }
