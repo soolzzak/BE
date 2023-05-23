@@ -46,4 +46,11 @@ public class RoomController {
     public ResponseDto<RoomResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(roomId, userDetails.getUser());
     }
+
+
+    @GetMapping("/room/{roomId}")
+    public ResponseDto<RoomResponseDto>getOneRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return roomService.getOneRoom(roomId,userDetails.getUser());
+    }
+
 }

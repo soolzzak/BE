@@ -6,6 +6,8 @@ import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
+import com.example.zzan.roomreport.entity.UserReport;
+import com.example.zzan.roomreport.repository.UserReportRepository;
 import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final UserReportRepository userReportRepository;
 
     @Transactional
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, User user) {
@@ -69,4 +72,23 @@ public class RoomService {
             throw new ApiException(UNAUTHORIZED);
         }
     }
+
+
+
+    // RoomService.java
+    @Transactional
+    public ResponseDto<RoomResponseDto> getOneRoom(Long roomId, User user) {
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        UserReport userReport = new UserReport();
+        userReport.setHostUser(room.getUser()); // 방장 기록
+        userReport.setEnterUser(user); // 들어간 사람 기록
+
+        userReportRepository.save(userReport);
+        return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
+    }
+
+
+
 }
