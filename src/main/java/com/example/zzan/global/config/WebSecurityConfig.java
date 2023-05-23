@@ -41,7 +41,7 @@ public class WebSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .redirectUri("http://localhost:8080/user/login/oauth2/code/kakao")
-                .scope("account_email")
+                .scope("nickname,account_email")
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
                 .userInfoUri("https://kapi.kakao.com/v2/user/me")
@@ -68,11 +68,11 @@ public class WebSecurityConfig {
                 .logout()
                 .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository))
                 .and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/v2/api-docs", "/swagger-resources", "/swagger-resources/**",
                         "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**",
-                        "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        "/v3/api-docs/**", "/swagger-ui/**", "/*").permitAll()
                 .requestMatchers("/user/**", "/main/**", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

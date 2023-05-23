@@ -1,6 +1,7 @@
 package com.example.zzan.user.entity;
 
 import jakarta.persistence.*;
+import com.example.zzan.user.dto.KakaoUserInfoDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,11 @@ public class User {
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = true)
+    private String imgurl;
+
+    private Long kakaoId;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
@@ -41,12 +47,13 @@ public class User {
     @ColumnDefault("14")
     private int alcohol;
 
-    public User(String email, String password, String username, UserRole role, String providers) {
+    public User(String email, String password, String username, UserRole role,String providers,String imgurl) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
         this.providers = providers;
+        this.img = imgurl;
     }
 
     public User(String username, String img) {
@@ -65,5 +72,12 @@ public class User {
     public static class ProvidersList {
         public static final String SOOLZZAK = "SOOLZZAK";
         public static final String KAKAO = "KAKAO";
+    }
+
+    public User(KakaoUserInfoDto kakaoUserInfoDto) {
+        this.username = kakaoUserInfoDto.getNickname();
+        this.kakaoId = kakaoUserInfoDto.getId();
+        this.email = kakaoUserInfoDto.getEmail();
+        this.imgurl = kakaoUserInfoDto.getImgurl();
     }
 }

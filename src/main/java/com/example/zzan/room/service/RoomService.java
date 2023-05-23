@@ -2,11 +2,14 @@ package com.example.zzan.room.service;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
+import com.example.zzan.roomreport.entity.UserReport;
+import com.example.zzan.roomreport.repository.UserReportRepository;
 import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +30,11 @@ import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+
+    private final UserReportRepository userReportRepository;
+
     private final S3Uploader s3Uploader;
+
 
     @Transactional
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile image, User user) {
@@ -36,6 +43,11 @@ public class RoomService {
             imageUrl = s3Uploader.upload(image, "dirName");
         } catch (IOException e) {
             return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        }
+
+        String roomTitle = roomRequestDto.getTitle();
+        if(hasBadWord(roomTitle)){
+            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
         Room room = new Room(roomRequestDto, user);
@@ -65,6 +77,7 @@ public class RoomService {
         if (!room.getUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED);
         }
+
         room.update(roomRequestDto);
 
         if (image != null && !image.isEmpty()) {
@@ -78,6 +91,11 @@ public class RoomService {
             } catch (IOException e) {
                 return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
             }
+        }
+
+        String roomTitle = roomRequestDto.getTitle();
+        if(hasBadWord(roomTitle)){
+            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
         roomRepository.save(room);
@@ -96,5 +114,30 @@ public class RoomService {
         } else {
             throw new ApiException(UNAUTHORIZED);
         }
+    }
+
+    private boolean hasBadWord(String input){
+        for(String badWord : BadWords.koreaWord1){
+            if (input.contains(badWord)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    // RoomService.java
+    @Transactional
+    public ResponseDto<RoomResponseDto> getOneRoom(Long roomId, User user) {
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        UserReport userReport = new UserReport();
+        userReport.setHostUser(room.getUser()); // 방장 기록
+        userReport.setEnterUser(user); // 들어간 사람 기록
+
+        userReportRepository.save(userReport);
+        return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
     }
 }

@@ -26,11 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
-    private final JwtUtil jwtUtil;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    ///login/oauth2/code/kakao
     @GetMapping("/login/oauth2/code/kakao")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         // code: 카카오 서버로부터 받은 인가 코드
@@ -62,7 +57,7 @@ public class UserController {
 
     @GetMapping("/logout/{userEmail}")
     public ResponseEntity logout(@PathVariable String userEmail) {
-       return userService.logout(userEmail);
+        return userService.logout(userEmail);
     }
 
     @PutMapping("/{userId}/like")

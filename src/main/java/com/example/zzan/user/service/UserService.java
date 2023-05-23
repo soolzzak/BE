@@ -5,6 +5,7 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.global.util.BadWords;
 import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -47,14 +48,19 @@ public class UserService {
 
         Optional<User> found = userRepository.findUserByEmail(userEmail);
         if (found.isPresent()) {
-          return ResponseEntity.badRequest().body(new ApiException(USER_NOT_FOUND));
+          return ResponseEntity.badRequest().body(new ApiException(USERS_DUPLICATION));
+        }
+
+        if (hasBadWord(username)) {
+            String errorMessage = "아이디에 사용할 수 없는 단어가 있습니다.";
+            return ResponseEntity.badRequest().body(ResponseDto.setBadRequest(errorMessage));
         }
 
         UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
         if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
             throw new ApiException(TOKEN_NOT_FOUND);
         }
-        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK);
+        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK,null);
         userRepository.save(user);
 
         return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));
@@ -109,8 +115,17 @@ public class UserService {
                 .orElseThrow(() -> new ApiException(TOKEN_NOT_FOUND)
                 );
         refreshTokenRepository.delete(refreshToken);
-        ResponseDto responseDto = ResponseDto.setSuccess("로그아웃하였습니다.", null);
+        ResponseDto responseDto = ResponseDto.setSuccess("정상적으로 로그아웃하였습니다.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
+    }
+
+    private boolean hasBadWord(String input) {
+        for (String badWord : BadWords.koreaWord1) {
+            if (input.contains(badWord)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Transactional
