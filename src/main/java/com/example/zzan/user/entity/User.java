@@ -1,5 +1,6 @@
 package com.example.zzan.user.entity;
 
+import com.example.zzan.user.dto.KakaoUserInfoDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +36,8 @@ public class User{
     @Column(nullable = false)
     private String username;
 
+    private Long kakaoId;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
@@ -66,4 +69,11 @@ public class User{
         public static final String SOOLZZAK = "SOOLZZAK";
         public static final String KAKAO = "KAKAO";
     }
+
+    public User(KakaoUserInfoDto kakaoUserInfoDto) {
+        this.username = kakaoUserInfoDto.getNickname();
+        this.kakaoId = kakaoUserInfoDto.getId();
+        this.email = kakaoUserInfoDto.getEmail();
+    }
+
 }

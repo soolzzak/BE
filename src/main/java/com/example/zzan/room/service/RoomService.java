@@ -2,6 +2,7 @@ package com.example.zzan.room.service;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
@@ -15,10 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
 import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED;
 
@@ -40,6 +43,11 @@ public class RoomService {
             imageUrl = s3Uploader.upload(image, "dirName");
         } catch (IOException e) {
             return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        }
+
+        String roomTitle = roomRequestDto.getTitle();
+        if(hasBadWord(roomTitle)){
+            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
         Room room = new Room(roomRequestDto, user);
@@ -69,6 +77,7 @@ public class RoomService {
         if (!room.getUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED);
         }
+
         room.update(roomRequestDto);
 
         if (image != null && !image.isEmpty()) {
@@ -82,6 +91,11 @@ public class RoomService {
             } catch (IOException e) {
                 return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
             }
+        }
+
+        String roomTitle = roomRequestDto.getTitle();
+        if(hasBadWord(roomTitle)){
+            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
         roomRepository.save(room);
@@ -102,6 +116,15 @@ public class RoomService {
         }
     }
 
+    private boolean hasBadWord(String input){
+        for(String badWord : BadWords.koreaWord1){
+            if (input.contains(badWord)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     // RoomService.java
@@ -117,7 +140,4 @@ public class RoomService {
         userReportRepository.save(userReport);
         return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
     }
-
-
-
 }

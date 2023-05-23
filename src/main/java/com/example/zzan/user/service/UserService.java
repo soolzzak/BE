@@ -2,6 +2,7 @@ package com.example.zzan.user.service;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.dto.TokenDto;
+import com.example.zzan.global.util.BadWords;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.global.security.entity.RefreshToken;
@@ -50,7 +51,12 @@ public class UserService {
 
         Optional<User> found = userRepository.findUserByEmail(userEmail);
         if (found.isPresent()) {
-          return ResponseEntity.badRequest().body(new ApiException(USER_NOT_FOUND));
+          return ResponseEntity.badRequest().body(new ApiException(USERS_DUPLICATION));
+        }
+
+        if (hasBadWord(username)) {
+            String errorMessage = "아이디에 사용할 수 없는 단어가 있습니다.";
+            return ResponseEntity.badRequest().body(ResponseDto.setBadRequest(errorMessage));
         }
 
         UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
@@ -113,8 +119,17 @@ public class UserService {
                 .orElseThrow(() -> new ApiException(TOKEN_NOT_FOUND)
                 );
         refreshTokenRepository.delete(refreshToken);
-        ResponseDto responseDto = ResponseDto.setSuccess("로그아웃하였습니다.", null);
+        ResponseDto responseDto = ResponseDto.setSuccess("정상적으로 로그아웃하였습니다.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
+    }
+
+    private boolean hasBadWord(String input) {
+        for (String badWord : BadWords.koreaWord1) {
+            if (input.contains(badWord)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
