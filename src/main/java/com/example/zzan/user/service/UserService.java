@@ -112,5 +112,17 @@ public class UserService {
         ResponseDto responseDto = ResponseDto.setSuccess("로그아웃하였습니다.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
     }
+
+    @Transactional
+    public void updateAlcohol(Long userId, boolean like) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setAlcohol(user.getAlcohol() + (like ? 1 : -1));
+            userRepository.save(user);
+        } else {
+            throw new ApiException(USER_NOT_FOUND);
+        }
+    }
 }
 

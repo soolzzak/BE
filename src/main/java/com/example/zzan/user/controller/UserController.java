@@ -1,5 +1,6 @@
 package com.example.zzan.user.controller;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.UserService;
@@ -64,4 +65,15 @@ public class UserController {
        return userService.logout(userEmail);
     }
 
+    @PutMapping("/{userId}/like")
+    public ResponseDto<String> likeUser(@PathVariable Long userId) {
+        userService.updateAlcohol(userId, true);
+        return ResponseDto.setSuccess("도수를 올렸습니다.");
+    }
+
+    @PutMapping("/{userId}/dislike")
+    public ResponseDto<String> dislikeUser(@PathVariable Long userId) {
+        userService.updateAlcohol(userId, false);
+        return ResponseDto.setSuccess("도수를 내렸습니다.");
+    }
 }
