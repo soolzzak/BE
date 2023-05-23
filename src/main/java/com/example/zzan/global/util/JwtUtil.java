@@ -20,6 +20,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -64,6 +66,20 @@ public class JwtUtil {
         return null;
     }
 
+    public String createToken(String kakaoId){
+        Date date = new Date ();
+        Date exprTime = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .signWith(SignatureAlgorithm.HS512, AUTHORIZATION_KEY)
+                        .claim("Authorization", "USER")
+                        .setSubject(kakaoId)
+                        .setExpiration(exprTime)
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
+    }
     public String createToken(String userId, UserRole role, String type) {
         Date date = new Date();
         long time = type.equals("Access") ? ACCESS_TIME : REFRESH_TIME;
