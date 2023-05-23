@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST) // Updated client authentication method
                 .redirectUri("http://localhost:8080/user/login/oauth2/code/kakao")
-                .scope("account_email")
+                .scope("nickname,account_email")
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
                 .userInfoUri("https://kapi.kakao.com/v2/user/me")
