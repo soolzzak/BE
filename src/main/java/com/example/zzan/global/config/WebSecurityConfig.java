@@ -65,11 +65,11 @@ public class WebSecurityConfig {
                 .logout()
                 .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository))
                 .and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/v2/api-docs", "/swagger-resources", "/swagger-resources/**",
                         "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**",
-                        "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        "/v3/api-docs/**", "/swagger-ui/**", "/*").permitAll()
                 .requestMatchers("/user/**", "/main/**", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -81,7 +81,6 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {

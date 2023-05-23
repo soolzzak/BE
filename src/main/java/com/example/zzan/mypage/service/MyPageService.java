@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.example.zzan.global.util.BadWords;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class MyPageService {
 	private final UserRepository userRepository;
 	private final S3Uploader s3Uploader;
 	private final UserReportRepository userReportRepository;
-	
+
 	@Transactional
 	public ResponseDto<MyPageResponseDto> saveMyPage(MultipartFile image, String username, String email) throws IOException {
 		String storedFileName = null;
@@ -53,14 +53,22 @@ public class MyPageService {
 		return ResponseDto.setSuccess("프로필이 저장되었습니다",new MyPageResponseDto(myPage));
 	}
 
+
 	public User findUser(String email) {
 		Optional<User> optionalUser = userRepository.findUserByEmail(email);
 		return optionalUser.orElse(null);
 	}
 
-	// MyPageService.java
+	private boolean hasBadWord(String input) {
+		for (String badWord : BadWords.koreaWord1) {
+			if (input.contains(badWord)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	// UserReportService.java
+
 	@Transactional
 	public ResponseDto<List<UserReportDto>> getMeetUser(User user) {
 		Pageable topThree = PageRequest.of(0, 3);
@@ -83,7 +91,5 @@ public class MyPageService {
 
 		return ResponseDto.setSuccess("기록이 조회되었습니다", userReportDtos);
 	}
-
-
 }
 
