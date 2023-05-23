@@ -59,7 +59,7 @@ public class S3Uploader {
 		return amazonS3Client.getUrl(bucket, fileName).toString();
 	}
 
-	private void removeNewFile(File targetFile) {
+	public void removeNewFile(File targetFile) {
 		if(targetFile.delete()) {
 			log.info("파일이 삭제되었습니다.");
 		}else {
