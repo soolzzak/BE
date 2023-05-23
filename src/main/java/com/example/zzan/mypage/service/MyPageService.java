@@ -2,11 +2,22 @@ package com.example.zzan.mypage.service;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
+import com.example.zzan.roomreport.dto.UserReportDto;
+import com.example.zzan.roomreport.entity.UserReport;
+import com.example.zzan.roomreport.repository.UserReportRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -18,9 +29,10 @@ public class MyPageService {
 
 	private final UserRepository userRepository;
 	private final S3Uploader s3Uploader;
+	private final UserReportRepository userReportRepository;
 	
 	@Transactional
-	public MyPageResponseDto saveMyPage(MultipartFile image, String username, String email) throws IOException {
+	public ResponseDto<MyPageResponseDto> saveMyPage(MultipartFile image, String username, String email) throws IOException {
 		String storedFileName = null;
 		if(image != null && !image.isEmpty()) {
 			storedFileName = s3Uploader.upload(image, "images");
@@ -37,12 +49,41 @@ public class MyPageService {
 		} else {
 			throw new ApiException(ROOM_NOT_FOUND);
 		}
-		return new MyPageResponseDto(myPage);
+		// return new MyPageResponseDto(myPage);
+		return ResponseDto.setSuccess("프로필이 저장되었습니다",new MyPageResponseDto(myPage));
 	}
 
 	public User findUser(String email) {
 		Optional<User> optionalUser = userRepository.findUserByEmail(email);
 		return optionalUser.orElse(null);
 	}
+
+	// MyPageService.java
+
+	// UserReportService.java
+	@Transactional
+	public ResponseDto<List<UserReportDto>> getMeetUser(User user) {
+		Pageable topThree = PageRequest.of(0, 3);
+		List<UserReport> userReports = userReportRepository.findTop3ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
+
+		List<UserReportDto> userReportDtos = new ArrayList<>();
+		for (UserReport userReport : userReports) {
+
+			String meetedUser = "";  // 변수를 블록 외부에서 선언하고 초기화
+
+			if(userReport.getHostUser().getUsername().equals(user.getUsername())){
+				meetedUser = userReport.getEnterUser().getUsername();
+			}else if(!userReport.getHostUser().getUsername().equals(user.getUsername())){
+				meetedUser = userReport.getHostUser().getUsername();
+			}
+
+			UserReportDto userReportDto = new UserReportDto(meetedUser);
+			userReportDtos.add(userReportDto);
+		}
+
+		return ResponseDto.setSuccess("기록이 조회되었습니다", userReportDtos);
+	}
+
+
 }
 
