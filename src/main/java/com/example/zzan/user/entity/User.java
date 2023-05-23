@@ -33,7 +33,7 @@ public class User {
     @Column(nullable = true)
     private String img;
 
-    @ColumnDefault("3")
+    @ColumnDefault("14")
     private int alcohol;
 
     public User(String email, String password, String username, UserRole role) {
