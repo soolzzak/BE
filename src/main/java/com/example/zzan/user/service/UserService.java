@@ -1,18 +1,17 @@
 package com.example.zzan.user.service;
 
 import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.security.dto.TokenDto;
-import com.example.zzan.user.dto.UserRequestDto;
-import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.global.security.entity.RefreshToken;
-import com.example.zzan.global.StatusEnum;
+import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.user.dto.UserLoginDto;
+import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
-import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.exception.ExceptionEnum;
-import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.repository.UserRepository;
-import com.example.zzan.global.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,11 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
-import static com.example.zzan.user.entity.UserRole.USER;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
@@ -105,7 +102,6 @@ public class UserService {
         response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
         response.addHeader("USER_EMAIL", userEmail);
     }
-
 
     @Transactional
     public ResponseEntity logout(String userEmail) {

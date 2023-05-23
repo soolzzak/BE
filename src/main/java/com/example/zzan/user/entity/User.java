@@ -1,28 +1,22 @@
 package com.example.zzan.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity(name = "TB_USER")
 @NoArgsConstructor
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
-//
+
 //    @Column
 //    private String loginType;
-//
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -39,6 +33,9 @@ public class User{
     @Column(nullable = true)
     private String img;
 
+    @ColumnDefault("3")
+    private int alcohol;
+
     public User(String email, String password, String username, UserRole role) {
         this.email = email;
         this.password = password;
@@ -47,15 +44,19 @@ public class User{
     }
 
     public User(String username, String img) {
-        this.username=username;
-        this.img = img;
-    }
-
-    public void UserImg(String img){
-        this.img = img;
-    }
-
-    public void username(String username){
         this.username = username;
+        this.img = img;
+    }
+
+    public void UserImg(String img) {
+        this.img = img;
+    }
+
+    public void username(String username) {
+        this.username = username;
+    }
+
+    public void updateAlcohol(boolean likeOrDislike) {
+        this.alcohol = likeOrDislike ? this.alcohol + 1 : this.alcohol - 1;
     }
 }
