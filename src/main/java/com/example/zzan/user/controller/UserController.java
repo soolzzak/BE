@@ -1,7 +1,6 @@
 package com.example.zzan.user.controller;
 
 
-import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
@@ -13,8 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,28 +20,28 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-@Slf4j
+
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/user")
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
-
-
-    @GetMapping("/user")
-    public String kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+    private final JwtUtil jwtUtil;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    ///login/oauth2/code/kakao
+    @GetMapping("/login/oauth2/code/kakao")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         // code: 카카오 서버로부터 받은 인가 코드
         String createToken = kakaoService.kakaoLogin(code, response);
 
-        // Create the cookie
-        Cookie cookie = new Cookie("access_token", createToken.substring(7)
-        );
+        // Cookie 생성 및 직접 브라우저에 Set
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
         cookie.setPath("/");
-        cookie.setMaxAge(3600); // Set the desired expiration time for the cookie (in seconds)
-
-        // Add the cookie to the response
         response.addCookie(cookie);
+
         return "index";
     }
     @PostMapping("/signup")
@@ -66,6 +63,7 @@ public class UserController {
 
     @GetMapping("/logout/{userEmail}")
     public ResponseEntity logout(@PathVariable String userEmail) {
-       return userService.logout(userEmail);
+        return userService.logout(userEmail);
     }
+
 }
