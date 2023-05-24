@@ -15,15 +15,13 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PutMapping("/{userId}/like")
-    public ResponseDto<String> likeUser(@PathVariable Long userId) {
-        likeService.updateAlcohol(userId, true);
-        return ResponseDto.setSuccess("도수를 올렸습니다.");
+    @PutMapping("/{targetId}/like")
+    public ResponseDto likeUser(@PathVariable Long targetId) {
+        return likeService.updateAlcohol(targetId, true);
     }
 
-    @PutMapping("/{userId}/dislike")
-    public ResponseDto<String> dislikeUser(@PathVariable Long userId) {
-        likeService.updateAlcohol(userId, false);
-        return ResponseDto.setSuccess("도수를 내렸습니다.");
+    @PutMapping("/{targetId}/dislike")
+    public ResponseDto dislikeUser(@PathVariable Long targetId) {
+        return likeService.updateAlcohol(targetId, false);
     }
 }
