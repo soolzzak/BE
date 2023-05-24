@@ -1,6 +1,15 @@
 package com.example.zzan.mypage.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.zzan.global.exception.ApiException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,22 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-// import com.amazonaws.services.s3.AmazonS3Client;
-// import com.amazonaws.services.s3.model.CannedAccessControlList;
-// import com.amazonaws.services.s3.model.PutObjectRequest;
-
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.zzan.global.exception.ApiException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE;
 
 @Slf4j
 @RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴

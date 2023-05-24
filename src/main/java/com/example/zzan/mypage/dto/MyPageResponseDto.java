@@ -2,7 +2,6 @@ package com.example.zzan.mypage.dto;
 
 
 import com.example.zzan.user.entity.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,5 +17,4 @@ public class MyPageResponseDto {
 		this.imgUrl= myPage.getImg();
 		this.username= myPage.getUsername();
 	}
-
 }
