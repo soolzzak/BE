@@ -110,7 +110,7 @@ public class KakaoService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
                 String email = kakaoUserInfo.getEmail();
-                kakaoUser = new User(email,encodedPassword,kakaoUserInfo.getNickname(),UserRole.USER, User.ProvidersList.KAKAO,kakaoUserInfo.getImgurl());
+                kakaoUser = new User(email,encodedPassword,kakaoUserInfo.getNickname(),UserRole.USER, User.ProvidersList.KAKAO,kakaoUserInfo.getImgurl(), sameEmailUser.getGender());
             }
             userRepository.save(kakaoUser);
         }

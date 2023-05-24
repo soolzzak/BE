@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Entity(name = "TB_USER")
@@ -27,11 +29,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String providers;
-
     @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
+    private Date birthday;
+
+    @Column(nullable = false)
+    private String gender;
+
+    @Column(nullable = false)
+    private String providers;
 
     @Column(nullable = true)
     private String imgurl;
@@ -57,13 +65,14 @@ public class User {
         }
     }
 
-    public User(String email, String password, String username, UserRole role,String providers,String imgurl) {
+    public User(String email, String password, String username, UserRole role, String providers,String imgurl, String gender) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
         this.providers = providers;
         this.img = imgurl;
+        this.gender = gender;
     }
 
     public User(String username, String img) {
