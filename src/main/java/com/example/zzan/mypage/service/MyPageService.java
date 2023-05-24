@@ -50,7 +50,7 @@ public class MyPageService {
 				myPage.username(username);
 			}
 			if (storedFileName != null) {
-				myPage.UserImg(storedFileName);
+				myPage.UserImgurl(storedFileName);
 			}
 			userRepository.save(myPage);
 		} else {

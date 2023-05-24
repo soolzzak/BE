@@ -20,7 +20,7 @@ import com.example.zzan.mypage.dto.MypageChangeDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class myPageController {
 
 	private final MyPageService myPageService;

@@ -71,8 +71,8 @@ public class User {
         this.img = img;
     }
 
-    public void UserImg(String img) {
-        this.img = img;
+    public void UserImgurl(String imgurl) {
+        this.imgurl = imgurl;
     }
 
     public void username(String username) {
