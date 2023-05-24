@@ -26,8 +26,8 @@ public class FollowController {
 
 	}
 
-	@DeleteMapping("/follow/{deleteId}")
-	public ResponseDto<FollowResponseDto> deleteFollow(@PathVariable("deleteId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+	@DeleteMapping("/follow/{followId}")
+	public ResponseDto<FollowResponseDto> deleteFollow(@PathVariable("followId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
 		return followService.deleteFollow(followId,userDetails.getUser());
 	}
 
