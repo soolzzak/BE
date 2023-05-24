@@ -37,17 +37,19 @@ public class LikeService {
                 throw new ApiException(NOT_ALLOWED_SELFLIKE);
             }
 
-            targetUser.setAlcohol(targetUser.getAlcohol() + (like ? 1 : -1));
-            userRepository.save(targetUser);
-
             User user = userRepository.getOne(userId);
 
-            if (!likeRepository.existsByUserAndTargetUserAndLikeEnum(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE)) {
+            Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
+
+            if (existingLike == null) {
+                targetUser.setAlcohol(targetUser.getAlcohol() + (like ? 1 : -1));
+                userRepository.save(targetUser);
                 Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
             } else {
-                Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
-                likeRepository.delete(likeEntity);
+                targetUser.setAlcohol(targetUser.getAlcohol() - (like ? 1 : -1));
+                userRepository.save(targetUser);
+                likeRepository.delete(existingLike);
             }
         } else {
             throw new ApiException(TARGETUSER_NOT_FOUND);
