@@ -1,12 +1,15 @@
 package com.example.zzan.global.util;
 
+import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
-import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
-import com.example.zzan.global.security.UserDetailsServiceImpl;
+import com.example.zzan.user.entity.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

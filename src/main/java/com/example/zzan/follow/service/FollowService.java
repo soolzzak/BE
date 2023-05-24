@@ -1,23 +1,21 @@
 package com.example.zzan.follow.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.follow.dto.FollowRuquestDto;
 import com.example.zzan.follow.entity.Follow;
 import com.example.zzan.follow.repository.FollowRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.USERS_DUPLICATION;
+import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +39,4 @@ public class FollowService {
 		} else
 			throw new ApiException(USER_NOT_FOUND);
 	}
-
 }

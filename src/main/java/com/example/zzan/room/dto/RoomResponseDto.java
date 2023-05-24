@@ -22,6 +22,7 @@ public class RoomResponseDto {
     private Boolean isPrivate;
     private String roomPassword;
     private LocalDateTime createdAt;
+    private int alcohol;
 
     public RoomResponseDto(Room room){
         this.roomId = room.getId();
@@ -33,5 +34,6 @@ public class RoomResponseDto {
         this.isPrivate = room.getIsPrivate();
         this.roomPassword = room.getRoomPassword();
         this.createdAt = room.getCreatedAt();
+        this.alcohol = room.getUser().getAlcohol();
     }
 }

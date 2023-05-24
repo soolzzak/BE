@@ -1,14 +1,13 @@
 package com.example.zzan.roomreport.repository;
 
-import java.util.List;
-
+import com.example.zzan.roomreport.entity.UserReport;
+import com.example.zzan.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.zzan.roomreport.entity.UserReport;
-import com.example.zzan.user.entity.User;
+import java.util.List;
 
 public interface UserReportRepository extends JpaRepository<UserReport, Long> {
 
