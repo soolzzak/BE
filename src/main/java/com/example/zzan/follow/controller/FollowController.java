@@ -1,5 +1,6 @@
 package com.example.zzan.follow.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.follow.dto.FollowRuquestDto;
 import com.example.zzan.follow.service.FollowService;
@@ -22,6 +23,11 @@ public class FollowController {
 
 		return followService.getFollow(followRuquestDto,userDetails.getUser());
 
+	}
+
+	@DeleteMapping("/follow/delete")
+	public ResponseDto<FollowResponseDto> deleteFollow(@RequestBody FollowRuquestDto followRuquestDto,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return followService.deleteFollow(followRuquestDto,userDetails.getUser());
 	}
 
 }
