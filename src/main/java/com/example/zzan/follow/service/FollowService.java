@@ -1,9 +1,6 @@
 package com.example.zzan.follow.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
 import com.example.zzan.follow.dto.FollowResponseDto;
-import com.example.zzan.follow.dto.FollowRuquestDto;
 import com.example.zzan.follow.entity.Follow;
 import com.example.zzan.follow.repository.FollowRepository;
 import com.example.zzan.global.dto.ResponseDto;
@@ -15,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +29,17 @@ public class FollowService {
 		Optional<User> followingUser = userRepository.findById(followId);
 		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
 
+		if (user.getId().equals(followId)) {
+			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
+		}
+
 		if(followingUser.isPresent() && !followList.isPresent()){
 			Follow follow = new Follow(followingUser.get(), user);
 			followRepository.save(follow);
 			return ResponseDto.setSuccess("팔로잉하였습니다");
 
 		} else if (followList.isPresent()) {
-			throw new ApiException(USERS_DUPLICATION);
+			throw new ApiException(ALREADY_FOLLOWING);
 		} else
 			throw new ApiException(USER_NOT_FOUND);
 	}
@@ -44,6 +47,10 @@ public class FollowService {
 	public ResponseDto<FollowResponseDto> deleteFollow(Long followId, User user) {
 		Optional<User> followingUser = userRepository.findById(followId);
 		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
+
+		if (user.getId().equals(followId)) {
+			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
+		}
 
 		if (followingUser.isPresent() && followList.isPresent()) {
 			followRepository.delete(followList.get());

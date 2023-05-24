@@ -1,19 +1,9 @@
 package com.example.zzan.mypage.service;
 
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.example.zzan.global.util.BadWords;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
 import com.example.zzan.roomreport.dto.UserReportDto;
@@ -23,6 +13,16 @@ import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_USERNAME;
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
