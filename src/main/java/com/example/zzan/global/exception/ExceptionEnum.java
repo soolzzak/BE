@@ -8,6 +8,8 @@ public enum ExceptionEnum {
     INVALID_LOGIN(HttpStatus.BAD_REQUEST.value(), "아이디 또는 비밀번호가 일치하지 않습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST.value(), "비밀번호는 8~15자리, a-z, A-Z, 숫자, 특수문자 조합으로 구성되어야 합니다."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST.value(), "이메일 형식에 맞춰 작성해주세요."),
+    INVALID_BIRTHDAY(HttpStatus.BAD_REQUEST.value(), "생년월일을 지정해주세요."),
+    INVALID_GENDER(HttpStatus.BAD_REQUEST.value(), "성별을 지정해주세요."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_INPUT(HttpStatus.BAD_REQUEST.value(), "관리자 암호를 잘못 입력하셨습니다."),
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "토큰값을 찾을 수 없습니다."),
@@ -25,6 +27,7 @@ public enum ExceptionEnum {
     NOT_ALLOWED_SELFLIKE(HttpStatus.BAD_REQUEST.value(), "스스로의 도수를 올릴 수 없습니다."),
     TARGETUSER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "해당 사용자를 찾을 수 없습니다."),
     LOGIN_FAIL(HttpStatus.BAD_REQUEST.value(), "로그인에 실패하였습니다.");
+
 
     private final int status;
     private final String message;
