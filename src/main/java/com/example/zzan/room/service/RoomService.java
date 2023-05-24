@@ -124,10 +124,7 @@ public class RoomService {
         }
         return false;
     }
-
-
-
-    // RoomService.java
+    
     @Transactional
     public ResponseDto<RoomResponseDto> getOneRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)

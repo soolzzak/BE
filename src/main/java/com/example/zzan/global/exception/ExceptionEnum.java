@@ -17,7 +17,10 @@ public enum ExceptionEnum {
     USERS_DUPLICATION(HttpStatus.CONFLICT.value(), "중복된 이메일이 존재합니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에러가 발생했습니다."),
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "파일 형식이 잘못되었습니다."),
-    NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(),"아이디에 사용할 수 없는 단어가 있습니다.");
+    NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(),"아이디에 사용할 수 없는 단어가 있습니다."),
+    NOT_ALLOWED_SELFLIKE(HttpStatus.BAD_REQUEST.value(), "스스로의 도수를 올릴 수 없습니다."),
+    TARGETUSER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "해당 사용자를 찾을 수 없습니다.");
+
     private final int status;
     private final String message;
 

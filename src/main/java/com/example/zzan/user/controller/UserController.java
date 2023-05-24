@@ -1,25 +1,20 @@
 package com.example.zzan.user.controller;
 
-
 import com.example.zzan.global.util.JwtUtil;
-import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
+import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,5 +55,4 @@ public class UserController {
     public ResponseEntity logout(@PathVariable String userEmail) {
         return userService.logout(userEmail);
     }
-
 }
