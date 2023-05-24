@@ -42,4 +42,17 @@ public class FollowService {
 			throw new ApiException(USER_NOT_FOUND);
 	}
 
+	public ResponseDto<FollowResponseDto> deleteFollow(FollowRuquestDto followRuquestDto, User user) {
+		Optional<User> followllingUser = userRepository.findUserByEmail(followRuquestDto.getFollowingUserEmail());
+		Optional<Follow> followList = followRepository.findByFollowingUserEmailAndUserEmail(followRuquestDto.getFollowingUserEmail(), user.getEmail()
+		);
+
+		if (followllingUser.isPresent() && followList.isPresent()) {
+			followRepository.delete(followList.get());
+			return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
+		} else {
+			throw new ApiException(TARGETUSER_NOT_FOUND);
+		}
+	}
+
 }
