@@ -28,12 +28,12 @@ public class Follow {
 	private String followingUserEmail;
 
 	@Column
-	private String UserEmail;
+	private String userEmail;
 
 	public Follow(FollowRuquestDto followRuquestDto, User user){
 
 		this.followingUserEmail=followRuquestDto.getFollowingUserEmail();
-		this.UserEmail=user.getEmail();
+		this.userEmail=user.getEmail();
 
 	}
 

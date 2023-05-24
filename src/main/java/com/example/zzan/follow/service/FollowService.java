@@ -30,12 +30,16 @@ public class FollowService {
 	public ResponseDto<FollowResponseDto> getFollow(FollowRuquestDto followRuquestDto, User user) {
 
 		Optional<User> followllingUser = userRepository.findUserByEmail(followRuquestDto.getFollowingUserEmail());
-		if(followllingUser.isPresent()){
-		Follow follow=followRepository.save(new Follow(followRuquestDto,user));
+		Optional<Follow>followList=followRepository.findByFollowingUserEmailAndUserEmail(followRuquestDto.getFollowingUserEmail(),user.getEmail());
+
+		if(followllingUser.isPresent() && !followList.isPresent()){
+			Follow follow=followRepository.save(new Follow(followRuquestDto,user));
 			return ResponseDto.setSuccess("팔로잉하였습니다");
+
+		} else if (followList.isPresent()) {
+			throw new ApiException(USERS_DUPLICATION);
 		} else
 			throw new ApiException(USER_NOT_FOUND);
 	}
-
 
 }
