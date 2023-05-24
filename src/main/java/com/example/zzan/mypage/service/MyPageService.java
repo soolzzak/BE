@@ -1,8 +1,6 @@
 package com.example.zzan.mypage.service;
 
-<<<<<<< Updated upstream
-=======
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,11 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
->>>>>>> Stashed changes
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
 import com.example.zzan.roomreport.dto.UserReportDto;
@@ -28,15 +23,6 @@ import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_USERNAME;
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
@@ -70,12 +56,10 @@ public class MyPageService {
 		} else {
 			throw new ApiException(ROOM_NOT_FOUND);
 		}
-<<<<<<< Updated upstream
-		return ResponseDto.setSuccess("프로필이 저장되었습니다",new MyPageResponseDto(myPage));
-=======
+
 		// return new MyPageResponseDto(myPage);
 		return ResponseDto.setSuccess("프로필이 저장되었습니다",new MypageChangeDto(myPage));
->>>>>>> Stashed changes
+
 	}
 
 

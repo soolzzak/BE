@@ -1,5 +1,7 @@
 package com.example.zzan.follow.service;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.follow.dto.FollowRuquestDto;
 import com.example.zzan.follow.entity.Follow;
@@ -13,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.USERS_DUPLICATION;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
