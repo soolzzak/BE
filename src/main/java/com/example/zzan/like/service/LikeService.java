@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELFLIKE;
+import static com.example.zzan.global.exception.ExceptionEnum.TARGETUSER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

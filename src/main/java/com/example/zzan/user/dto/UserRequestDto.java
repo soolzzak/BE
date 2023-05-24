@@ -2,10 +2,6 @@ package com.example.zzan.user.dto;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

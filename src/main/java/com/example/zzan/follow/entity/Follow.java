@@ -1,6 +1,5 @@
 package com.example.zzan.follow.entity;
 
-import com.example.zzan.follow.dto.FollowRuquestDto;
 import com.example.zzan.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
