@@ -16,9 +16,9 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +26,29 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    private static final String [] PERMIT_URL_ARRAY = {
+            "/configuration/ui",
+            "/configuration/security",
+    };
+
+
+    @Bean
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
+        http
+                .cors().and()
+                .csrf().disable()
+                .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .oauth2Login().and().logout().logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)).and()
+                .authorizeHttpRequests()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers(PERMIT_URL_ARRAY).permitAll()
+                .requestMatchers("/user/**", "/main/**", "/test/**").permitAll()
+                .anyRequest().authenticated()
+                .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
@@ -53,31 +76,6 @@ public class WebSecurityConfig {
     @Autowired
     public WebSecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
-    }
-
-    @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
-        http
-                .cors().and()
-                .csrf().disable()
-                .httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .oauth2Login()
-                .and()
-                .logout()
-                .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository))
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/v2/api-docs", "/swagger-resources", "/swagger-resources/**",
-                        "/configuration/ui", "/configuration/security", "/swagger-ui.html", "/webjars/**",
-                        "/v3/api-docs/**", "/swagger-ui/**", "/*").permitAll()
-                .requestMatchers("/user/**", "/main/**", "/test/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
     }
 
     @Bean

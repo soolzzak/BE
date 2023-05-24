@@ -6,5 +6,6 @@ import com.example.zzan.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
-    boolean existsByUserAndTargetUserAndLikeEnum(User user, User targetUser, LikeEnum likeEnum);
+
+    Like findByUserAndTargetUserAndLikeEnum(User user, User targetUser, LikeEnum likeEnum);
 }
