@@ -15,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class LikeService {
             User targetUser = targetOptional.get();
 
             if (userId.equals(targetId)) {
-                throw new ApiException(UNAUTHORIZED);
+                throw new ApiException(NOT_ALLOWED_SELFLIKE);
             }
 
             targetUser.setAlcohol(targetUser.getAlcohol() + (like ? 1 : -1));
@@ -47,10 +46,11 @@ public class LikeService {
                 Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
             } else {
-                throw new ApiException(UNAUTHORIZED);
+                Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
+                likeRepository.delete(likeEntity);
             }
         } else {
-            throw new ApiException(USER_NOT_FOUND);
+            throw new ApiException(TARGETUSER_NOT_FOUND);
         }
     }
 
