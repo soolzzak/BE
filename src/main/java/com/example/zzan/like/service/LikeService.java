@@ -1,5 +1,6 @@
 package com.example.zzan.like.service;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.like.entity.Like;
@@ -25,7 +26,7 @@ public class LikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void updateAlcohol(Long targetId, boolean like) {
+    public ResponseDto updateAlcohol(Long targetId, boolean like) {
         UserDetailsImpl currentUser = getCurrentUser();
         Long userId = currentUser.getUser().getId();
         Optional<User> targetOptional = userRepository.findById(targetId);
@@ -46,10 +47,12 @@ public class LikeService {
                 userRepository.save(targetUser);
                 Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
+                return ResponseDto.setSuccess(like ? "도수를 올렸습니다." : "도수를 내렸습니다.");
             } else {
                 targetUser.setAlcohol(targetUser.getAlcohol() - (like ? 1 : -1));
                 userRepository.save(targetUser);
                 likeRepository.delete(existingLike);
+                return ResponseDto.setSuccess(like ? "도수 올리기를 취소하셨습니다." : "도수 내리기를 취소하셨습니다.");
             }
         } else {
             throw new ApiException(TARGETUSER_NOT_FOUND);
