@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.zzan.global.exception.ExceptionEnum.USERS_DUPLICATION;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
