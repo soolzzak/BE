@@ -1,5 +1,7 @@
 package com.example.zzan.roomreport.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +10,6 @@ import lombok.Getter;
 public class UserReportDto {
 
 	private String meetedUser;
-
+	private LocalDateTime createdAt;
 
 }
