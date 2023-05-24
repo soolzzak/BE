@@ -15,18 +15,17 @@ public class Follow {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@ManyToOne
+	@JoinColumn(name ="following_id",nullable = false)
+	private User followingId;
 
-	@Column
-	private String followingUserEmail;
+	@ManyToOne
+	@JoinColumn(name = "follower_id", nullable = false)
+	private User followerId;
 
-	@Column
-	private String userEmail;
 
-	public Follow(FollowRuquestDto followRuquestDto, User user){
-
-		this.followingUserEmail=followRuquestDto.getFollowingUserEmail();
-		this.userEmail=user.getEmail();
-
+	public Follow(User followingId, User followerId){
+		this.followingId = followingId;
+		this.followerId = followerId;
 	}
-
 }

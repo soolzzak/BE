@@ -23,14 +23,16 @@ public class FollowService {
 	private final FollowRepository followRepository;
 	private final UserRepository userRepository;
 
+
 	@Transactional
-	public ResponseDto<FollowResponseDto> getFollow(FollowRuquestDto followRuquestDto, User user) {
+	public ResponseDto<FollowResponseDto> getFollow(Long followId, User user) {
 
-		Optional<User> followllingUser = userRepository.findUserByEmail(followRuquestDto.getFollowingUserEmail());
-		Optional<Follow>followList=followRepository.findByFollowingUserEmailAndUserEmail(followRuquestDto.getFollowingUserEmail(),user.getEmail());
+		Optional<User> followingUser = userRepository.findById(followId);
+		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
 
-		if(followllingUser.isPresent() && !followList.isPresent()){
-			Follow follow=followRepository.save(new Follow(followRuquestDto,user));
+		if(followingUser.isPresent() && !followList.isPresent()){
+			Follow follow = new Follow(followingUser.get(), user);
+			followRepository.save(follow);
 			return ResponseDto.setSuccess("팔로잉하였습니다");
 
 		} else if (followList.isPresent()) {
@@ -39,12 +41,11 @@ public class FollowService {
 			throw new ApiException(USER_NOT_FOUND);
 	}
 
-	public ResponseDto<FollowResponseDto> deleteFollow(FollowRuquestDto followRuquestDto, User user) {
-		Optional<User> followllingUser = userRepository.findUserByEmail(followRuquestDto.getFollowingUserEmail());
-		Optional<Follow> followList = followRepository.findByFollowingUserEmailAndUserEmail(followRuquestDto.getFollowingUserEmail(), user.getEmail()
-		);
+	public ResponseDto<FollowResponseDto> deleteFollow(Long followId, User user) {
+		Optional<User> followingUser = userRepository.findById(followId);
+		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
 
-		if (followllingUser.isPresent() && followList.isPresent()) {
+		if (followingUser.isPresent() && followList.isPresent()) {
 			followRepository.delete(followList.get());
 			return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
 		} else {
