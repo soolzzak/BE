@@ -8,6 +8,7 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,16 +19,16 @@ public class FollowController {
 
 	private final FollowService followService;
 
-	@PostMapping("/follow")
-	public ResponseDto<FollowResponseDto> getFollow(@RequestBody FollowRuquestDto followRuquestDto,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+	@PostMapping("/follow/{followId}")
+	public ResponseDto<FollowResponseDto> getFollow(@PathVariable("followId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-		return followService.getFollow(followRuquestDto,userDetails.getUser());
+		return followService.getFollow(followId,userDetails.getUser());
 
 	}
 
-	@DeleteMapping("/follow/delete")
-	public ResponseDto<FollowResponseDto> deleteFollow(@RequestBody FollowRuquestDto followRuquestDto,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return followService.deleteFollow(followRuquestDto,userDetails.getUser());
+	@DeleteMapping("/follow/{deleteId}")
+	public ResponseDto<FollowResponseDto> deleteFollow(@PathVariable("deleteId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return followService.deleteFollow(followId,userDetails.getUser());
 	}
 
 }
