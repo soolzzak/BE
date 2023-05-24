@@ -127,17 +127,5 @@ public class UserService {
         }
         return false;
     }
-
-    @Transactional
-    public void updateAlcohol(Long userId, boolean like) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setAlcohol(user.getAlcohol() + (like ? 1 : -1));
-            userRepository.save(user);
-        } else {
-            throw new ApiException(USER_NOT_FOUND);
-        }
-    }
 }
 

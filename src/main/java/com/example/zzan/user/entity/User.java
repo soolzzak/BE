@@ -1,11 +1,12 @@
 package com.example.zzan.user.entity;
 
-import jakarta.persistence.*;
 import com.example.zzan.user.dto.KakaoUserInfoDto;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -44,8 +45,17 @@ public class User {
     @Column(nullable = true)
     private String img;
 
-    @ColumnDefault("14")
+    @Column(nullable = false)
+    @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
+    @Max(value = 100, message = "도수는 100도를 초과할 수 없습니다.")
     private int alcohol;
+
+    @PrePersist
+    public void setDefaultValues() {
+        if (alcohol == 0) {
+            alcohol = 16;
+        }
+    }
 
     public User(String email, String password, String username, UserRole role,String providers,String imgurl) {
         this.email = email;
