@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -47,6 +48,9 @@ public class UserService {
         if (foundByUsername.isPresent()){
             throw new ApiException(USERS_DUPLICATION);
         }
+        if (hasBadWord(username)) {
+            throw new ApiException(NOT_ALLOWED_USERNAME);
+        }
 
         String userEmail = requestDto.getEmail();
         Optional<User> found = userRepository.findUserByEmail(userEmail);
@@ -61,11 +65,16 @@ public class UserService {
         if(password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")){
             throw new ApiException(INVALID_PASSWORD);
         }
-
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        if (hasBadWord(username)) {
-            throw new ApiException(NOT_ALLOWED_USERNAME);
+        Date birthday = requestDto.getBirthday();
+        if (birthday == null) {
+            throw new ApiException(INVALID_BIRTHDAY);
+        }
+
+        String gender = requestDto.getGender();
+        if (!"Male".equalsIgnoreCase(gender) && !"Female".equalsIgnoreCase(gender)) {
+            throw new ApiException(INVALID_GENDER);
         }
 
         UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
@@ -73,11 +82,11 @@ public class UserService {
             throw new ApiException(TOKEN_NOT_FOUND);
         }
 
-        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK,null);
+        User user = new User(userEmail, userPassword, username, role, null, gender);
+        user.setBirthday(birthday);
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));
     }
-
 
     @Transactional
     public ResponseEntity<?> login(UserLoginDto requestDto, HttpServletResponse response) {

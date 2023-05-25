@@ -1,6 +1,8 @@
 package com.example.zzan.global.config;
 
 import com.example.zzan.global.jwt.JwtAuthFilter;
+import com.example.zzan.global.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -11,36 +13,38 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     private static final String [] PERMIT_URL_ARRAY = {
             "/configuration/ui",
             "/configuration/security",
     };
 
-
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and()
                 .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .oauth2Login().and().logout().logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)).and()
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
@@ -51,40 +55,36 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryClientRegistrationRepository(
-                kakaoClientRegistration()
-        );
+    public CorsConfigurationSource corsConfigurationSource(){
+
+        CorsConfiguration config = new CorsConfiguration();
+
+        // 사전에 약속된 출처를 명시
+        config.addAllowedOrigin("http://within-fe.s3-website.ap-northeast-2.amazonaws.com");
+        config.addAllowedOrigin("http://localhost:3000");
+        // 특정 헤더를 클라이언트 측에서 사용할 수 있게 지정
+        // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음
+        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+
+        // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
+        config.addAllowedMethod("*");
+
+        // 본 요청에 허용할 HTTP header(예비 요청에 대한 응답 헤더에 추가됨)
+        config.addAllowedHeader("*");
+
+        // 기본적으로 브라우저에서 인증 관련 정보들을 요청 헤더에 담지 않음
+        // 이 설정을 통해서 브라우저에서 인증 관련 정보들을 요청 헤더에 담을 수 있도록 해줍니다.
+        config.setAllowCredentials(true);
+
+        // allowCredentials 를 true로 하였을 때,
+        // allowedOrigin의 값이 * (즉, 모두 허용)이 설정될 수 없도록 검증합니다.
+        config.validateAllowCredentials();
+
+        // 어떤 경로에 이 설정을 적용할 지 명시합니다. (여기서는 전체 경로)
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 
-    private ClientRegistration kakaoClientRegistration() {
-        return ClientRegistration.withRegistrationId("kakao")
-                .clientId("b39a9a7ab117d1d1c9ca71fa61285f13")
-                .clientSecret("PbdLGoqAiGCBlhhqpcITorkFsvjKtjFR")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                .redirectUri("http://localhost:8080/user/login/oauth2/code/kakao")
-                .scope("nickname,account_email")
-                .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-                .tokenUri("https://kauth.kakao.com/oauth/token")
-                .userInfoUri("https://kapi.kakao.com/v2/user/me")
-                .userNameAttributeName("id")
-                .clientName("Kakao")
-                .build();
-    }
-
-    @Autowired
-    public WebSecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository) {
-        return new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-    }
 }
