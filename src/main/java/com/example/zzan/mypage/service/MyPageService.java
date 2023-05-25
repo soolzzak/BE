@@ -36,10 +36,10 @@ public class MyPageService {
 	private final UserReportRepository userReportRepository;
 
 	@Transactional
-	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile image, String username, String email) throws IOException {
+	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
 		String storedFileName = null;
-		if(image != null && !image.isEmpty()) {
-			storedFileName = s3Uploader.upload(image, "images");
+		if(userImage != null && !userImage.isEmpty()) {
+			storedFileName = s3Uploader.upload(userImage, "images");
 		}
 		User myPage = findUser(email);
 		if(myPage != null) {
