@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -32,17 +33,17 @@ public class RoomController {
 
     @PostMapping(value = "/room", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<RoomResponseDto> createRoom(@RequestPart(value = "roomRequestDto") RoomRequestDto roomRequestDto,
-                                                   @RequestPart(value = "image", required = false) MultipartFile image,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.createRoom(roomRequestDto, image, userDetails.getUser());
+                                                   @RequestPart(value = "roomImage", required = false) MultipartFile roomImage,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return roomService.createRoom(roomRequestDto, roomImage, userDetails.getUser());
     }
 
     @PutMapping(value = "/room/{roomId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
                                                    @RequestPart(value = "roomRequestDto") RoomRequestDto roomRequestDto,
-                                                   @RequestPart(value = "image", required = false) MultipartFile image,
+                                                   @RequestPart(value = "roomImage", required = false) MultipartFile roomImage,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.updateRoom(roomId, roomRequestDto, image, userDetails.getUser());
+        return roomService.updateRoom(roomId, roomRequestDto, roomImage, userDetails.getUser());
     }
 
     @DeleteMapping("/room/{roomId}")

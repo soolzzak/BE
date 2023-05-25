@@ -14,16 +14,14 @@ public class RoomResponseDto {
     private Long roomId;
     private Long userId;
     private String title;
-    //private String image;
     private String username;
     private String category;
-//    private String runningTime;
     private String genderSetting;
     private Boolean isPrivate;
     private String roomPassword;
     private LocalDateTime createdAt;
     private int alcohol;
-    private String mypageImageUrl;
+    private String userImageUrl;
     private String roomImageUrl;
 
 
@@ -38,10 +36,7 @@ public class RoomResponseDto {
         this.roomPassword = room.getRoomPassword();
         this.createdAt = room.getCreatedAt();
         this.alcohol = room.getUser().getAlcohol();
-         this.mypageImageUrl=room.getUser().getImgurl();
-         this.roomImageUrl=room.getImage();
+        this.userImageUrl = room.getUser().getUserImage();
+        this.roomImageUrl = room.getRoomImage();
     }
-
-
-
 }

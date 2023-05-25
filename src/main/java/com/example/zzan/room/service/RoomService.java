@@ -37,12 +37,13 @@ public class RoomService {
 
 
     @Transactional
-    public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile image, User user) {
-        String imageUrl;
-        try {
-            imageUrl = s3Uploader.upload(image, "dirName");
-        } catch (IOException e) {
-            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+    public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
+        String roomImageUrl;
+
+        roomImageUrl = s3Uploader.upload(roomImage, "images");
+
+        if(roomImage == null){
+                return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
         }
 
         String roomTitle = roomRequestDto.getTitle();
@@ -58,7 +59,7 @@ public class RoomService {
             if (roomPassword == null || roomPassword.isEmpty())
                 return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
         }
-        room.setImage(imageUrl);
+        room.setRoomImage(roomImageUrl);
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
@@ -70,7 +71,7 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile image, User user) {
+    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
@@ -80,14 +81,14 @@ public class RoomService {
 
         room.update(roomRequestDto);
 
-        if (image != null && !image.isEmpty()) {
-            if (room.getImage() != null) {
-                s3Uploader.removeNewFile(new File(room.getImage()));
+        if (roomImage != null && !roomImage.isEmpty()) {
+            if (room.getRoomImage() != null) {
+                s3Uploader.removeNewFile(new File(room.getRoomImage()));
             }
 
             try {
-                String imageUrl = s3Uploader.upload(image, "dirName");
-                room.setImage(imageUrl);
+                String roomImageUrl = s3Uploader.upload(roomImage, "images");
+                room.setRoomImage(roomImageUrl);
             } catch (IOException e) {
                 return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
             }

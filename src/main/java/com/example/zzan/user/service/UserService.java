@@ -43,6 +43,7 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
+
         String username = requestDto.getUsername();
         Optional<User> foundByUsername = userRepository.findByUsername(username);
         if (foundByUsername.isPresent()){
