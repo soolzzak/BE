@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class RoomRequestDto {
 
     private String title;
-//    private String image;
+    private String roomImage;
     private String category;
 //    private String runningTime;
     private String genderSetting;

@@ -25,7 +25,9 @@ public class Room extends Timestamped {
 
     private String username;
 
-    private String image;
+    private String userImage;
+
+    private String roomImage;
 
     @Column(name ="category",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
     @NotNull(message = "카테고리를 설정해주세요.")
@@ -48,7 +50,8 @@ public class Room extends Timestamped {
 
     public Room(RoomRequestDto roomRequestDto, User user) {
         this.title = roomRequestDto.getTitle();
-        this.image = user.getImg();
+        this.roomImage = roomRequestDto.getRoomImage();
+        this.userImage = user.getUserImage();
         this.user = user;
         this.username = user.getUsername();
         this.category = roomRequestDto.getCategory();
@@ -59,7 +62,8 @@ public class Room extends Timestamped {
 
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
-        this.image = user.getImg();
+        this.roomImage = roomRequestDto.getRoomImage();
+        this.userImage = user.getUserImage();
         this.category = roomRequestDto.getCategory();
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();

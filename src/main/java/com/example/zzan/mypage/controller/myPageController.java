@@ -23,17 +23,14 @@ public class myPageController {
 
 	@ResponseBody
 	@PutMapping(value="/mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value="image", required=false) MultipartFile image, @RequestParam(value="username", required=false) String username,@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+	public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value="userImage", required=false) MultipartFile userImage, @RequestParam(value="username", required=false) String username,@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
-		return myPageService.saveMyPage(image, username, userDetails.getUser().getEmail());
+		return myPageService.saveMyPage(userImage, username, userDetails.getUser().getEmail());
 	}
 
 	@GetMapping("/mypage")
 	public ResponseDto<MyPageResponseDto> getUserInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return myPageService.getUserInfo(userDetails.getUser());
 	}
-
-
-
 }
 

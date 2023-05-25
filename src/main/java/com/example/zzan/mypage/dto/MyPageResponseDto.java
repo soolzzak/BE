@@ -12,20 +12,20 @@ import java.util.List;
 @AllArgsConstructor
 public class MyPageResponseDto {
 
-	private String imgUrl;
+	private String userImageUrl;
 	private String username;
-	int alcolhol;
+	int alcohol;
 	private List<UserReportDto> meetedUser;
 
-	public MyPageResponseDto(User myPage,int alcolhol,List<UserReportDto> meetedUser){
-		this.imgUrl= myPage.getImg();
+	public MyPageResponseDto(User myPage,int alcohol,List<UserReportDto> meetedUser){
+		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
-		this.alcolhol=alcolhol;
+		this.alcohol=alcohol;
 		this.meetedUser=meetedUser;
 	}
 
 	public MyPageResponseDto(User myPage) {
-		this.imgUrl= myPage.getImg();
+		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
 	}
 }
