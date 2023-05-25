@@ -34,15 +34,12 @@ public class User {
     @Column(nullable = false)
     private String gender;
 
-    @Column(nullable = true)
-    private String imgurl;
-
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
     @Column(nullable = true)
-    private String img;
+    private String userImage;
 
     @Column(nullable = false)
     @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
@@ -56,22 +53,22 @@ public class User {
         }
     }
 
-    public User(String email, String password, String username, UserRole role, String imgurl, String gender) {
+    public User(String email, String password, String username, UserRole role, String userImage, String gender) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
-        this.img = imgurl;
+        this.userImage = userImage;
         this.gender = gender;
     }
 
-    public User(String username, String img) {
+    public User(String username, String userImage) {
         this.username = username;
-        this.img = img;
+        this.userImage = userImage;
     }
 
-    public void UserImgurl(String imgurl) {
-        this.imgurl = imgurl;
+    public void UserImgurl(String userImage) {
+        this.userImage = userImage;
     }
 
     public void username(String username) {

@@ -9,12 +9,12 @@ import lombok.Getter;
 public class MypageChangeDto {
 
 
-	private String imgUrl;
+	private String userImageUrl;
 	private String username;
 
 
 	public MypageChangeDto(User myPage) {
-		this.imgUrl= myPage.getImg();
+		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
 	}
 
