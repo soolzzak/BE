@@ -1,6 +1,5 @@
 package com.example.zzan.global.dto;
 
-import com.example.zzan.global.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

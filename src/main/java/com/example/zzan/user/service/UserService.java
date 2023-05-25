@@ -1,19 +1,18 @@
 package com.example.zzan.user.service;
 
 import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.security.dto.TokenDto;
-import com.example.zzan.global.util.BadWords;
-import com.example.zzan.user.dto.UserRequestDto;
-import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.global.security.entity.RefreshToken;
-import com.example.zzan.global.StatusEnum;
+import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.global.util.BadWords;
+import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.user.dto.UserLoginDto;
+import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
-import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.exception.ExceptionEnum;
-import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.repository.UserRepository;
-import com.example.zzan.global.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,11 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
-import static com.example.zzan.user.entity.UserRole.USER;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
@@ -44,44 +42,65 @@ public class UserService {
 
 
     @Transactional
-    public ResponseEntity signup(UserRequestDto requestDto) {
+    public ResponseEntity<?> signup(UserRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String userEmail = requestDto.getEmail();
-        String userPassword = passwordEncoder.encode(requestDto.getPassword());
-
-        Optional<User> found = userRepository.findUserByEmail(userEmail);
-        if (found.isPresent()) {
-          return ResponseEntity.badRequest().body(new ApiException(USERS_DUPLICATION));
+        Optional<User> foundByUsername = userRepository.findByUsername(username);
+        if (foundByUsername.isPresent()){
+            throw new ApiException(USERS_DUPLICATION);
+        }
+        if (hasBadWord(username)) {
+            throw new ApiException(NOT_ALLOWED_USERNAME);
         }
 
-        if (hasBadWord(username)) {
-            String errorMessage = "아이디에 사용할 수 없는 단어가 있습니다.";
-            return ResponseEntity.badRequest().body(ResponseDto.setBadRequest(errorMessage));
+        String userEmail = requestDto.getEmail();
+        Optional<User> found = userRepository.findUserByEmail(userEmail);
+        if (found.isPresent()) {
+            throw new ApiException(EMAIL_DUPLICATION);
+        }
+        if(userEmail == null || !userEmail.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")){
+            throw new ApiException(INVALID_EMAIL);
+        }
+
+        String password = requestDto.getPassword();
+        if(password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")){
+            throw new ApiException(INVALID_PASSWORD);
+        }
+        String userPassword = passwordEncoder.encode(requestDto.getPassword());
+
+        Date birthday = requestDto.getBirthday();
+        if (birthday == null) {
+            throw new ApiException(INVALID_BIRTHDAY);
+        }
+
+        String gender = requestDto.getGender();
+        if (!"Male".equalsIgnoreCase(gender) && !"Female".equalsIgnoreCase(gender)) {
+            throw new ApiException(INVALID_GENDER);
         }
 
         UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
         if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
             throw new ApiException(TOKEN_NOT_FOUND);
         }
-        User user = new User(userEmail, userPassword,username, role,User.ProvidersList.SOOLZZAK,null);
-        userRepository.save(user);
 
+        User user = new User(userEmail, userPassword, username, role, null, gender);
+        user.setBirthday(birthday);
+        userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));
     }
 
     @Transactional
-    public ResponseEntity login(UserLoginDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserLoginDto requestDto, HttpServletResponse response) {
 
         String userEmail = requestDto.getEmail();
         String userPassword = requestDto.getPassword();
 
         try {
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                    () -> new ApiException(USER_NOT_FOUND)
+                    () -> new ApiException(EMAIL_NOT_FOUND)
             );
 
             if(!passwordEncoder.matches(userPassword, user.getPassword())){
-                throw new ApiException(INVALID_PASSWORD);
+                throw new ApiException(PASSWORD_NOT_MATCH);
             }
 
             TokenDto tokenDto = jwtUtil.createAllToken(requestDto.getEmail(), user.getRole());
@@ -98,7 +117,7 @@ public class UserService {
             setHeader(response, tokenDto, user.getEmail());
 
             ResponseDto responseDto = ResponseDto.setSuccess("로그인에 성공하였습니다.", null);
-            return new ResponseEntity(responseDto, HttpStatus.OK);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
 
@@ -112,9 +131,8 @@ public class UserService {
         response.addHeader("USER_EMAIL", userEmail);
     }
 
-
     @Transactional
-    public ResponseEntity logout(String userEmail) {
+    public ResponseEntity<?> logout(String userEmail) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
                 .orElseThrow(() -> new ApiException(TOKEN_NOT_FOUND)
                 );

@@ -22,6 +22,10 @@ public class RoomResponseDto {
     private Boolean isPrivate;
     private String roomPassword;
     private LocalDateTime createdAt;
+    private int alcohol;
+    private String mypageImageUrl;
+    private String roomImageUrl;
+
 
     public RoomResponseDto(Room room){
         this.roomId = room.getId();
@@ -33,5 +37,11 @@ public class RoomResponseDto {
         this.isPrivate = room.getIsPrivate();
         this.roomPassword = room.getRoomPassword();
         this.createdAt = room.getCreatedAt();
+        this.alcohol = room.getUser().getAlcohol();
+         this.mypageImageUrl=room.getUser().getImgurl();
+         this.roomImageUrl=room.getImage();
     }
+
+
+
 }
