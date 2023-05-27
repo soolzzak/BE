@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponseDto> handleErrorException (ApiException e){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto (e.getExceptionEnum().getStatus(),e.getMessage());

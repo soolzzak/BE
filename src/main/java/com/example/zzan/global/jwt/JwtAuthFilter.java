@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String access_token = jwtUtil.resolveToken(request, ACCESS_KEY);
         String refresh_token = jwtUtil.resolveToken(request, REFRESH_KEY);
 
-        if (access_token != null && jwtUtil.validateToken(access_token)) {
+        if ((access_token != null) && jwtUtil.validateToken(access_token)) {
             String userEmail = jwtUtil.getUserInfoFromToken(access_token);
             setAuthentication(userEmail);
         } else if (refresh_token != null && jwtUtil.refreshTokenValidation(refresh_token)) {
@@ -50,7 +50,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String newAccessToken = jwtUtil.createToken(userEmail, UserRole.USER, "Access");
             jwtUtil.setHeaderAccessToken(response, newAccessToken);
         }
-
         filterChain.doFilter(request, response);
     }
 }

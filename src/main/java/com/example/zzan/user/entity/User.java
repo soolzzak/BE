@@ -32,7 +32,7 @@ public class User {
     private Date birthday;
 
     @Column(nullable = false)
-    private String gender;
+    private Gender gender;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -53,7 +53,7 @@ public class User {
         }
     }
 
-    public User(String email, String password, String username, UserRole role, String userImage, String gender) {
+    public User(String email, String password, String username, UserRole role, String userImage, Gender gender) {
         this.email = email;
         this.password = password;
         this.username = username;

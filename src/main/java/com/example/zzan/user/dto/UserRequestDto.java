@@ -2,12 +2,12 @@ package com.example.zzan.user.dto;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
+import com.example.zzan.user.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.Date;
 
 @Data
@@ -21,19 +21,11 @@ public class UserRequestDto {
 
     private String username;
 
-    private String birthday;
+    private Date birthday;
 
-    private String gender;
+    private Gender gender;
 
     private boolean admin = false;
     private String adminKey = " ";
 
-    public Date getBirthday() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return dateFormat.parse(birthday);
-        } catch (ParseException e) {
-           throw new ApiException(ExceptionEnum.INVALID_BIRTHDAY);
-        }
-    }
 }
