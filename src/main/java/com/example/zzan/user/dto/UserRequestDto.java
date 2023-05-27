@@ -1,12 +1,9 @@
 package com.example.zzan.user.dto;
 
-import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.user.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 import java.util.Date;
 
