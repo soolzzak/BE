@@ -40,9 +40,9 @@ public class Room extends Timestamped {
     private String roomPassword;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "HOST_ID")
     @JsonBackReference
-    private User user;
+    private User hostUser;
 
     public Room(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
@@ -52,7 +52,7 @@ public class Room extends Timestamped {
         this.title = roomRequestDto.getTitle();
         this.roomImage = roomRequestDto.getRoomImage();
         this.userImage = user.getUserImage();
-        this.user = user;
+        this.hostUser = user;
         this.username = user.getUsername();
         this.category = roomRequestDto.getCategory();
         this.genderSetting = roomRequestDto.getGenderSetting();
@@ -63,7 +63,7 @@ public class Room extends Timestamped {
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
         this.roomImage = roomRequestDto.getRoomImage();
-        this.userImage = user.getUserImage();
+        this.userImage = hostUser.getUserImage();
         this.category = roomRequestDto.getCategory();
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();

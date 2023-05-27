@@ -11,5 +11,6 @@ public class UserHistoryDto {
 
 	private String metUser;
 	private LocalDateTime createdAt;
+	private String metUserImage;
 
 }
