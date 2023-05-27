@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class RoomController {
     private final RoomService roomService;
 
@@ -56,5 +57,4 @@ public class RoomController {
     public ResponseDto<RoomResponseDto>getOneRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
         return roomService.getOneRoom(roomId,userDetails.getUser());
     }
-
 }

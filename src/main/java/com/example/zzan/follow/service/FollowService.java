@@ -56,7 +56,7 @@ public class FollowService {
 			followRepository.delete(followList.get());
 			return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
 		} else {
-			throw new ApiException(TARGETUSER_NOT_FOUND);
+			throw new ApiException(TARGET_USER_NOT_FOUND);
 		}
 	}
 

@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELFLIKE;
-import static com.example.zzan.global.exception.ExceptionEnum.TARGETUSER_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_LIKE;
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class LikeService {
             User targetUser = targetOptional.get();
 
             if (userId.equals(targetId)) {
-                throw new ApiException(NOT_ALLOWED_SELFLIKE);
+                throw new ApiException(NOT_ALLOWED_SELF_LIKE);
             }
 
             User user = userRepository.getOne(userId);
@@ -56,7 +56,7 @@ public class LikeService {
                 return ResponseDto.setSuccess(like ? "도수 올리기를 취소하셨습니다." : "도수 내리기를 취소하셨습니다.");
             }
         } else {
-            throw new ApiException(TARGETUSER_NOT_FOUND);
+            throw new ApiException(TARGET_USER_NOT_FOUND);
         }
     }
 

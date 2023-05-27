@@ -8,8 +8,8 @@ import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
-import com.example.zzan.roomreport.entity.UserReport;
-import com.example.zzan.roomreport.repository.UserReportRepository;
+import com.example.zzan.userHistory.entity.UserHistory;
+import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
-import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED;
+import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    private final UserReportRepository userReportRepository;
+    private final UserHistoryRepository userHistoryRepository;
 
     private final S3Uploader s3Uploader;
 
@@ -76,7 +76,7 @@ public class RoomService {
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
         if (!room.getUser().getId().equals(user.getId())) {
-            throw new ApiException(UNAUTHORIZED);
+            throw new ApiException(UNAUTHORIZED_USER);
         }
 
         room.update(roomRequestDto);
@@ -113,7 +113,7 @@ public class RoomService {
             roomRepository.delete(room);
             return ResponseDto.setSuccess("방을 삭제하였습니다.", null);
         } else {
-            throw new ApiException(UNAUTHORIZED);
+            throw new ApiException(UNAUTHORIZED_USER);
         }
     }
 
@@ -131,11 +131,11 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        UserReport userReport = new UserReport();
-        userReport.setHostUser(room.getUser()); // 방장 기록
-        userReport.setEnterUser(user); // 들어간 사람 기록
+        UserHistory userHistory = new UserHistory();
+        userHistory.setHostUser(room.getUser()); // 방장 기록
+        userHistory.setGuestUser(user); // 들어간 사람 기록
 
-        userReportRepository.save(userReport);
+        userHistoryRepository.save(userHistory);
         return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
     }
 }

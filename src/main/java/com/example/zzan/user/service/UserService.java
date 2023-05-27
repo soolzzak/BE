@@ -46,9 +46,7 @@ public class UserService {
 
         String username = requestDto.getUsername();
         Optional<User> foundByUsername = userRepository.findByUsername(username);
-        if (foundByUsername.isPresent()){
-            throw new ApiException(USERS_DUPLICATION);
-        }
+
         if (hasBadWord(username)) {
             throw new ApiException(NOT_ALLOWED_USERNAME);
         }
@@ -80,7 +78,7 @@ public class UserService {
 
         UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
         if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
-            throw new ApiException(TOKEN_NOT_FOUND);
+            throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
         }
 
         User user = new User(userEmail, userPassword, username, role, null, gender);
@@ -129,13 +127,13 @@ public class UserService {
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
         response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
         response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
-        response.addHeader("USER_EMAIL", userEmail);
+        response.addHeader("USER-EMAIL", userEmail);
     }
 
     @Transactional
     public ResponseEntity<?> logout(String userEmail) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
-                .orElseThrow(() -> new ApiException(TOKEN_NOT_FOUND)
+                .orElseThrow(() -> new ApiException(ACCESS_TOKEN_NOT_FOUND)
                 );
         refreshTokenRepository.delete(refreshToken);
         ResponseDto responseDto = ResponseDto.setSuccess("정상적으로 로그아웃하였습니다.", null);
