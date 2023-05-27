@@ -1,6 +1,7 @@
 package com.example.zzan.userHistory.entity;
 
 import com.example.zzan.global.Timestamped;
+import com.example.zzan.room.entity.Room;
 import com.example.zzan.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class UserHistory extends Timestamped {
 	@JoinColumn(name = "GUEST_ID", nullable = false)
 	private User guestUser;
 
+	@ManyToOne
+	@JoinColumn(name = "ROOMHISTORY_ID", nullable = false)
+	private Room room;
 
 
 	public void setHostUser(User hostUser) {
@@ -33,4 +37,8 @@ public class UserHistory extends Timestamped {
 	public void setGuestUser(User user) {
 		this.guestUser = user;
 	}
+
+	public void setRoom(Room room){this.room=room;}
+
+
 }

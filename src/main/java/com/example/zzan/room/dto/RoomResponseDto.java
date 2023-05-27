@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RoomResponseDto {
     private Long roomId;
-    private Long userId;
+    private Long HostId;
     private String title;
     private String username;
     private String category;
@@ -27,16 +27,16 @@ public class RoomResponseDto {
 
     public RoomResponseDto(Room room){
         this.roomId = room.getId();
-        this.userId = room.getUser().getId();
+        this.HostId = room.getHostUser().getId();
         this.title = room.getTitle();
-        this.username = room.getUser().getUsername();
+        this.username = room.getHostUser().getUsername();
         this.category = room.getCategory();
         this.genderSetting = room.getGenderSetting();
         this.isPrivate = room.getIsPrivate();
         this.roomPassword = room.getRoomPassword();
         this.createdAt = room.getCreatedAt();
-        this.alcohol = room.getUser().getAlcohol();
-        this.userImageUrl = room.getUser().getUserImage();
+        this.alcohol = room.getHostUser().getAlcohol();
+        this.userImageUrl = room.getHostUser().getUserImage();
         this.roomImageUrl = room.getRoomImage();
     }
 }
