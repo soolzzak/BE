@@ -6,9 +6,9 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
-import com.example.zzan.roomreport.dto.UserReportDto;
-import com.example.zzan.roomreport.entity.UserReport;
-import com.example.zzan.roomreport.repository.UserReportRepository;
+import com.example.zzan.userHistory.dto.UserHistoryDto;
+import com.example.zzan.userHistory.entity.UserHistory;
+import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -33,7 +33,7 @@ public class MyPageService {
 
 	private final UserRepository userRepository;
 	private final S3Uploader s3Uploader;
-	private final UserReportRepository userReportRepository;
+	private final UserHistoryRepository userHistoryRepository;
 
 	@Transactional
 	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
@@ -81,29 +81,27 @@ public class MyPageService {
 	@Transactional
 	public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
 		Pageable topThree = PageRequest.of(0, 3);
-		List<UserReport> userReports = userReportRepository.findTop3ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
-		List<UserReportDto> userReportDtos = new ArrayList<>();
+		List<UserHistory> userHistories = userHistoryRepository.findTop3ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
+		List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
 		User myPage = findUser(user.getEmail());
 
-		for (UserReport userReport : userReports) {
+		for (UserHistory userHistory : userHistories) {
 
 			String meetedUser = "";  // 변수를 블록 외부에서 선언하고 초기화
 
-			if(userReport.getHostUser().getUsername().equals(user.getUsername())){
-				meetedUser = userReport.getEnterUser().getUsername();
-			}else if(!userReport.getHostUser().getUsername().equals(user.getUsername())){
-				meetedUser = userReport.getHostUser().getUsername();
+			if(userHistory.getHostUser().getUsername().equals(user.getUsername())){
+				meetedUser = userHistory.getGuestUser().getUsername();
+			}else if(!userHistory.getHostUser().getUsername().equals(user.getUsername())){
+				meetedUser = userHistory.getHostUser().getUsername();
 			}
 
-			LocalDateTime createdAt = userReport.getCreatedAt();
+			LocalDateTime createdAt = userHistory.getCreatedAt();
 
-			UserReportDto userReportDto = new UserReportDto(meetedUser,createdAt);
-			userReportDtos.add(userReportDto);
+			UserHistoryDto userHistoryDto = new UserHistoryDto(meetedUser,createdAt);
+			userHistoryDtos.add(userHistoryDto);
 		}
 
-		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),userReportDtos));
+		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(), userHistoryDtos));
 	}
-
-
 }
 

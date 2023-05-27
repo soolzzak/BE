@@ -1,7 +1,7 @@
 package com.example.zzan.mypage.dto;
 
 
-import com.example.zzan.roomreport.dto.UserReportDto;
+import com.example.zzan.userHistory.dto.UserHistoryDto;
 import com.example.zzan.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +15,9 @@ public class MyPageResponseDto {
 	private String userImageUrl;
 	private String username;
 	int alcohol;
-	private List<UserReportDto> meetedUser;
+	private List<UserHistoryDto> meetedUser;
 
-	public MyPageResponseDto(User myPage,int alcohol,List<UserReportDto> meetedUser){
+	public MyPageResponseDto(User myPage,int alcohol,List<UserHistoryDto> meetedUser){
 		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
 		this.alcohol=alcohol;
