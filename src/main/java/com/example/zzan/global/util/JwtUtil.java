@@ -1,5 +1,6 @@
 package com.example.zzan.global.util;
 
+import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -80,20 +79,19 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public String validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            return null;
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT signature, 유효하지 않은 JWT 서명 입니다.");
+            return ExceptionEnum.INVALID_JWT_SIGNATURE.getMessage();
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token, 만료된 JWT token 입니다.");
+            return ExceptionEnum.ACCESS_TOKEN_NOT_FOUND.getMessage();
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            return ExceptionEnum.UNSUPPORTED_JWT_TOKEN.getMessage();
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            return ExceptionEnum.EMPTY_JWT_CLAIMS.getMessage();
         }
-        return false;
     }
 
     public String getUserInfoFromToken(String token) {
@@ -107,8 +105,13 @@ public class JwtUtil {
     }
 
     public Boolean refreshTokenValidation(String token) {
-        if (!validateToken(token)) return false;
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(getUserInfoFromToken(token));
+        String validationError = validateToken(token);
+        if (validationError != null){
+            return false;
+        }
+
+        String userEmail = getUserInfoFromToken(token);
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
 
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }

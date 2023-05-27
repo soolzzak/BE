@@ -1,9 +1,7 @@
 package com.example.zzan.room.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.entity.RoomHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomHistoryRepository extends JpaRepository<RoomHistory, Long> {
 
