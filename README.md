@@ -40,7 +40,8 @@
 
 🗝 ERD 
 ---------------------------------------
-![ERD](https://github.com/soolzzak/BE/assets/128972031/2864e869-7260-4097-8f29-43f4f4b65b5a)
+![ERD](https://github.com/soolzzak/BE/assets/128972031/e701aab3-35c6-4a9d-b4cc-8085f116a64b)
+
 
 
 
