@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity signValidException (MethodArgumentNotValidException exception){    
+    public ResponseEntity signValidException (MethodArgumentNotValidException exception){
         BindingResult bindingResult = exception.getBindingResult();
         StringBuilder builder = new StringBuilder();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()){
             builder.append("[");
             builder.append(fieldError.getField());
-            builder.append("]");
+            builder.append("] ");
             builder.append(fieldError.getDefaultMessage());
         }
         return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);

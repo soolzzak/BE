@@ -1,5 +1,6 @@
 package com.example.zzan.global.util;
 
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
@@ -25,6 +26,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Slf4j
 @Component
@@ -58,7 +61,7 @@ public class JwtUtil {
     }
 
     public String resolveToken(HttpServletRequest request, String token) {
-        String tokenName = token.equals("ACCESS_KEY") ? ACCESS_KEY : REFRESH_KEY;
+        String tokenName = token.equals(ACCESS_KEY) ? ACCESS_KEY : REFRESH_KEY;
         String bearerToken = request.getHeader(tokenName);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
@@ -66,20 +69,21 @@ public class JwtUtil {
         return null;
     }
 
-    public String createToken(String kakaoId){
-        Date date = new Date ();
+    public String createToken(String kakaoId) {
+        Date date = new Date();
         Date exprTime = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .signWith(SignatureAlgorithm.HS512, AUTHORIZATION_KEY)
-                        .claim("Authorization", "USER")
+                        .claim(AUTHORIZATION_HEADER, "USER")
                         .setSubject(kakaoId)
                         .setExpiration(exprTime)
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
+
     public String createToken(String userId, UserRole role, String type) {
         Date date = new Date();
         long time = type.equals("Access") ? ACCESS_TIME : REFRESH_TIME;
@@ -94,20 +98,22 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
+        boolean isValidToken = false;
+
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            isValidToken = true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT signature, 유효하지 않은 JWT 서명 입니다.");
+            throw new ApiException(INVALID_JWT_SIGNATURE);
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new ApiException(UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new ApiException(EMPTY_JWT_CLAIMS);
         }
-        return false;
+        return isValidToken;
     }
 
     public String getUserInfoFromToken(String token) {

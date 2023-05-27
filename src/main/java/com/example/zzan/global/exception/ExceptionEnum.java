@@ -15,6 +15,9 @@ public enum ExceptionEnum {
     EMAIL_DUPLICATION(HttpStatus.CONFLICT.value(), "이미 가입되어있는 이메일입니다."),
     ACCESS_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "ACCESS 토큰값이 만료되었습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "REFRESH 토큰값이 만료되었습니다."),
+    INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED.value(),"유효하지 않은 JWT 서명 입니다."),
+    UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED.value(),"지원되지 않는 JWT 토큰 입니다."),
+    EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(),"잘못된 JWT 토큰 입니다."),
 
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED.value(),  "사용자 권한이 없습니다."),
     NOT_ALLOWED(HttpStatus.UNAUTHORIZED.value(), "로그인 후 이용가능합니다."),
