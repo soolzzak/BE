@@ -80,24 +80,28 @@ public class MyPageService {
 
 	@Transactional
 	public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
-		Pageable topThree = PageRequest.of(0, 3);
-		List<UserHistory> userHistories = userHistoryRepository.findTop3ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
+		Pageable topThree = PageRequest.of(0, 4);
+		List<UserHistory> userHistories = userHistoryRepository.findTop4ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
 		List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
 		User myPage = findUser(user.getEmail());
 
 		for (UserHistory userHistory : userHistories) {
 
 			String meetedUser = "";  // 변수를 블록 외부에서 선언하고 초기화
+			String metUserImage="";
+
 
 			if(userHistory.getHostUser().getUsername().equals(user.getUsername())){
 				meetedUser = userHistory.getGuestUser().getUsername();
+				metUserImage=userHistory.getGuestUser().getUserImage();
 			}else if(!userHistory.getHostUser().getUsername().equals(user.getUsername())){
 				meetedUser = userHistory.getHostUser().getUsername();
+				metUserImage=userHistory.getHostUser().getUserImage();
 			}
 
 			LocalDateTime createdAt = userHistory.getCreatedAt();
 
-			UserHistoryDto userHistoryDto = new UserHistoryDto(meetedUser,createdAt);
+			UserHistoryDto userHistoryDto = new UserHistoryDto(meetedUser,createdAt,metUserImage);
 			userHistoryDtos.add(userHistoryDto);
 		}
 
