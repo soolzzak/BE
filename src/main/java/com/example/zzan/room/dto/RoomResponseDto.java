@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RoomResponseDto {
     private Long roomId;
-    private Long HostId;
+    private Long hostId;
     private String title;
     private String username;
     private String category;
@@ -27,7 +27,7 @@ public class RoomResponseDto {
 
     public RoomResponseDto(Room room){
         this.roomId = room.getId();
-        this.HostId = room.getHostUser().getId();
+        this.hostId = room.getHostUser().getId();
         this.title = room.getTitle();
         this.username = room.getHostUser().getUsername();
         this.category = room.getCategory();
