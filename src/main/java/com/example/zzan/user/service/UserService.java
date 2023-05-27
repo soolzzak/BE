@@ -9,6 +9,7 @@ import com.example.zzan.global.util.BadWords;
 import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
+import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
@@ -71,8 +72,8 @@ public class UserService {
             throw new ApiException(INVALID_BIRTHDAY);
         }
 
-        String gender = requestDto.getGender();
-        if (!"Male".equalsIgnoreCase(gender) && !"Female".equalsIgnoreCase(gender)) {
+        Gender gender = requestDto.getGender();
+        if (!"Male".equalsIgnoreCase(String.valueOf(gender)) && !"Female".equalsIgnoreCase(String.valueOf(gender))) {
             throw new ApiException(INVALID_GENDER);
         }
 

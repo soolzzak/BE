@@ -1,5 +1,7 @@
 package com.example.zzan.room.dto;
 
+import com.example.zzan.room.entity.Category;
+import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.entity.Room;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +17,8 @@ public class RoomResponseDto {
     private Long hostId;
     private String title;
     private String username;
-    private String category;
-    private String genderSetting;
+    private Category category;
+    private GenderSetting genderSetting;
     private Boolean isPrivate;
     private String roomPassword;
     private LocalDateTime createdAt;

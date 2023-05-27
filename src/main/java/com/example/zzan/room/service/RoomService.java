@@ -6,6 +6,7 @@ import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomHistoryRepository;
@@ -76,6 +77,12 @@ public class RoomService {
     public ResponseDto<List<RoomResponseDto>> getRooms(Pageable pageable) {
         List<RoomResponseDto> roomList = roomRepository.findAll(pageable).getContent().stream().map(RoomResponseDto::new).collect(Collectors.toList());
         return ResponseDto.setSuccess("전체 조회 성공", roomList);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<List<RoomResponseDto>> chooseCategory(Category category, Pageable pageable) {
+        List<RoomResponseDto> roomList = roomRepository.findAllByCategory(category, pageable).stream().map(RoomResponseDto::new).collect(Collectors.toList());
+        return ResponseDto.setSuccess("카테고리 검색 성공", roomList);
     }
 
     @Transactional
