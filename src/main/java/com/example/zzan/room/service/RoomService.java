@@ -7,6 +7,8 @@ import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
+import com.example.zzan.room.entity.RoomHistory;
+import com.example.zzan.room.repository.RoomHistoryRepository;
 import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
@@ -30,6 +32,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED_USER;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final RoomHistoryRepository roomHistoryRepository;
 
     private final UserHistoryRepository userHistoryRepository;
 
@@ -60,6 +63,11 @@ public class RoomService {
                 return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
         }
         room.setRoomImage(roomImageUrl);
+
+        RoomHistory roomHistory = new RoomHistory();
+        roomHistory.setRoom(room);
+
+        roomHistoryRepository.save(roomHistory);
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
@@ -75,7 +83,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
-        if (!room.getUser().getId().equals(user.getId())) {
+        if (!room.getHostUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED_USER);
         }
 
@@ -99,6 +107,7 @@ public class RoomService {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
+
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 수정하였습니다.", null);
     }
@@ -109,7 +118,7 @@ public class RoomService {
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
 
-        if (room.getUser().getId().equals(user.getId())) {
+        if (room.getHostUser().getId().equals(user.getId())) {
             roomRepository.delete(room);
             return ResponseDto.setSuccess("방을 삭제하였습니다.", null);
         } else {
@@ -131,9 +140,13 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
+
         UserHistory userHistory = new UserHistory();
-        userHistory.setHostUser(room.getUser()); // 방장 기록
+        userHistory.setHostUser(room.getHostUser()); // 방장 기록
         userHistory.setGuestUser(user); // 들어간 사람 기록
+
+        RoomHistory roomHistory = new RoomHistory(room);
+        userHistory.setRoom(roomHistory.getRoom());//방아이디
 
         userHistoryRepository.save(userHistory);
         return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
