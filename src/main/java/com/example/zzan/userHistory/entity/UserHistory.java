@@ -1,4 +1,4 @@
-package com.example.zzan.roomreport.entity;
+package com.example.zzan.userHistory.entity;
 
 import com.example.zzan.global.Timestamped;
 import com.example.zzan.user.entity.User;
@@ -9,20 +9,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UserReport extends Timestamped {
+public class UserHistory extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "UserReport_id")
+	@Column(name = "USER_REPORT_ID")
 	Long id;
 
 	@ManyToOne
-	@JoinColumn(name ="host_user_id",nullable = false)
+	@JoinColumn(name ="HOST_ID",nullable = false)
 	private User hostUser;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User enterUser;
+	@JoinColumn(name = "GUEST_ID", nullable = false)
+	private User guestUser;
 
 
 
@@ -30,9 +30,7 @@ public class UserReport extends Timestamped {
 		this.hostUser = hostUser;
 	}
 
-	public void setEnterUser(User user) {
-		this.enterUser = user;
+	public void setGuestUser(User user) {
+		this.guestUser = user;
 	}
-
-
 }

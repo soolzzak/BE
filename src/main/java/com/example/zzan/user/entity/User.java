@@ -74,5 +74,4 @@ public class User {
     public void username(String username) {
         this.username = username;
     }
-
 }

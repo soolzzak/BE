@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api")
 public class LikeController {
 
     private final LikeService likeService;
 
-    @PutMapping("/{targetId}/like")
+    @PutMapping("/alcohol/like/{targetId}")
     public ResponseDto likeUser(@PathVariable Long targetId) {
         return likeService.updateAlcohol(targetId, true);
     }
 
-    @PutMapping("/{targetId}/dislike")
+    @PutMapping("/alcohol/dislike/{targetId}")
     public ResponseDto dislikeUser(@PathVariable Long targetId) {
         return likeService.updateAlcohol(targetId, false);
     }
