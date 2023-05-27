@@ -1,6 +1,6 @@
 package com.example.zzan.global.util;
 
-import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
@@ -21,13 +21,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Slf4j
 @Component
@@ -83,22 +79,19 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
-        boolean isValidToken = false;
-
+    public String validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            isValidToken = true;
+            return null;
         } catch (SecurityException | MalformedJwtException e) {
-            throw new ApiException(INVALID_JWT_SIGNATURE);
+            return ExceptionEnum.INVALID_JWT_SIGNATURE.getMessage();
         } catch (ExpiredJwtException e) {
-            throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
+            return ExceptionEnum.ACCESS_TOKEN_NOT_FOUND.getMessage();
         } catch (UnsupportedJwtException e) {
-            throw new ApiException(UNSUPPORTED_JWT_TOKEN);
+            return ExceptionEnum.UNSUPPORTED_JWT_TOKEN.getMessage();
         } catch (IllegalArgumentException e) {
-            throw new ApiException(EMPTY_JWT_CLAIMS);
+            return ExceptionEnum.EMPTY_JWT_CLAIMS.getMessage();
         }
-        return isValidToken;
     }
 
     public String getUserInfoFromToken(String token) {
@@ -112,8 +105,13 @@ public class JwtUtil {
     }
 
     public Boolean refreshTokenValidation(String token) {
-        if (!validateToken(token)) return false;
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(getUserInfoFromToken(token));
+        String validationError = validateToken(token);
+        if (validationError != null){
+            return false;
+        }
+
+        String userEmail = getUserInfoFromToken(token);
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
 
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }

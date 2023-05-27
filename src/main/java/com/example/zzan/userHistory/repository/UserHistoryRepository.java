@@ -1,7 +1,7 @@
 package com.example.zzan.userHistory.repository;
 
-import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.user.entity.User;
+import com.example.zzan.userHistory.entity.UserHistory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
