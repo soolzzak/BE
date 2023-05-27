@@ -4,6 +4,7 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +29,10 @@ public class RoomController {
         return roomService.getRooms(pageable);
     }
 
-//    @GetMapping("/room/chat/{roomId}")
-//    public ResponseEntity<ResponseDto> getRoom() {
-//    }
+    @GetMapping("/rooms")
+    public ResponseDto<List<RoomResponseDto>> chooseCategory(@RequestParam("category") Category category, Pageable pageable) {
+        return roomService.chooseCategory(category, pageable);
+    }
 
     @PostMapping(value = "/room", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseDto<RoomResponseDto> createRoom(@RequestPart(value = "roomRequestDto") RoomRequestDto roomRequestDto,

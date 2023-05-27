@@ -3,7 +3,6 @@ package com.example.zzan.global.config;
 import com.example.zzan.global.jwt.JwtAuthFilter;
 import com.example.zzan.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -48,7 +46,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/api/signup","/api/login" ,"api/main", "/test/**").permitAll()
+                .requestMatchers("/api/signup","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

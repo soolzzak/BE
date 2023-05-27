@@ -31,9 +31,9 @@ public class Room extends Timestamped {
 
     @Column(name ="CATEGORY",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
     @NotNull(message = "카테고리를 설정해주세요.")
-    private String category;
+    private Category category;
 
-    private String genderSetting;
+    private GenderSetting genderSetting;
 
     private Boolean isPrivate;
 

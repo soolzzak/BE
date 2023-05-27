@@ -39,7 +39,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
     private static final long ACCESS_TIME = 60 * 60 * 1000L;
-    private static final long REFRESH_TIME = 24 * 60 * 60 * 1000L;
+    private static final long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -54,11 +54,11 @@ public class JwtUtil {
     }
 
     public TokenDto createAllToken(String userId, UserRole role) {
-        return new TokenDto(createToken(userId, role, "Access"), createToken(userId, role, "Refresh"));
+        return new TokenDto(createToken(userId, role, ACCESS_KEY), createToken(userId, role, REFRESH_KEY));
     }
 
     public String resolveToken(HttpServletRequest request, String token) {
-        String tokenName = token.equals("ACCESS_KEY") ? ACCESS_KEY : REFRESH_KEY;
+        String tokenName = token.equals(ACCESS_KEY) ? ACCESS_KEY : REFRESH_KEY;
         String bearerToken = request.getHeader(tokenName);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
@@ -66,23 +66,9 @@ public class JwtUtil {
         return null;
     }
 
-    public String createToken(String kakaoId){
-        Date date = new Date ();
-        Date exprTime = (Date) Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
-
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .signWith(SignatureAlgorithm.HS512, AUTHORIZATION_KEY)
-                        .claim("Authorization", "USER")
-                        .setSubject(kakaoId)
-                        .setExpiration(exprTime)
-                        .setIssuedAt(date)
-                        .signWith(key, signatureAlgorithm)
-                        .compact();
-    }
     public String createToken(String userId, UserRole role, String type) {
         Date date = new Date();
-        long time = type.equals("Access") ? ACCESS_TIME : REFRESH_TIME;
+        long time = type.equals(ACCESS_KEY) ? ACCESS_TIME : REFRESH_TIME;
 
         return BEARER_PREFIX
                 + Jwts.builder()
@@ -124,7 +110,7 @@ public class JwtUtil {
         if (!validateToken(token)) return false;
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(getUserInfoFromToken(token));
 
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken());
+        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity signValidException (MethodArgumentNotValidException exception){    
+    public ResponseEntity signValidException (MethodArgumentNotValidException exception){
         BindingResult bindingResult = exception.getBindingResult();
         StringBuilder builder = new StringBuilder();
 
@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponseDto> handleErrorException (ApiException e){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto (e.getExceptionEnum().getStatus(),e.getMessage());
