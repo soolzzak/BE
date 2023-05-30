@@ -112,7 +112,7 @@ public class UserService {
                 RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
                 refreshTokenRepository.save(updateToken);
             } else {
-                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail);
+                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail,user.getId());
                 refreshTokenRepository.save(newToken);
             }
             setHeader(response, tokenDto, user.getEmail());
@@ -133,8 +133,8 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> logout(String userEmail,String accessToken) {
-        RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
+    public ResponseEntity<?> logout(User user) {
+        RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserId(user.getId())
                 .orElseThrow(() -> new ApiException(ACCESS_TOKEN_NOT_FOUND)
                 );
 
