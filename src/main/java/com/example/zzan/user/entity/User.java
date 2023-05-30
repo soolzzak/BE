@@ -42,8 +42,10 @@ public class User {
     @Column(nullable = true)
     private String userImage;
 
+
     @Column(nullable = true)
     private String providers;
+
 
     @Column(nullable = false)
     @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
@@ -76,8 +78,8 @@ public class User {
         this.providers = provider;
         this.birthday = birthday;
         this.alcohol = 16;
-
     }
+
     public User(String username, String userImage) {
         this.username = username;
         this.userImage = userImage;
@@ -91,9 +93,9 @@ public class User {
         this.username = username;
     }
 
-
     public static class ProvidersList {
         public static final String SOOLZZAK = "SOOLZZAK";
         public static final String KAKAO = "KAKAO";
     }
+
 }
