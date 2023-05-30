@@ -1,6 +1,7 @@
 package com.example.zzan.user.controller;
 
 
+import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,9 +49,9 @@ public class UserController {
         return userService.login(requestDto, response);
     }
 
-    @GetMapping("/logout/{userEmail}")
-    public ResponseEntity<?> logout(@PathVariable String userId) {
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return userService.logout(userId,null);
+        return userService.logout(userDetails.getUser());
     }
 }
