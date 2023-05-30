@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
@@ -132,10 +133,21 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> logout(String userEmail) {
+    public ResponseEntity<?> logout(String userEmail,String accessToken) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail)
                 .orElseThrow(() -> new ApiException(ACCESS_TOKEN_NOT_FOUND)
                 );
+
+//        Long findUserId = jwtProvider.getUserIdToToken(accessToken);
+//
+//        //엑세스 토큰 남은 유효시간
+//        Long expiration = jwtUtil.getExpiration(accessToken);
+//
+//        //Redis Cache에 저장
+//        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+
+
         refreshTokenRepository.delete(refreshToken);
         ResponseDto responseDto = ResponseDto.setSuccess("정상적으로 로그아웃하였습니다.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
