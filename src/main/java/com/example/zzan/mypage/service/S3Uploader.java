@@ -69,7 +69,7 @@ public class S3Uploader {
 
 
 		// PNG 파일만 허용
-		if (!ext.equalsIgnoreCase(".png")) {
+		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg")) {
 			throw new ApiException(INVALID_FILE);
 		}
 

@@ -48,6 +48,9 @@ public class User {
 
 
     @Column(nullable = false)
+    private int reportPoints = 0;
+
+    @Column(nullable = false)
     @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
     @Max(value = 100, message = "도수는 100도를 초과할 수 없습니다.")
     private int alcohol;
@@ -96,6 +99,10 @@ public class User {
     public static class ProvidersList {
         public static final String SOOLZZAK = "SOOLZZAK";
         public static final String KAKAO = "KAKAO";
+    }
+
+    public void addReportPoints(int points) {
+        this.reportPoints += points;
     }
 
 }
