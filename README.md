@@ -17,7 +17,7 @@
 | Front-end | 배정현(L) | https://github.com/JungHBae|
 | Front-end | 최성빈 | https://github.com/sbchoi5451|
 | Front-end | 조선아 | https://github.com/elfinana| 
-| Back-end | 지현경(VL)|  https://github.com/SongHyeonJin|
+| Back-end | 지현경(VL)|  https://github.com/Jello92|
 | Back-end | 김지현 | https://github.com/jihyeon117|
 | Back-end | 박영준 | https://github.com/june9152|
 | Back-end | 김상우 | https://github.com/kimsangwoo0505|
@@ -40,7 +40,8 @@
 
 🗝 ERD 
 ---------------------------------------
-![ERD](https://github.com/soolzzak/BE/assets/128972031/2864e869-7260-4097-8f29-43f4f4b65b5a)
+![ERD](https://github.com/soolzzak/BE/assets/128972031/e701aab3-35c6-4a9d-b4cc-8085f116a64b)
+
 
 
 

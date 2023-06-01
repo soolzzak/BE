@@ -32,6 +32,7 @@ public class User {
     private Date birthday;
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false)
@@ -40,6 +41,14 @@ public class User {
 
     @Column(nullable = true)
     private String userImage;
+
+
+    @Column(nullable = true)
+    private String providers;
+
+
+    @Column(nullable = false)
+    private int reportPoints = 0;
 
     @Column(nullable = false)
     @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
@@ -61,6 +70,18 @@ public class User {
         this.userImage = userImage;
         this.gender = gender;
     }
+    public User(String email, String password, String username, UserRole role,String provider ,String userImage, Gender gender,Date birthday) {
+
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.role = role;
+        this.userImage = userImage;
+        this.gender = gender;
+        this.providers = provider;
+        this.birthday = birthday;
+        this.alcohol = 16;
+    }
 
     public User(String username, String userImage) {
         this.username = username;
@@ -74,4 +95,14 @@ public class User {
     public void username(String username) {
         this.username = username;
     }
+
+    public static class ProvidersList {
+        public static final String SOOLZZAK = "SOOLZZAK";
+        public static final String KAKAO = "KAKAO";
+    }
+
+    public void addReportPoints(int points) {
+        this.reportPoints += points;
+    }
+
 }

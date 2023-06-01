@@ -33,6 +33,8 @@ public class Room extends Timestamped {
     @NotNull(message = "카테고리를 설정해주세요.")
     private Category category;
 
+
+    @Enumerated(value = EnumType.STRING)
     private GenderSetting genderSetting;
 
     private Boolean isPrivate;
