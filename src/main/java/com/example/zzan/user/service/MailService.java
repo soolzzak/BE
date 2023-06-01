@@ -10,7 +10,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 @PropertySource("classpath:application.yml")
@@ -21,15 +20,14 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final String ePw = createKey();
 
-    public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage createMessage(String to) throws MessagingException {
         log.info("보내는 대상 : " + to);
         log.info("인증 번호 : " + ePw);
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        message.addRecipients(MimeMessage.RecipientType.TO, to); // to 보내는 대상
-        message.setSubject("ㅇㅇㅇ 회원가입 인증 코드: "); //메일 제목
+        message.addRecipients(MimeMessage.RecipientType.TO, to);
+        message.setSubject("ㅇㅇㅇ 회원가입 인증 코드: ");
 
-        // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
         String msg = "";
         msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">이메일 주소 확인</h1>";
         msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">아래 확인 코드를 회원가입 화면에서 입력해주세요.</p>";
@@ -37,37 +35,30 @@ public class MailService {
         msg += ePw;
         msg += "</td></tr></tbody></table></div>";
 
-        message.setText(msg, "utf-8", "html"); //내용, charset타입, subtype
-        message.setFrom(new InternetAddress(id, "prac_Admin")); //보내는 사람의 메일 주소, 보내는 사람 이름
+        message.setText(msg, "utf-8", "html");
+        message.setFrom(new InternetAddress(id, "honsoolzzak.com"));
 
         return message;
     }
 
-    // 인증코드 만들기
     public static String createKey() {
         StringBuffer key = new StringBuffer();
         Random rnd = new Random();
 
-        for (int i = 0; i < 6; i++) { // 인증코드 6자리
+        for (int i = 0; i < 6; i++) {
             key.append((rnd.nextInt(10)));
         }
         return key.toString();
     }
 
-    /*
-        메일 발송
-        sendSimpleMessage의 매개변수로 들어온 to는 인증번호를 받을 메일주소
-        MimeMessage 객체 안에 내가 전송할 메일의 내용을 담아준다.
-        bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
-     */
     public String sendSimpleMessage(String to) throws Exception {
         MimeMessage message = createMessage(to);
         try {
-            javaMailSender.send(message); // 메일 발송
+            javaMailSender.send(message);
         } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        return ePw; // 메일로 보냈던 인증 코드를 서버로 리턴
+        return ePw;
     }
 }
