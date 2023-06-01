@@ -25,6 +25,8 @@ bin/
 out/
 application.properties
 application.yml
+application-gmail.yml
+application-navermail.yml
 !**/src/main/**/out/
 !**/src/test/**/out/
 
