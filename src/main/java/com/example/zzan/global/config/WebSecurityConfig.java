@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
+                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup/**","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
