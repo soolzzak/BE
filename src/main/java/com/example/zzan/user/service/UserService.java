@@ -104,7 +104,7 @@ public class UserService {
                 throw new ApiException(PASSWORD_NOT_MATCH);
             }
 
-            TokenDto tokenDto = jwtUtil.createAllToken(requestDto.getEmail(), user.getRole());
+            TokenDto tokenDto = jwtUtil.createAllToken(user, user.getRole());
             Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(requestDto.getEmail());
 
             if (refreshToken.isPresent()) {

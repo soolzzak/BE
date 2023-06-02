@@ -5,6 +5,7 @@ import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -21,9 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -52,8 +51,8 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public TokenDto createAllToken(String userId, UserRole role) {
-        return new TokenDto(createToken(userId, role, ACCESS_KEY), createToken(userId, role, REFRESH_KEY));
+    public TokenDto createAllToken(User user, UserRole role) {
+        return new TokenDto(createToken(user, role, ACCESS_KEY), createToken(user, role, REFRESH_KEY));
     }
 
     public String resolveToken(HttpServletRequest request, String token) {
@@ -65,15 +64,18 @@ public class JwtUtil {
         return null;
     }
 
-    public String createToken(String userId, UserRole role, String type) {
+    public String createToken(User user, UserRole role, String type) {
         Date date = new Date();
         long time = type.equals(ACCESS_KEY) ? ACCESS_TIME : REFRESH_TIME;
-
+        Map<String, Object> claim = new HashMap<>();
+        claim.put("role",role);
+        claim.put("id",user.getId());
+        claim.put("email",user.getEmail());
         return BEARER_PREFIX
                 + Jwts.builder()
-                .setSubject(userId)
+                .setSubject(user.getEmail())
                 .signWith(signatureAlgorithm, secretKey)
-                .claim(AUTHORIZATION_KEY, role)
+                .claim(AUTHORIZATION_KEY, claim)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + time))
                 .compact();
