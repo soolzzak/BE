@@ -58,10 +58,19 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 사전에 약속된 출처를 명시
-        config.addAllowedOrigin("https:honsoolzzak.com");
+
+        config.addAllowedOrigin("https://api.honsoolzzak.com");
+        config.addAllowedOrigin("https://honsoolzzak.com");
+        config.addAllowedOrigin("http://api.honsoolzzak.com");
+        config.addAllowedOrigin("http://honsoolzzak.com");
+        config.addAllowedOrigin("https://api.honsoolzzak.com/api/main");
+
         config.addAllowedOrigin("http://mynice.s3-website.ap-northeast-2.amazonaws.com");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("http://localhost:80");
+        config.addAllowedOrigin("https://localhost:443");
+
 
         // 특정 헤더를 클라이언트 측에서 사용할 수 있게 지정
         // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음

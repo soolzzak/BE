@@ -11,6 +11,7 @@ import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomHistoryRepository;
 import com.example.zzan.room.repository.RoomRepository;
+import com.example.zzan.sse.service.SseService;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
@@ -36,6 +37,7 @@ public class RoomService {
     private final RoomHistoryRepository roomHistoryRepository;
 
     private final UserHistoryRepository userHistoryRepository;
+    private final SseService sseService;
 
     private final S3Uploader s3Uploader;
 
