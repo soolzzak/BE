@@ -10,8 +10,11 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -21,13 +24,13 @@ public class FollowService {
 
 	private final FollowRepository followRepository;
 	private final UserRepository userRepository;
-
+	private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	@Transactional
 	public ResponseDto<FollowResponseDto> getFollow(Long followId, User user) {
 
 		Optional<User> followingUser = userRepository.findById(followId);
-		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
+		Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
 
 		if (user.getId().equals(followId)) {
 			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
@@ -46,7 +49,7 @@ public class FollowService {
 
 	public ResponseDto<FollowResponseDto> deleteFollow(Long followId, User user) {
 		Optional<User> followingUser = userRepository.findById(followId);
-		Optional<Follow> followList = followRepository.findByFollowingIdAndFollowerId(followingUser.get(), user);
+		Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
 
 		if (user.getId().equals(followId)) {
 			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
@@ -60,4 +63,11 @@ public class FollowService {
 		}
 	}
 
+	public List<User> getFollowers(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+		return followRepository.findByFollowingUser(user)
+				.stream()
+				.map(Follow::getFollowerUser)
+				.collect(Collectors.toList());
+	}
 }
