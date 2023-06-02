@@ -1,5 +1,7 @@
 package com.example.zzan.user.service;
 
+import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -14,12 +16,15 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+import static com.example.zzan.global.exception.ExceptionEnum.ALREADY_SIGNUP_EMAIL;
+
 @PropertySource("classpath:application.yml")
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class MailService {
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
     private final String ePw = createKey();
     @Value("${spring.mail.username}")
     private String id;
@@ -40,7 +45,7 @@ public class MailService {
         msg+= "<br>";
         msg+= "<p>감사합니다.<p>";
         msg+= "<br>";
-        msg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msg+= "<div style=' font-family:verdana';>";
         msg+= "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
         msg+= "<div style='font-size:130%'>";
         msg+= "CODE : <strong>";
@@ -64,6 +69,11 @@ public class MailService {
     }
 
     public String sendSimpleMessage(String to) throws Exception {
+        boolean emailExists = userRepository.existsByEmail(to);
+        if (emailExists) {
+            throw new ApiException(ALREADY_SIGNUP_EMAIL);
+        }
+
         MimeMessage message = createMessage(to);
         try {
             javaMailSender.send(message);
