@@ -1,7 +1,9 @@
 package com.example.zzan.global.jwt;
 
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -18,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
@@ -55,7 +58,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtUtil.refreshTokenValidation(refresh_token)) {
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 setAuthentication(userEmail);
-                String newAccessToken = jwtUtil.createToken(userEmail, UserRole.USER, "Access");
+                User user = userRepository.findUserByEmail(userEmail).orElseThrow(
+                        () -> new ApiException(EMAIL_NOT_FOUND)
+                );
+                String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
                 jwtUtil.setHeaderAccessToken(response, newAccessToken);
             } else {
                 sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
