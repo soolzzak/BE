@@ -37,20 +37,20 @@ public class MailService {
         message.addRecipients(MimeMessage.RecipientType.TO, to);
         message.setSubject("honsoolzzak 회원가입 이메일 인증");
 
-        String msg="";
-        msg+= "<div style='margin:20px;'>";
-        msg+= "<h1> 안녕하세요 < honsoolzzak > 입니다. </h1>";
-        msg+= "<br>";
-        msg+= "<p>아래 코드를 복사해 입력해주세요<p>";
-        msg+= "<br>";
-        msg+= "<p>감사합니다.<p>";
-        msg+= "<br>";
-        msg+= "<div style=' font-family:verdana';>";
-        msg+= "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
-        msg+= "<div style='font-size:130%'>";
-        msg+= "CODE : <strong>";
-        msg+= ePw+"</strong><div><br/> ";
-        msg+= "</div>";
+        String msg = "";
+        msg += "<div style='margin:20px;'>";
+        msg += "<h1> 안녕하세요 < honsoolzzak > 입니다. </h1>";
+        msg += "<br>";
+        msg += "<p>아래 코드를 복사해 입력해주세요<p>";
+        msg += "<br>";
+        msg += "<p>감사합니다.<p>";
+        msg += "<br>";
+        msg += "<div style=' font-family:verdana';>";
+        msg += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+        msg += "<div style='font-size:130%'>";
+        msg += "CODE : <strong>";
+        msg += ePw + "</strong><div><br/> ";
+        msg += "</div>";
 
         message.setText(msg, "utf-8", "html");
         message.setFrom(new InternetAddress(id, "honsoolzzak.com"));
