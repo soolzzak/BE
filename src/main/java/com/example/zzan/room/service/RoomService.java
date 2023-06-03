@@ -19,16 +19,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
 import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED_USER;
-
 @Service
 @RequiredArgsConstructor
 public class RoomService {
@@ -40,36 +43,65 @@ public class RoomService {
     private final SseService sseService;
 
     private final S3Uploader s3Uploader;
+/*
+* true:  비어있음
+* false : 파일 있음
+* */
+    public static boolean isMultipartFileEmpty(MultipartFile file) {
+        return file == null || file.isEmpty();
+    }
+    public String uploadFromUrl(String imageUrl) throws IOException {
+        // 이미지 다운로드
+        InputStream inputStream = new URL(imageUrl).openStream();
+        File tempFile = File.createTempFile("temp", ".jpg");
+        FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+        StreamUtils.copy(inputStream, fileOutputStream);
+        fileOutputStream.close();
+        inputStream.close();
+
+        // S3에 파일 업로드
+        String s3Url =  s3Uploader.upload(tempFile, "images");
+
+        // 임시 파일 삭제
+        tempFile.delete();
+
+        return s3Url;
+    }
 
 
     @Transactional
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
-        String roomImageUrl;
-
-        roomImageUrl = s3Uploader.upload(roomImage, "images");
-
-        if(roomImage == null){
-                return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-        }
-
+        String roomImageUrl = null;
+        Room room = new Room(roomRequestDto, user);
         String roomTitle = roomRequestDto.getTitle();
+
+
         if(hasBadWord(roomTitle)){
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
-        Room room = new Room(roomRequestDto, user);
 
         if (!roomRequestDto.getIsPrivate()) {
+            /*NOP*/
         } else {
             String roomPassword = roomRequestDto.getRoomPassword();
             if (roomPassword == null || roomPassword.isEmpty())
                 return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
         }
-        room.setRoomImage(roomImageUrl);
 
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
-
+        if(isMultipartFileEmpty(roomImage) == true) // Client 사진 Upload 요청 없을 때
+        {
+            String randomImage = "https://picsum.photos/200/300?random=" + room.getId();
+            roomImageUrl = uploadFromUrl(randomImage);
+            /*NOP*/
+//            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        }
+        else{
+            roomImageUrl = s3Uploader.upload(roomImage, "images");
+        }
+        room.setRoomImage(roomImageUrl);
         roomHistoryRepository.save(roomHistory);
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
@@ -89,6 +121,7 @@ public class RoomService {
 
     @Transactional
     public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) {
+        String roomImageUrl = null;
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
@@ -97,19 +130,29 @@ public class RoomService {
         }
 
         room.update(roomRequestDto);
-
-        if (roomImage != null && !roomImage.isEmpty()) {
+        if(isMultipartFileEmpty(roomImage) == true) // Client 사진 Upload 없을 때
+        {
+            String randomImage = "https://picsum.photos/200/300?random=" + room.getId();
+            try {
+                roomImageUrl = uploadFromUrl(randomImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            /*NOP*/
+//            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        }
+        else
+        {
             if (room.getRoomImage() != null) {
                 s3Uploader.removeNewFile(new File(room.getRoomImage()));
             }
-
             try {
-                String roomImageUrl = s3Uploader.upload(roomImage, "images");
-                room.setRoomImage(roomImageUrl);
+                roomImageUrl = s3Uploader.upload(roomImage, "images");
             } catch (IOException e) {
                 return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
             }
         }
+        room.setRoomImage(roomImageUrl);
 
         String roomTitle = roomRequestDto.getTitle();
         if(hasBadWord(roomTitle)){
