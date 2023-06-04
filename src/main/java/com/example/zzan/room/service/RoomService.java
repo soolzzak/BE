@@ -1,5 +1,7 @@
 package com.example.zzan.room.service;
 
+import com.example.zzan.blacklist.entity.Blacklist;
+import com.example.zzan.blacklist.repository.BlacklistRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
@@ -41,6 +43,7 @@ public class RoomService {
 
     private final S3Uploader s3Uploader;
 
+    private final BlacklistRepository blacklistRepository;
 
     @Transactional
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
@@ -148,6 +151,14 @@ public class RoomService {
     public ResponseDto<RoomResponseDto> getOneRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        List<Blacklist> Userblacklists = blacklistRepository.findAllByBlackListingUser(user);
+
+        for(Blacklist blacklist:Userblacklists) {
+            if (room.getHostUser().equals(blacklist.getBlackListedUser())) {
+                return ResponseDto.setSuccess("차단된 유저입니다");
+            }
+        }
 
 
         UserHistory userHistory = new UserHistory();
