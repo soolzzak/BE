@@ -13,10 +13,4 @@ public class ReportRequestDto {
 	@Nullable
 	private String another;
 
-	// public ReportRequestDto(String reportKind,String another){
-	//
-	// 	this.reportKind = reportKind;
-	// 	this.another = another;
-	// }
-
 }

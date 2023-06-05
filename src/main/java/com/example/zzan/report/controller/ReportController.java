@@ -23,6 +23,4 @@ public class ReportController {
 
 		return reportService.userReport(userId,ReportRequestDto,userDetails.getUser());
 	}
-
-
 }

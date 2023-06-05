@@ -42,10 +42,8 @@ public class User {
     @Column(nullable = true)
     private String userImage;
 
-
     @Column(nullable = true)
     private String providers;
-
 
     @Column(nullable = false)
     private int reportPoints = 0;
@@ -104,5 +102,4 @@ public class User {
     public void addReportPoints(int points) {
         this.reportPoints += points;
     }
-
 }

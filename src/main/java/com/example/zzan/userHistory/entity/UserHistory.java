@@ -39,6 +39,4 @@ public class UserHistory extends Timestamped {
 	}
 
 	public void setRoom(Room room){this.room=room;}
-
-
 }

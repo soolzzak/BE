@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UserHistoryRepository extends JpaRepository<UserHistory, Long> {
-
 	@Query("SELECT r FROM UserHistory r WHERE r.hostUser = :user OR r.guestUser = :user ORDER BY r.createdAt DESC")
 	List<UserHistory> findTop20ByHostUserOrEnterUserOrderByCreatedAtDesc(@Param("user") User user, Pageable pageable);
 }
