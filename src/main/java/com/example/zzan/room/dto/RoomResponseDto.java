@@ -46,13 +46,4 @@ public class RoomResponseDto {
         this.roomImageUrl = room.getRoomImage();
         this.userList = new HashMap<>();
     }
-
-//    public RoomResponseDto(Long userId, WebSocketSession session){
-//        this.userList = new HashMap<>();
-//        this.userList.put(userId, session);
-//    }
-//
-
-
-
 }

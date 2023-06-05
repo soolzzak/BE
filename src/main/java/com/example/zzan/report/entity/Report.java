@@ -25,10 +25,8 @@ public class Report {
 	@Column(nullable = false)
 	private Long id;
 
-
 	@Column(nullable = false)
 	private String reportKind;
-
 
 	@Column(nullable = true)
 	private String another;
@@ -46,9 +44,6 @@ public class Report {
 		this.reportedUser = reportedUser;
 		this.reportKind = reportRequestDto.getReportKind();
 		this.another = reportRequestDto.getAnother();
-		// this.reportPoint += reportPoint;
 		this.reportingUser = user;
-
 	}
-
 }

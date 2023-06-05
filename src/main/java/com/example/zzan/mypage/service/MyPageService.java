@@ -64,8 +64,6 @@ public class MyPageService {
 		} else {
 			throw new ApiException(ROOM_NOT_FOUND);
 		}
-
-		// return new MyPageResponseDto(myPage);
 		return ResponseDto.setSuccess("프로필이 저장되었습니다",new MypageChangeDto(myPage));
 
 	}
@@ -102,20 +100,21 @@ public class MyPageService {
 
 		for (UserHistory userHistory : userHistories) {
 
-			String meetedUser = "";  // 변수를 블록 외부에서 선언하고 초기화
-			String metUserImage = "";
+			String metUser = "";
+			String metUserImage="";
+
 
 			if(userHistory.getHostUser().getUsername().equals(user.getUsername())){
-				meetedUser = userHistory.getGuestUser().getUsername();
+				metUser = userHistory.getGuestUser().getUsername();
 				metUserImage=userHistory.getGuestUser().getUserImage();
 			}else if(!userHistory.getHostUser().getUsername().equals(user.getUsername())){
-				meetedUser = userHistory.getHostUser().getUsername();
+				metUser = userHistory.getHostUser().getUsername();
 				metUserImage=userHistory.getHostUser().getUserImage();
 			}
 
 			LocalDateTime createdAt = userHistory.getCreatedAt();
 
-			UserHistoryDto userHistoryDto = new UserHistoryDto(meetedUser,createdAt,metUserImage);
+			UserHistoryDto userHistoryDto = new UserHistoryDto(metUser,createdAt,metUserImage);
 			userHistoryDtos.add(userHistoryDto);
 		}
 

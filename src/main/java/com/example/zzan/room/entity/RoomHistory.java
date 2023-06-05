@@ -21,9 +21,7 @@ public class RoomHistory {
 	@JsonBackReference
 	private Room room;
 
-
 	public RoomHistory(Room room){
 		this.room = room;
 	}
-
 }

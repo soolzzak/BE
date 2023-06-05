@@ -25,5 +25,4 @@ public class BlacklistController {
 
 		return blacklistService.addBlacklist(blackListedUserId,userDetails.getUser());
 	}
-
 }

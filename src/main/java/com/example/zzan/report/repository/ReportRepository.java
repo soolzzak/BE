@@ -8,7 +8,5 @@ import com.example.zzan.report.entity.Report;
 import com.example.zzan.user.entity.User;
 
 public interface ReportRepository extends JpaRepository<Report,Long> {
-
 	Optional<Report> findByReportingUserAndReportedUser(User reportingUser,User reportedUser);
-
 }

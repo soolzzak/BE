@@ -30,5 +30,4 @@ public class Like {
         this.targetUser = targetUser;
         this.likeEnum = likeEnum;
     }
-
 }
