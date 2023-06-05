@@ -30,7 +30,8 @@ public enum ExceptionEnum {
     TARGET_USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "해당 사용자를 찾을 수 없습니다."),
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "파일 형식이 잘못되었습니다."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"이미 팔로우를 하고 있습니다."),
-    ALREADY_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST.value(), "이미 가입된 이메일입니다.");
+    ALREADY_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST.value(), "이미 가입된 이메일입니다."),
+    USER_CANNOT_REPORT_SELF(HttpStatus.BAD_REQUEST.value(), "자신은 지정대상이 아닙니다");
 
     private final int status;
     private final String message;

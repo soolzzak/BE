@@ -1,6 +1,12 @@
 package com.example.zzan.mypage.service;
 
 
+import com.example.zzan.blacklist.dto.BlacklistDto;
+import com.example.zzan.blacklist.entity.Blacklist;
+import com.example.zzan.blacklist.repository.BlacklistRepository;
+import com.example.zzan.follow.dto.FollowResponseDto;
+import com.example.zzan.follow.entity.Follow;
+import com.example.zzan.follow.repository.FollowRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
@@ -34,6 +40,8 @@ public class MyPageService {
 	private final UserRepository userRepository;
 	private final S3Uploader s3Uploader;
 	private final UserHistoryRepository userHistoryRepository;
+	private final FollowRepository followRepository;
+	private final BlacklistRepository blacklistRepository;
 
 	@Transactional
 	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
@@ -78,15 +86,23 @@ public class MyPageService {
 
 	@Transactional
 	public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
-		Pageable topThree = PageRequest.of(0, 4);
-		List<UserHistory> userHistories = userHistoryRepository.findTop4ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topThree);
+		Pageable topTwenty = PageRequest.of(0, 20);
+
+		List<UserHistory> userHistories = userHistoryRepository.findTop20ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topTwenty);
+		List<Follow> follows = followRepository.findAllByFollowerUser(user);
+		List<Blacklist> blacklists = blacklistRepository.findAllByBlackListingUser(user);
+
 		List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
+		List<FollowResponseDto> followResponseDtos = new ArrayList<>();
+		List<BlacklistDto> blacklistDtos = new ArrayList<>();
 		User myPage = findUser(user.getEmail());
+		String socialProvider= user.getProviders();
 
 		for (UserHistory userHistory : userHistories) {
 
 			String metUser = "";
 			String metUserImage="";
+
 
 			if(userHistory.getHostUser().getUsername().equals(user.getUsername())){
 				metUser = userHistory.getGuestUser().getUsername();
@@ -102,7 +118,20 @@ public class MyPageService {
 			userHistoryDtos.add(userHistoryDto);
 		}
 
-		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(), userHistoryDtos));
+		for (Follow follow : follows){
+			String followingUser =follow.getFollowingUser().getUsername();
+			FollowResponseDto followResponseDto=new FollowResponseDto(followingUser);
+			followResponseDtos.add(followResponseDto);
+		}
+
+		for (Blacklist blacklist : blacklists){
+			String blacklistedUser =blacklist.getBlackListedUser().getUsername();
+			BlacklistDto blacklistDto=new BlacklistDto(blacklistedUser);
+			blacklistDtos.add(blacklistDto);
+		}
+
+
+		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),socialProvider,userHistoryDtos,followResponseDtos,blacklistDtos));
 	}
 }
 
