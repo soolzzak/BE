@@ -29,9 +29,9 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String id;
 
-    public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage createMessage(String to, String code) throws MessagingException, UnsupportedEncodingException {
         log.info("보내는 대상 : " + to);
-        log.info("인증 번호 : " + ePw);
+        log.info("인증 번호 : " + code);
         MimeMessage message = javaMailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, to);
@@ -49,7 +49,7 @@ public class MailService {
         msg += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
         msg += "<div style='font-size:130%'>";
         msg += "CODE : <strong>";
-        msg += ePw + "</strong><div><br/> ";
+        msg += code + "</strong><div><br/> ";
         msg += "</div>";
 
         message.setText(msg, "utf-8", "html");
@@ -74,13 +74,14 @@ public class MailService {
             throw new ApiException(ALREADY_SIGNUP_EMAIL);
         }
 
-        MimeMessage message = createMessage(to);
+        String code = createKey();
+        MimeMessage message = createMessage(to, code);
         try {
             javaMailSender.send(message);
         } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        return ePw;
+        return code;
     }
 }
