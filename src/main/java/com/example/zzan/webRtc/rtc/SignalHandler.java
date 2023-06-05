@@ -23,11 +23,13 @@ import java.util.Map;
 public class SignalHandler extends TextWebSocketHandler {
 
     private final RtcChatService rtcChatService;
+    // private final ChatServiceMain chatServiceMain;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // roomID to room Mapping
-    private final Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
+    private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
 
     // message types, used in signalling:
     // SDP Offer message
@@ -125,7 +127,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
                     // // room 안에 있는 userList 에 유저 추가
-                     rtcChatService.addUser(room, userId, session);
+                    rtcChatService.addUser(room, userId, session);
 
                     // // 채팅방 입장 후 유저 카운트+1
                     // chatServiceMain.plusUserCnt(roomId);
@@ -148,7 +150,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     //         // 3. 하여튼 동일한 것만 가져온다
                     //         .findAny();
                     //
-                    // // 만약 client 의 값이 존재한다면 - Optional 임으로 isPresent 사용 , null  아니라면 - removeClientByName 을 실행
+                    // // 만약 client 의 값이 존재한다면 - Optional 임으로 isPersent 사용 , null  아니라면 - removeClientByName 을 실행
                     // client.ifPresent(userID -> rtcChatService.removeClientByName(room, userID));
 
                     // // 채팅방에서 떠날 시 유저 카운트 -1
@@ -164,7 +166,7 @@ public class SignalHandler extends TextWebSocketHandler {
             }
 
         } catch (IOException e) {
-            logger.info("An error occurred: {}", e.getMessage());
+            logger.info("An error occured: {}", e.getMessage());
         }
     }
 
@@ -173,7 +175,7 @@ public class SignalHandler extends TextWebSocketHandler {
             String json = objectMapper.writeValueAsString(message);
             session.sendMessage(new TextMessage(json));
         } catch (IOException e) {
-            logger.info("An error occurred: {}", e.getMessage());
+            logger.info("An error occured: {}", e.getMessage());
         }
     }
 }
