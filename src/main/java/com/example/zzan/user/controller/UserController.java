@@ -49,7 +49,6 @@ public class UserController {
     @ResponseBody
     public MailResponseDto mailConfirm(@RequestBody MailRequestDto mailRequestDto) throws Exception {
         String code = mailService.sendSimpleMessage(mailRequestDto.getEmail());
-        log.info("인증코드 : " + code);
         return new MailResponseDto(code);
     }
 
