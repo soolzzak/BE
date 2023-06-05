@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class RoomRequestDto {
 
     private String title;
-    private String roomImage;
+    private String roomImage; // 사용 유무??? 필요한지??? Check 부탁드려용~
     private Category category;
     private GenderSetting genderSetting;
     private Boolean isPrivate;

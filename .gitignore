@@ -39,3 +39,4 @@ application-navermail.yml
 
 ### VS Code ###
 .vscode/
+*.yml
