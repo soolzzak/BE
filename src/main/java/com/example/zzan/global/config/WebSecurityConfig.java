@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
+                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup/**","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -58,6 +58,7 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 사전에 약속된 출처를 명시
+
         config.addAllowedOrigin("https://api.honsoolzzak.com");
         config.addAllowedOrigin("https://honsoolzzak.com");
         config.addAllowedOrigin("http://api.honsoolzzak.com");
@@ -71,8 +72,10 @@ public class WebSecurityConfig {
         config.addAllowedOrigin("http://localhost:80");
         config.addAllowedOrigin("https://localhost:443");
 
+
         config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
 
+        // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
         config.addAllowedMethod("*");
 
         config.addAllowedHeader("*");
