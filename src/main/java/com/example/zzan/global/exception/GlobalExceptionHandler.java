@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         for (FieldError fieldError : bindingResult.getFieldErrors()){
             builder.append("[");
             builder.append(fieldError.getField());
-            builder.append("]");
+            builder.append("] ");
             builder.append(fieldError.getDefaultMessage());
         }
         return new ResponseEntity(ResponseDto.setBadRequest(builder.toString()), HttpStatus.BAD_REQUEST);
