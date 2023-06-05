@@ -26,7 +26,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return roomService.getRooms(pageable);
     }
 
