@@ -1,11 +1,14 @@
 package com.example.zzan.report.service;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.report.dto.ReportRequestDto;
 import com.example.zzan.report.entity.Report;
 import com.example.zzan.report.repository.ReportRepository;
@@ -25,10 +28,16 @@ public class ReportService {
 	public ResponseDto userReport(Long userId, ReportRequestDto reportRequestDto,User user) {
 
 		Optional<User> reportedUserOptional = userRepository.findById(userId);
-		User reportedUser = reportedUserOptional.get();
+
 
 		if(!reportedUserOptional.isPresent()){
-			return ResponseDto.setSuccess("없는 유저입니다");
+			throw new ApiException(TARGET_USER_NOT_FOUND);
+		}
+
+		User reportedUser = reportedUserOptional.get();
+
+		if(user.getId().equals(reportedUser.getId())){
+			throw new ApiException(USER_CANNOT_REPORT_SELF);
 		}
 
 		Optional<Report> existingReport = reportRepository.findByReportingUserAndReportedUser(user,reportedUser);
