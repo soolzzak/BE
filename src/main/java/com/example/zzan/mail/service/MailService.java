@@ -1,4 +1,4 @@
-package com.example.zzan.user.service;
+package com.example.zzan.mail.service;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.user.repository.UserRepository;

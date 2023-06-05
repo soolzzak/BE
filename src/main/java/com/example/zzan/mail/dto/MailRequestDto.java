@@ -1,4 +1,4 @@
-package com.example.zzan.user.dto;
+package com.example.zzan.mail.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
