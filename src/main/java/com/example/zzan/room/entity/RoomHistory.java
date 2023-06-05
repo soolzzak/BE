@@ -16,7 +16,7 @@ public class RoomHistory {
 	@Column(name = "ROOMHISTORY_ID")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ROOM_ID")
 	@JsonBackReference
 	private Room room;

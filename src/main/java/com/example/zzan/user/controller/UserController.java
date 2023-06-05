@@ -3,8 +3,7 @@ package com.example.zzan.user.controller;
 
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.util.JwtUtil;
-import com.example.zzan.user.dto.UserLoginDto;
-import com.example.zzan.user.dto.UserRequestDto;
+import com.example.zzan.user.dto.*;
 import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.MailService;
 import com.example.zzan.user.service.UserService;
@@ -46,10 +45,10 @@ public class UserController {
 
     @PostMapping("/signup/mailconfirm")
     @ResponseBody
-    public String mailConfirm(@RequestParam String email) throws Exception {
-        String code = mailService.sendSimpleMessage(email);
+    public MailResponseDto mailConfirm(@RequestBody MailRequestDto mailRequestDto) throws Exception {
+        String code = mailService.sendSimpleMessage(mailRequestDto.getEmail());
         log.info("인증코드 : " + code);
-        return code;
+        return new MailResponseDto(code);
     }
 
     @PostMapping("/login")

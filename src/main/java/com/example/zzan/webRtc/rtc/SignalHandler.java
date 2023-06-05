@@ -23,17 +23,27 @@ import java.util.Map;
 public class SignalHandler extends TextWebSocketHandler {
 
     private final RtcChatService rtcChatService;
+    // private final ChatServiceMain chatServiceMain;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
 
+    // roomID to room Mapping
+    private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
+
 
     private static final String MSG_TYPE_OFFER = "offer";
+    // SDP Answer message
     private static final String MSG_TYPE_ANSWER = "answer";
+    // New ICE Candidate message
     private static final String MSG_TYPE_ICE = "ice";
+    // join room data message
     private static final String MSG_TYPE_JOIN = "join";
+    // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
 
+    // 연결 끊어졌을 때 이벤트처리
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         logger.info("[ws] Session has been closed with status [{} {}]", status, session);
@@ -104,6 +114,8 @@ public class SignalHandler extends TextWebSocketHandler {
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
                      rtcChatService.addUser(room, userId, session);
+                    // // room 안에 있는 userList 에 유저 추가
+                    rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);
                     break;
@@ -120,7 +132,7 @@ public class SignalHandler extends TextWebSocketHandler {
             }
 
         } catch (IOException e) {
-            logger.info("An error occurred: {}", e.getMessage());
+            logger.info("An error occured: {}", e.getMessage());
         }
     }
 
@@ -129,7 +141,7 @@ public class SignalHandler extends TextWebSocketHandler {
             String json = objectMapper.writeValueAsString(message);
             session.sendMessage(new TextMessage(json));
         } catch (IOException e) {
-            logger.info("An error occurred: {}", e.getMessage());
+            logger.info("An error occured: {}", e.getMessage());
         }
     }
 }
