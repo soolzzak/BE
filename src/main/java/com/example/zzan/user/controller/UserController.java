@@ -44,7 +44,6 @@ public class UserController {
     }
 
     @PostMapping("/signup/mailconfirm")
-    @ResponseBody
     public MailResponseDto mailConfirm(@RequestBody MailRequestDto mailRequestDto) throws Exception {
         String code = mailService.sendSimpleMessage(mailRequestDto.getEmail());
         return new MailResponseDto(code);
