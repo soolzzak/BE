@@ -12,7 +12,6 @@ import java.util.Map;
 public class UserListMap {
     private static UserListMap userListMap = new UserListMap();
     private Map<Long, RoomResponseDto> userMap = new LinkedHashMap<>();
-
     private UserListMap(){}
 
     public static UserListMap getInstance(){

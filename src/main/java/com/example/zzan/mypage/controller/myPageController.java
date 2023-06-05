@@ -20,7 +20,6 @@ public class myPageController {
 
 	private final MyPageService myPageService;
 
-
 	@ResponseBody
 	@PutMapping(value="/mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value="userImage", required=false) MultipartFile userImage, @RequestParam(value="username", required=false) String username,@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {

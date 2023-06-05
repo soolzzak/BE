@@ -33,12 +33,6 @@ public class RtcChatService {
         return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
     }
 
-//    // userList 에서 클라이언트 삭제
-//    public void removeClientByName(RoomResponseDto room, Long userId) {
-//        room.getUserList().remove(userId);
-//    }
-
-    // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage){
         RoomResponseDto room = UserListMap.getInstance().getUserMap().get(webSocketMessage.getData());
         log.info("ROOM COUNT : [{} ::: {}]",room.toString(),room.getUserList().size());

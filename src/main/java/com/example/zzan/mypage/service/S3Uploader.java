@@ -20,7 +20,7 @@ import java.util.UUID;
 import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE;
 
 @Slf4j
-@RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴
+@RequiredArgsConstructor
 @Component
 @Service
 public class S3Uploader {
@@ -63,17 +63,14 @@ public class S3Uploader {
 
 	private Optional<File> convert(MultipartFile file) throws  IOException {
 
-		// 확장자 가져오기//substring 메소드를 사용하여 원래 파일 이름에서 마지막에 나타나는 점 (.) 이후의 모든 문자열을 가져옴
 		String originalFileName = file.getOriginalFilename();
 		String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
 
 
-		// PNG 파일만 허용
 		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg")) {
 			throw new ApiException(INVALID_FILE);
 		}
 
-		// UUID를 이용한 새로운 파일 이름 생성// UUID를 생성하고, UUID 문자열에서 "-"를 제거한 후, 파일 확장자를 덧붙여 새로운 파일 이름을 만듦
 		String uuidFileName = UUID.randomUUID().toString().replace("-", "") + ext;
 
 

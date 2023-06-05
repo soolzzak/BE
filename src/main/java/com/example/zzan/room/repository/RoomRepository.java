@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 	List<Room> findAllByCategory(Category category, Pageable pageable);
 
-	Optional<User> findByUsername(String username);
 }
