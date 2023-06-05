@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
-
     private final KakaoService kakaoService;
     private final MailService mailService;
 
