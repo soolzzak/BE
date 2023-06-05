@@ -14,7 +14,6 @@ import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
@@ -42,5 +41,4 @@ public class BlacklistService {
 		
 		return ResponseDto.setSuccess("차단되었습니다");
 	}
-
 }

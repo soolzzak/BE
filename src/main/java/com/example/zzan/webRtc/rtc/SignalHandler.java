@@ -23,13 +23,9 @@ import java.util.Map;
 public class SignalHandler extends TextWebSocketHandler {
 
     private final RtcChatService rtcChatService;
-    // private final ChatServiceMain chatServiceMain;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
-
-    // roomID to room Mapping
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
 
 
@@ -60,8 +56,8 @@ public class SignalHandler extends TextWebSocketHandler {
         try {
             WebSocketMessage message = objectMapper.readValue(textMessage.getPayload(), WebSocketMessage.class);
             logger.info("[ws] Message of {} type from {} received", message.getType(), message.getFrom());
-            Long userId = message.getFrom(); // 유저 uuid
-            Long roomId = message.getData(); // roomId
+            Long userId = message.getFrom();
+            Long roomId = message.getData();
 
             logger.info("Message {}", message.toString());
 
@@ -81,18 +77,13 @@ public class SignalHandler extends TextWebSocketHandler {
                                     : sdp.toString().substring(0, 64));
 
                     RoomResponseDto roomDto = rooms.get(roomId);
-                    logger.info("getRoom까지 완료!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
 
                     if (roomDto != null) {
                         Map<Long, WebSocketSession> clients = rtcChatService.getUser(roomDto);
-                        logger.info("roomDto에서 getUser 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                         for(Map.Entry<Long, WebSocketSession> client : clients.entrySet())  {
-                            logger.info("상대방 가져오기 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                             if (!client.getKey().equals(userId)) {
-                                logger.info("메세지 보낼 상대 찾기 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                                 sendMessage(client.getValue(),
                                         new WebSocketMessage(
@@ -101,9 +92,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 roomId,
                                                 candidate,
                                                 sdp));
-                                logger.info("상대방에게 메세지 보내기 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             }
-                            logger.info("주고 받기 성공!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         }
                     }
                     break;
@@ -114,7 +103,6 @@ public class SignalHandler extends TextWebSocketHandler {
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
                      rtcChatService.addUser(room, userId, session);
-                    // // room 안에 있는 userList 에 유저 추가
                     rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);

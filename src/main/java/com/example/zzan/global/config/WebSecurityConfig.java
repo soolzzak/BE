@@ -73,11 +73,10 @@ public class WebSecurityConfig {
         config.addAllowedOrigin("https://localhost:443");
 
 
-        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+        config.addExposedHeader(JwtUtil.ACCESS_KEY);
         config.addExposedHeader(JwtUtil.ACCESS_KEY);
         config.addExposedHeader(JwtUtil.REFRESH_KEY);
 
-        // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
         config.addAllowedMethod("*");
 
         config.addAllowedHeader("*");

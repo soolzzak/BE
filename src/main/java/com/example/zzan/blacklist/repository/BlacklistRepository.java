@@ -11,6 +11,4 @@ import com.example.zzan.user.entity.User;
 public interface BlacklistRepository extends JpaRepository<Blacklist,Long> {
 
 	List<Blacklist> findAllByBlackListingUser(User user);
-
-	// List<BlacklistDto> findAllById(Long id);
 }
