@@ -57,6 +57,6 @@ public class RoomController {
 
     @GetMapping("/room/{roomId}")
     public ResponseDto<RoomResponseDto>getOneRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.getOneRoom(roomId,userDetails.getUser());
+        return roomService.enterRoom(roomId,userDetails.getUser());
     }
 }

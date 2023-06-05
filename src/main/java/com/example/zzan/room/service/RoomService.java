@@ -17,14 +17,17 @@ import com.example.zzan.sse.service.SseService;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
+import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +55,7 @@ public class RoomService {
         roomImageUrl = s3Uploader.upload(roomImage, "images");
 
         if(roomImage == null){
-                return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
         }
 
         String roomTitle = roomRequestDto.getTitle();
@@ -73,8 +76,14 @@ public class RoomService {
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
 
-        roomHistoryRepository.save(roomHistory);
-        roomRepository.save(room);
+        roomRepository.saveAndFlush(room);
+        roomHistoryRepository.saveAndFlush(roomHistory);
+
+        RoomResponseDto roomResponseDto = new RoomResponseDto(room);
+
+        roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
+        UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
+
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
 
@@ -148,7 +157,7 @@ public class RoomService {
     }
     
     @Transactional
-    public ResponseDto<RoomResponseDto> getOneRoom(Long roomId, User user) {
+    public ResponseDto<RoomResponseDto> enterRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
