@@ -25,7 +25,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.ALREADY_SIGNUP_EMA
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
-    private final String ePw = createKey();
     @Value("${spring.mail.username}")
     private String id;
 
