@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class RoomController {
@@ -57,6 +58,6 @@ public class RoomController {
 
     @GetMapping("/room/{roomId}")
     public ResponseDto<RoomResponseDto>getOneRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.getOneRoom(roomId,userDetails.getUser());
+        return roomService.enterRoom(roomId,userDetails.getUser());
     }
 }

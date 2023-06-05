@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
+                .requestMatchers("/api/login/oauth2/code/kakao","/api/signup/**","/api/login" ,"/api/main", "/api/rooms", "/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -58,19 +58,18 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 사전에 약속된 출처를 명시
+
         config.addAllowedOrigin("https://api.honsoolzzak.com");
         config.addAllowedOrigin("https://honsoolzzak.com");
         config.addAllowedOrigin("http://api.honsoolzzak.com");
         config.addAllowedOrigin("http://honsoolzzak.com");
         config.addAllowedOrigin("https://api.honsoolzzak.com/api/main");
 
-
         config.addAllowedOrigin("http://mynice.s3-website.ap-northeast-2.amazonaws.com");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("http://localhost:80");
         config.addAllowedOrigin("https://localhost:443");
-
 
 
         // 특정 헤더를 클라이언트 측에서 사용할 수 있게 지정

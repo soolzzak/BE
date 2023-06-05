@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'net.thauvin.erik.httpstatus:httpstatus:1.0.5'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -52,31 +53,17 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
 
     implementation group: 'org.json', name: 'json', version: '20220924'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final' // MapStruct library
+
     // redis 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//    // 스웨거 관련
-//    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version:'1.6.9'
-//    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-//    compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-//
-//    // QUERY DSL
-//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-//    annotationProcessor(
-//            "javax.persistence:javax.persistence-api",
-//            "javax.annotation:javax.annotation-api",
-//            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
-//    )
 
-
-    // aws S3
-//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+    // 이메일 인증
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.2'
 }
 
 tasks.named('test') {
