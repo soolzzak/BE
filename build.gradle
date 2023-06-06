@@ -78,3 +78,6 @@ sourceSets {
     }
 }
 
+jar {
+    enabled = false
+}
