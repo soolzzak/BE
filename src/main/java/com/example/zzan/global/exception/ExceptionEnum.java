@@ -31,7 +31,10 @@ public enum ExceptionEnum {
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "파일 형식이 잘못되었습니다."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"이미 팔로우를 하고 있습니다."),
     ALREADY_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST.value(), "이미 가입된 이메일입니다."),
-    USER_CANNOT_REPORT_SELF(HttpStatus.BAD_REQUEST.value(), "자신은 지정대상이 아닙니다");
+    USER_CANNOT_REPORT_SELF(HttpStatus.BAD_REQUEST.value(), "자신은 지정대상이 아닙니다."),
+    ROOM_ALREADY_FULL(HttpStatus.BAD_REQUEST.value(), "다른 유저가 이미 입장하였습니다."),
+    BLOCKED_USER(HttpStatus.BAD_REQUEST.value(), "차단된 유저입니다."),
+    USER_NOT_IN_ROOM(HttpStatus.BAD_REQUEST.value(), "방에 없는 유저입니다.");
 
     private final int status;
     private final String message;
