@@ -22,6 +22,7 @@ import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -130,14 +131,16 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<List<RoomResponseDto>> getRooms(Pageable pageable) {
-        List<RoomResponseDto> roomList = roomRepository.findAll(pageable).getContent().stream().map(RoomResponseDto::new).collect(Collectors.toList());
+    public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
+        Page<Room> roomPage = roomRepository.findAll(pageable);
+        Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("전체 조회 성공", roomList);
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<List<RoomResponseDto>> chooseCategory(Category category, Pageable pageable) {
-        List<RoomResponseDto> roomList = roomRepository.findAllByCategory(category, pageable).stream().map(RoomResponseDto::new).collect(Collectors.toList());
+    public ResponseDto<Page<RoomResponseDto>> chooseCategory(Category category, Pageable pageable) {
+        Page<Room> roomPage = roomRepository.findAllByCategory(category, pageable);
+        Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("카테고리 검색 성공", roomList);
     }
 

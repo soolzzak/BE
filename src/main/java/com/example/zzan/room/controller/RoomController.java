@@ -9,6 +9,7 @@ import com.example.zzan.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -31,13 +32,13 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<Page<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return roomService.getRooms(pageable);
     }
 
 
     @GetMapping("/rooms")
-    public ResponseDto<List<RoomResponseDto>> chooseCategory(@RequestParam("category") Category category, Pageable pageable) {
+    public ResponseDto<Page<RoomResponseDto>> chooseCategory(@RequestParam("category") Category category, @PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return roomService.chooseCategory(category, pageable);
     }
 
