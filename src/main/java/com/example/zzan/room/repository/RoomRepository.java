@@ -1,6 +1,7 @@
 package com.example.zzan.room.repository;
 
 import com.example.zzan.room.entity.Category;
+import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -15,16 +16,10 @@ import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
-	Page<Room> findAllByCategory(Category category, Pageable pageable);
-
-
-	Optional<User> findByUsername(String username);
-
+	Page<Room> findByHasGuestAndGenderSetting(Pageable pageable, boolean hasGuest, GenderSetting genderSetting);
+	Page<Room> findByHasGuest(Pageable pageable, boolean hasGuest);
+	Page<Room> findByGenderSetting(Pageable pageable, GenderSetting genderSetting);
 	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
-
-
 	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
-
 	Page<Room> findAllByCategoryAndRoomDeleteIsFalse(Category category, Pageable pageable);
-
 }
