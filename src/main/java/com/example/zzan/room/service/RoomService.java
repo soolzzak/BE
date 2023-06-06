@@ -218,7 +218,7 @@ public class RoomService {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
-        List<Blacklist> userBlacklists = blacklistRepository.findAllByBlackListingUser(user);
+        List<Blacklist> userBlacklists = blacklistRepository.findAllByBlackListingUserOrderByCreatedAtDesc(user);
 
         for (Blacklist blacklist : userBlacklists) {
             if (room.getHostUser().equals(blacklist.getBlackListedUser())) {

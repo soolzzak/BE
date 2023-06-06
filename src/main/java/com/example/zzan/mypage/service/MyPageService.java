@@ -89,8 +89,8 @@ public class MyPageService {
 		Pageable topTwenty = PageRequest.of(0, 20);
 
 		List<UserHistory> userHistories = userHistoryRepository.findTop20ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topTwenty);
-		List<Follow> follows = followRepository.findAllByFollowerUser(user);
-		List<Blacklist> blacklists = blacklistRepository.findAllByBlackListingUser(user);
+		List<Follow> follows = followRepository.findAllByFollowerUserOrderByCreatedAtDesc(user);
+		List<Blacklist> blacklists = blacklistRepository.findAllByBlackListingUserOrderByCreatedAtDesc(user);
 
 		List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
 		List<FollowResponseDto> followResponseDtos = new ArrayList<>();
@@ -132,7 +132,7 @@ public class MyPageService {
 		}
 
 		for (Blacklist blacklist : blacklists){
-			Long blacklistedUserId = blacklist.getId();
+			Long blacklistedUserId = blacklist.getBlackListedUser().getId();
 			String blacklistedUser =blacklist.getBlackListedUser().getUsername();
 			String blackUserImage =blacklist.getBlackListedUser().getUserImage();
 			LocalDateTime BlacklistCreatedAt = blacklist.getCreatedAt();
