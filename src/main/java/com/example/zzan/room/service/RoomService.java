@@ -35,8 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
-import static com.example.zzan.global.exception.ExceptionEnum.UNAUTHORIZED_USER;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 @Service
 @RequiredArgsConstructor
 public class RoomService {
@@ -203,29 +203,46 @@ public class RoomService {
         }
         return false;
     }
-    
+
     @Transactional
-    public ResponseDto<RoomResponseDto> enterRoom(Long roomId, User user) {
+    public RoomResponseDto enterRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
-            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        List<Blacklist> Userblacklists = blacklistRepository.findAllByBlackListingUser(user);
+        if (room.isHasGuest()) {
+            throw new ApiException(ROOM_ALREADY_FULL);
+        }
 
-        for(Blacklist blacklist:Userblacklists) {
+        List<Blacklist> userBlacklists = blacklistRepository.findAllByBlackListingUser(user);
+
+        for (Blacklist blacklist : userBlacklists) {
             if (room.getHostUser().equals(blacklist.getBlackListedUser())) {
-                return ResponseDto.setSuccess("차단된 유저입니다");
+                throw new ApiException(BLOCKED_USER);
             }
         }
 
+        room.setHasGuest(true);
+        roomRepository.save(room);
 
         UserHistory userHistory = new UserHistory();
-        userHistory.setHostUser(room.getHostUser()); // 방장 기록
-        userHistory.setGuestUser(user); // 들어간 사람 기록
+        userHistory.setHostUser(room.getHostUser());
+        userHistory.setGuestUser(user);
 
         RoomHistory roomHistory = new RoomHistory(room);
-        userHistory.setRoom(roomHistory.getRoom());//방아이디
+        userHistory.setRoom(roomHistory.getRoom());
 
         userHistoryRepository.save(userHistory);
-        return ResponseDto.setSuccess("방에 입장하였습니다", new RoomResponseDto(room));
+
+        return new RoomResponseDto(room);
+    }
+
+    @Transactional
+    public RoomResponseDto leaveRoom(Long roomId, User user) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        room.setHasGuest(false);
+        roomRepository.save(room);
+        return new RoomResponseDto(room);
     }
 }

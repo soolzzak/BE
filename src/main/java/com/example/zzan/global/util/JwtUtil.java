@@ -80,7 +80,6 @@ public class JwtUtil {
                 .setExpiration(new Date(date.getTime() + time))
                 .compact();
     }
-    //JWT 토큰의 만료시간
     public Long getExpiration(String accessToken){
 
         Date expiration = Jwts.parserBuilder().setSigningKey(secretKey)

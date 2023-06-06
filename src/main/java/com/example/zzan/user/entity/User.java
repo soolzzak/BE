@@ -1,5 +1,6 @@
 package com.example.zzan.user.entity;
 
+import com.example.zzan.room.entity.Room;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -52,6 +53,10 @@ public class User {
     @Min(value = 0, message = "도수는 0도 미만으로 내릴 수 없습니다.")
     @Max(value = 100, message = "도수는 100도를 초과할 수 없습니다.")
     private int alcohol;
+
+    @ManyToOne
+    @JoinColumn(name="ROOM_ID")
+    private Room room;
 
     @PrePersist
     public void setDefaultValues() {

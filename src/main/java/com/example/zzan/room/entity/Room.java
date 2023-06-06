@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "TB_ROOM")
 @Getter
 @Setter
@@ -45,6 +48,10 @@ public class Room extends Timestamped {
     @JoinColumn(name = "HOST_ID")
     @JsonBackReference
     private User hostUser;
+
+    @Column(name = "HAS_GUEST")
+    private boolean hasGuest;
+
 
     public Room(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
