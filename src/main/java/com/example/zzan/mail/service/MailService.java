@@ -1,4 +1,4 @@
-package com.example.zzan.user.service;
+package com.example.zzan.mail.service;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.user.repository.UserRepository;
@@ -25,7 +25,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.ALREADY_SIGNUP_EMA
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
-    private final String ePw = createKey();
     @Value("${spring.mail.username}")
     private String id;
 
@@ -35,7 +34,7 @@ public class MailService {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, to);
-        message.setSubject("honsoolzzak 회원가입 이메일 인증");
+        message.setSubject("honsoolzzak 이메일 인증");
 
         String msg = "";
         msg += "<div style='margin:20px;'>";
@@ -46,7 +45,7 @@ public class MailService {
         msg += "<p>감사합니다.<p>";
         msg += "<br>";
         msg += "<div style=' font-family:verdana';>";
-        msg += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+        msg += "<h3 style='color:blue;'>인증 코드입니다.</h3>";
         msg += "<div style='font-size:130%'>";
         msg += "CODE : <strong>";
         msg += code + "</strong><div><br/> ";
