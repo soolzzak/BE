@@ -1,4 +1,4 @@
-package com.example.zzan.global.config;
+package com.example.zzan.mail.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
