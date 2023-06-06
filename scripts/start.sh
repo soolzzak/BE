@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_PATH="/home/ubuntu/StudyHub_BE"
+ROOT_PATH="/home/ubuntu/BE"
 JAR="$ROOT_PATH/application.jar"
 APP_LOG="$ROOT_PATH/application.log"
 ERROR_LOG="$ROOT_PATH/error.log"
