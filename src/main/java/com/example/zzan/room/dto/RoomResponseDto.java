@@ -47,5 +47,7 @@ public class RoomResponseDto {
         this.roomImageUrl = room.getRoomImage();
         this.userList = new HashMap<>();
         this.hasGuest = room.isHasGuest();
+
+
     }
 }

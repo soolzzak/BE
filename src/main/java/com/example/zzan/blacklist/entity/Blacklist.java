@@ -1,5 +1,6 @@
 package com.example.zzan.blacklist.entity;
 
+import com.example.zzan.global.Timestamped;
 import com.example.zzan.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Blacklist {
+public class Blacklist extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

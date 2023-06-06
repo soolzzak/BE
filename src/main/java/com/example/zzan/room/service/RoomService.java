@@ -1,5 +1,8 @@
 package com.example.zzan.room.service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.zzan.blacklist.entity.Blacklist;
 import com.example.zzan.blacklist.repository.BlacklistRepository;
 import com.example.zzan.global.dto.ResponseDto;
@@ -19,6 +22,8 @@ import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -245,4 +250,16 @@ public class RoomService {
         roomRepository.save(room);
         return new RoomResponseDto(room);
     }
+
+    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
+
+
+    @Transactional(readOnly = true)
+    public ResponseDto<List<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
+        List<RoomResponseDto> roomList = roomRepository.findAllByTitleContaining(title,pageable).stream().map(RoomResponseDto::new).collect(Collectors.toList());
+        // List<RoomResponseDto> auctionResponseDtoList = roomList.stream().map(RoomResponseDto::new).collect(Collectors.toList());
+        return ResponseDto.setSuccess("검색 성공",roomList);
+    }
+
+
 }
