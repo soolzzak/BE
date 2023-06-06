@@ -7,6 +7,7 @@ import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.BadWords;
 import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.entity.Gender;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
@@ -58,12 +58,12 @@ public class UserService {
         if (found.isPresent()) {
             throw new ApiException(EMAIL_DUPLICATION);
         }
-        if(userEmail == null || !userEmail.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")){
+        if (userEmail == null || !userEmail.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")) {
             throw new ApiException(INVALID_EMAIL);
         }
 
         String password = requestDto.getPassword();
-        if(password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")){
+        if (password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")) {
             throw new ApiException(INVALID_PASSWORD);
         }
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
@@ -86,7 +86,26 @@ public class UserService {
         User user = new User(userEmail, userPassword, username, role, null, gender);
         user.setBirthday(birthday);
         userRepository.save(user);
-        return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.",null));
+        return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.", null));
+    }
+
+    @Transactional
+    public ResponseEntity<?> changePassword(PasswordRequestDto passwordRequestDto) {
+        User user = userRepository.findByEmail(passwordRequestDto.getEmail());
+        if (user == null) {
+            throw new ApiException(EMAIL_NOT_FOUND);
+        }
+
+        String password = passwordRequestDto.getPassword();
+        if (password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")) {
+            throw new ApiException(INVALID_PASSWORD);
+        }
+
+        String userPassword = passwordEncoder.encode(passwordRequestDto.getPassword());
+        user.setPassword(userPassword);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(ResponseDto.setSuccess("비밀번호 변경이 완료되었습니다.", null));
     }
 
     @Transactional
@@ -100,7 +119,7 @@ public class UserService {
                     () -> new ApiException(EMAIL_NOT_FOUND)
             );
 
-            if(!passwordEncoder.matches(userPassword, user.getPassword())){
+            if (!passwordEncoder.matches(userPassword, user.getPassword())) {
                 throw new ApiException(PASSWORD_NOT_MATCH);
             }
 
@@ -112,7 +131,7 @@ public class UserService {
                 RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
                 refreshTokenRepository.save(updateToken);
             } else {
-                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail,user.getId());
+                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail, user.getId());
                 refreshTokenRepository.save(newToken);
             }
             setHeader(response, tokenDto, user.getEmail());
