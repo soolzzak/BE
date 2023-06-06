@@ -18,4 +18,10 @@ public class MailController {
         String code = mailService.sendSimpleMessage(mailRequestDto.getEmail());
         return new MailResponseDto(code);
     }
+
+    @PostMapping("/login/mailconfirm")
+    public MailResponseDto mailConfirm2(@RequestBody MailRequestDto mailRequestDto) throws Exception {
+        String code = mailService.sendSimpleMessage2(mailRequestDto.getEmail());
+        return new MailResponseDto(code);
+    }
 }
