@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 import static com.example.zzan.global.exception.ExceptionEnum.ALREADY_SIGNUP_EMAIL;
+import static com.example.zzan.global.exception.ExceptionEnum.FAILED_SEND_MAIL;
 
 @PropertySource("classpath:application.yml")
 @Slf4j
@@ -79,7 +80,19 @@ public class MailService {
             javaMailSender.send(message);
         } catch (MailException es) {
             es.printStackTrace();
-            throw new IllegalArgumentException();
+            throw new ApiException(FAILED_SEND_MAIL);
+        }
+        return code;
+    }
+
+    public String sendSimpleMessage2(String to) throws Exception {
+        String code = createKey();
+        MimeMessage message = createMessage(to, code);
+        try {
+            javaMailSender.send(message);
+        } catch (MailException es) {
+            es.printStackTrace();
+            throw new ApiException(FAILED_SEND_MAIL);
         }
         return code;
     }
