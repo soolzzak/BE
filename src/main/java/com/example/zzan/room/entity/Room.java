@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity(name = "TB_ROOM")
 @Getter
 @Setter
@@ -52,6 +49,8 @@ public class Room extends Timestamped {
     @Column(name = "HAS_GUEST")
     private boolean hasGuest;
 
+    private Boolean roomDelete;
+
 
     public Room(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
@@ -67,7 +66,9 @@ public class Room extends Timestamped {
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();
         this.roomPassword = roomRequestDto.getRoomPassword();
+        this.roomDelete = false;
     }
+
 
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
@@ -77,5 +78,13 @@ public class Room extends Timestamped {
         this.genderSetting = roomRequestDto.getGenderSetting();
         this.isPrivate = roomRequestDto.getIsPrivate();
         this.roomPassword = roomRequestDto.getRoomPassword();
+        this.roomDelete = false;
     }
+
+    public void roomDelete(Boolean roomdelete){
+
+        this.roomDelete =roomdelete;
+    }
+
+
 }

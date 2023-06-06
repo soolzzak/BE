@@ -132,14 +132,14 @@ public class RoomService {
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
-        Page<Room> roomPage = roomRepository.findAll(pageable);
+        Page<Room> roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("전체 조회 성공", roomList);
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> chooseCategory(Category category, Pageable pageable) {
-        Page<Room> roomPage = roomRepository.findAllByCategory(category, pageable);
+        Page<Room> roomPage = roomRepository.findAllByCategoryAndRoomDeleteIsFalse(category, pageable);
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("카테고리 검색 성공", roomList);
     }
@@ -245,22 +245,30 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDto leaveRoom(Long roomId, User user) {
+    public ResponseDto leaveRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        room.setHasGuest(false);
-        roomRepository.save(room);
-        return new RoomResponseDto(room);
+
+        if(room.getHostUser().getId().equals(user.getId())){
+
+            room.roomDelete(true);
+
+        }else if(!room.getHostUser().getId().equals(user.getId())){
+            room.setHasGuest(false);
+            roomRepository.save(room);
+        }
+
+        return ResponseDto.setSuccess("방나가기 성공", null);
     }
 
     private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
 
     @Transactional(readOnly = true)
-    public ResponseDto<List<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
-        List<RoomResponseDto> roomList = roomRepository.findAllByTitleContaining(title,pageable).stream().map(RoomResponseDto::new).collect(Collectors.toList());
-        // List<RoomResponseDto> auctionResponseDtoList = roomList.stream().map(RoomResponseDto::new).collect(Collectors.toList());
+    public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
+        Page<Room> rooms = roomRepository.findAllByTitleContainingAndRoomDeleteIsFalse(title, pageable);
+        Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("검색 성공",roomList);
     }
 

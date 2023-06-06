@@ -20,7 +20,11 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
 	Optional<User> findByUsername(String username);
 
-	List<Room> findAllByTitleContaining(String title,Pageable pageable);
+	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
 
+
+	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
+
+	Page<Room> findAllByCategoryAndRoomDeleteIsFalse(Category category, Pageable pageable);
 
 }
