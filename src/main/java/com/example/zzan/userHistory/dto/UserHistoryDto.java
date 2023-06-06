@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class UserHistoryDto {
-
-	private String metUser;
+	private Long UserId;
+	private String Username;
+	private String Image;
 	private LocalDateTime createdAt;
-	private String metUserImage;
-
 }

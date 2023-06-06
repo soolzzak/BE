@@ -100,38 +100,54 @@ public class MyPageService {
 
 		for (UserHistory userHistory : userHistories) {
 
+
 			String metUser = "";
-			String metUserImage="";
-
-
-			if(userHistory.getHostUser().getUsername().equals(user.getUsername())){
+			String metUserImage = "";
+            Long metUserId= null;
+			if(userHistory.getHostUser().getId().equals(user.getId())){
+				metUserId = userHistory.getGuestUser().getId();
 				metUser = userHistory.getGuestUser().getUsername();
 				metUserImage=userHistory.getGuestUser().getUserImage();
-			}else if(!userHistory.getHostUser().getUsername().equals(user.getUsername())){
+			}else if(!userHistory.getHostUser().getId().equals(user.getId())){
+				metUserId = userHistory.getHostUser().getId();
 				metUser = userHistory.getHostUser().getUsername();
 				metUserImage=userHistory.getHostUser().getUserImage();
 			}
 
-			LocalDateTime createdAt = userHistory.getCreatedAt();
+			LocalDateTime metCreatedAt = userHistory.getCreatedAt();
 
-			UserHistoryDto userHistoryDto = new UserHistoryDto(metUser,createdAt,metUserImage);
+
+			UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId,metUser,metUserImage,metCreatedAt);
 			userHistoryDtos.add(userHistoryDto);
 		}
 
 		for (Follow follow : follows){
-			String followingUser =follow.getFollowingUser().getUsername();
-			FollowResponseDto followResponseDto=new FollowResponseDto(followingUser);
+			Long followingUserId = follow.getFollowingUser().getId();
+			String followingUser = follow.getFollowingUser().getUsername();
+			String followingUserImage = follow.getFollowingUser().getUserImage();
+			LocalDateTime followCreatedAt = follow.getCreatedAt();
+
+			FollowResponseDto followResponseDto=new FollowResponseDto(followingUserId,followingUser,followingUserImage,followCreatedAt);
 			followResponseDtos.add(followResponseDto);
 		}
 
 		for (Blacklist blacklist : blacklists){
+			Long blacklistedUserId = blacklist.getId();
 			String blacklistedUser =blacklist.getBlackListedUser().getUsername();
-			BlacklistDto blacklistDto=new BlacklistDto(blacklistedUser);
+			String blackUserImage =blacklist.getBlackListedUser().getUserImage();
+			LocalDateTime BlacklistCreatedAt = blacklist.getCreatedAt();
+
+			BlacklistDto blacklistDto=new BlacklistDto(blacklistedUserId,blacklistedUser,blackUserImage,BlacklistCreatedAt);
 			blacklistDtos.add(blacklistDto);
 		}
 
 
 		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),socialProvider,userHistoryDtos,followResponseDtos,blacklistDtos));
 	}
+
+
+
+
+
 }
 

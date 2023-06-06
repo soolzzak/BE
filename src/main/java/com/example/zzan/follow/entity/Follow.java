@@ -1,5 +1,6 @@
 package com.example.zzan.follow.entity;
 
+import com.example.zzan.global.Timestamped;
 import com.example.zzan.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Follow {
+public class Follow extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
