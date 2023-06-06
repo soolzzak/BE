@@ -70,12 +70,12 @@ public class RoomController {
 
 
     @DeleteMapping("/room/{roomId}/leave")
-    public RoomResponseDto leaveRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto leaveRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return roomService.leaveRoom(roomId, userDetails.getUser());
     }
 
     @GetMapping("/search")
-    public ResponseDto<List<RoomResponseDto>> getSearchedRoom(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
         @RequestParam("title") String title) {
         return roomService.getSearchedRoom(pageable, title);
     }
