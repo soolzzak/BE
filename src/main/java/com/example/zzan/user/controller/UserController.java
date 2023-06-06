@@ -55,7 +55,6 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         return userService.logout(userDetails.getUser());
     }
 }
