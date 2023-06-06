@@ -1,4 +1,5 @@
 package com.example.zzan.room.service;
+import com.example.zzan.room.entity.GenderSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -271,6 +273,26 @@ public class RoomService {
         Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("검색 성공",roomList);
     }
+    @Transactional(readOnly = true)
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(Pageable pageable,
+                                                                Optional<GenderSetting> genderSettingOptional,
+                                                                Optional<Boolean> hasGuestOptional) {
+        Page<Room> roomPage;
+        if(genderSettingOptional.isPresent() && hasGuestOptional.isPresent()) {
+            // Both genderSetting and hasGuest filters are provided
+            roomPage = roomRepository.findByHasGuestAndGenderSetting(pageable, hasGuestOptional.get(), genderSettingOptional.get());
+        } else if(genderSettingOptional.isPresent()) {
+            // Only genderSetting filter is provided
+            roomPage = roomRepository.findByGenderSetting(pageable, genderSettingOptional.get());
+        } else if(hasGuestOptional.isPresent()) {
+            // Only hasGuest filter is provided
+            roomPage = roomRepository.findByHasGuest(pageable, hasGuestOptional.get());
+        } else {
+            // No filters are provided
+            roomPage = roomRepository.findAll(pageable);
+        }
 
-
+        Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
+        return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
+    }
 }

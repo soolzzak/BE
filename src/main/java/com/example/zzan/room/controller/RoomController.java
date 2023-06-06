@@ -5,6 +5,7 @@ import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
+import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -79,6 +81,10 @@ public class RoomController {
         @RequestParam("title") String title) {
         return roomService.getSearchedRoom(pageable, title);
     }
-
-
+    @GetMapping("/rooms/setting")
+    public ResponseDto<Page<RoomResponseDto>> getRoomsWithSetting(Pageable pageable,
+                                                                  @RequestParam("genderSetting") Optional<GenderSetting> genderSetting,
+                                                                  @RequestParam("hasGuest") Optional<Boolean> hasGuest) {
+        return roomService.getRoomsBySetting(pageable, genderSetting, hasGuest);
+    }
 }
