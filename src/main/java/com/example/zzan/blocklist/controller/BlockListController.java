@@ -1,9 +1,7 @@
 package com.example.zzan.blocklist.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.zzan.blocklist.service.BlockListService;
 import com.example.zzan.global.dto.ResponseDto;
@@ -13,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class BlockListController {
-
 
 	private final BlockListService blockListService;
 
-	@PostMapping("/api/blockList/{userId}")
-	public ResponseDto addBlockList (@PathVariable("userId") Long blackListedUserId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return blockListService.addBlacklist(blackListedUserId,userDetails.getUser());
+	@PutMapping ("/blockList/{userId}")
+	public ResponseDto updateBlock (@PathVariable("userId") Long blockListedUserId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return blockListService.updateBlock(blockListedUserId,userDetails.getUser());
 	}
 }
