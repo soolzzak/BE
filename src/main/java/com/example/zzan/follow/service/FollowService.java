@@ -27,39 +27,26 @@ public class FollowService {
 	private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	@Transactional
-	public ResponseDto<FollowResponseDto> getFollow(Long followId, User user) {
-
+	public ResponseDto<FollowResponseDto> updateFollow (Long followId, User user) {
 		Optional<User> followingUser = userRepository.findById(followId);
-		Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
 
 		if (user.getId().equals(followId)) {
 			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
 		}
 
-		if(followingUser.isPresent() && !followList.isPresent()){
-			Follow follow = new Follow(followingUser.get(), user);
-			followRepository.save(follow);
-			return ResponseDto.setSuccess("팔로잉하였습니다");
+		if (followingUser.isPresent()) {
+			Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
 
-		} else if (followList.isPresent()) {
-			throw new ApiException(ALREADY_FOLLOWING);
-		} else
-			throw new ApiException(USER_NOT_FOUND);
-	}
-
-	public ResponseDto<FollowResponseDto> deleteFollow(Long followId, User user) {
-		Optional<User> followingUser = userRepository.findById(followId);
-		Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
-
-		if (user.getId().equals(followId)) {
-			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
-		}
-
-		if (followingUser.isPresent() && followList.isPresent()) {
-			followRepository.delete(followList.get());
-			return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
+			if (followList.isPresent()) {
+				followRepository.delete(followList.get());
+				return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
+			} else {
+				Follow follow = new Follow(followingUser.get(), user);
+				followRepository.save(follow);
+				return ResponseDto.setSuccess("팔로잉하였습니다");
+			}
 		} else {
-			throw new ApiException(TARGET_USER_NOT_FOUND);
+			throw new ApiException(USER_NOT_FOUND);
 		}
 	}
 

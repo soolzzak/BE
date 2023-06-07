@@ -18,14 +18,25 @@ public class RelatedUserResponseDto {
 	private boolean alcoholDown;
 	private boolean follow;
 
-	public RelatedUserResponseDto(User myPage){
+	public RelatedUserResponseDto(User myPage) {
 		this.userId = myPage.getId();
 		this.userImage = myPage.getUserImage();
 		this.username = myPage.getUsername();
 		this.email = myPage.getEmail();
-		this.alcohol =myPage.getAlcohol();
+		this.alcohol = myPage.getAlcohol();
 		this.alcoholUp = myPage.isAlcoholUp();
 		this.alcoholDown = myPage.isAlcoholDown();
-		this.follow = isFollow();
+		this.follow = follow;
+	}
+
+	public RelatedUserResponseDto(User myPage, boolean follow) {
+		this.userId = myPage.getId();
+		this.userImage = myPage.getUserImage();
+		this.username = myPage.getUsername();
+		this.email = myPage.getEmail();
+		this.alcohol = myPage.getAlcohol();
+		this.alcoholUp = myPage.isAlcoholUp();
+		this.alcoholDown = myPage.isAlcoholDown();
+		this.follow = follow;
 	}
 }
