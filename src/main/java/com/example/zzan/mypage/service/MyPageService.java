@@ -1,9 +1,9 @@
 package com.example.zzan.mypage.service;
 
 
-import com.example.zzan.blacklist.dto.BlacklistDto;
-import com.example.zzan.blacklist.entity.Blacklist;
-import com.example.zzan.blacklist.repository.BlacklistRepository;
+import com.example.zzan.blocklist.dto.BlockListDto;
+import com.example.zzan.blocklist.entity.BlockList;
+import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.follow.entity.Follow;
 import com.example.zzan.follow.repository.FollowRepository;
@@ -42,7 +42,7 @@ public class MyPageService {
 	private final S3Uploader s3Uploader;
 	private final UserHistoryRepository userHistoryRepository;
 	private final FollowRepository followRepository;
-	private final BlacklistRepository blacklistRepository;
+	private final BlockListRepository blockListRepository;
 
 	@Transactional
 	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
@@ -91,16 +91,15 @@ public class MyPageService {
 
 		List<UserHistory> userHistories = userHistoryRepository.findTop20ByHostUserOrEnterUserOrderByCreatedAtDesc(user, topTwenty);
 		List<Follow> follows = followRepository.findAllByFollowerUserOrderByCreatedAtDesc(user);
-		List<Blacklist> blacklists = blacklistRepository.findAllByBlackListingUserOrderByCreatedAtDesc(user);
+		List<BlockList> blockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
 
 		List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
 		List<FollowResponseDto> followResponseDtos = new ArrayList<>();
-		List<BlacklistDto> blacklistDtos = new ArrayList<>();
+		List<BlockListDto> blockListDtos = new ArrayList<>();
 		User myPage = findUser(user.getEmail());
 		String socialProvider= user.getProviders();
 
 		for (UserHistory userHistory : userHistories) {
-
 
 			String metUser = "";
 			String metUserImage = "";
@@ -117,7 +116,6 @@ public class MyPageService {
 
 			LocalDateTime metCreatedAt = userHistory.getCreatedAt();
 
-
 			UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId,metUser,metUserImage,metCreatedAt);
 			userHistoryDtos.add(userHistoryDto);
 		}
@@ -132,35 +130,21 @@ public class MyPageService {
 			followResponseDtos.add(followResponseDto);
 		}
 
-		for (Blacklist blacklist : blacklists){
-			Long blacklistedUserId = blacklist.getBlackListedUser().getId();
-			String blacklistedUser =blacklist.getBlackListedUser().getUsername();
-			String blackUserImage =blacklist.getBlackListedUser().getUserImage();
-			LocalDateTime BlacklistCreatedAt = blacklist.getCreatedAt();
+		for (BlockList blockList : blockLists){
+			Long blacklistedUserId = blockList.getBlockListedUser().getId();
+			String blacklistedUser = blockList.getBlockListedUser().getUsername();
+			String blackUserImage = blockList.getBlockListedUser().getUserImage();
+			LocalDateTime BlacklistCreatedAt = blockList.getCreatedAt();
 
-			BlacklistDto blacklistDto=new BlacklistDto(blacklistedUserId,blacklistedUser,blackUserImage,BlacklistCreatedAt);
-			blacklistDtos.add(blacklistDto);
+			BlockListDto blockListDto =new BlockListDto(blacklistedUserId,blacklistedUser,blackUserImage,BlacklistCreatedAt);
+			blockListDtos.add(blockListDto);
 		}
-
-
-		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),socialProvider,userHistoryDtos,followResponseDtos,blacklistDtos));
+		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),socialProvider,userHistoryDtos,followResponseDtos, blockListDtos));
 	}
 
 	public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
 
 		Optional<User>OptionalUser=userRepository.findById(targetId);
-		// Optional<UserHistory>OptionalUserHistory=userHistoryRepository.findById(targetId);
-
-
-		// String metUser = "";
-		// String metUserImage = "";
-		// Long metUserId= null;
-		//
-		//
-		// metUserId = OptionalUserHistory.getGuestUser().getId();
-		// metUser = OptionalUserHistory.getGuestUser().getUsername();
-		// metUserImage=OptionalUserHistory.getGuestUser().getUserImage();
-
 
 		return ResponseDto.setSuccess("기록 조회하기 성공",new RelatedUserResponseDto(OptionalUser.get()));
 	}

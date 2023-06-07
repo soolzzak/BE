@@ -1,4 +1,4 @@
-package com.example.zzan.blacklist.entity;
+package com.example.zzan.blocklist.entity;
 
 import com.example.zzan.global.Timestamped;
 import com.example.zzan.user.entity.User;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Blacklist extends Timestamped {
+public class BlockList extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,16 +25,16 @@ public class Blacklist extends Timestamped {
 
 	@ManyToOne
 	@JoinColumn(name ="BLACKLISTEDUSER_ID",nullable = false)
-	private User blackListedUser;
+	private User blockListedUser;
 
 	@ManyToOne
 	@JoinColumn(name = "BLACKLISTINGUSER_ID", nullable = false)
-	private User blackListingUser;
+	private User blockListingUser;
 
-	public Blacklist(User blackListedUser,User blackListingUser){
+	public BlockList(User blockListedUser, User blockListingUser){
 
-		this.blackListedUser=blackListedUser;
-		this.blackListingUser=blackListingUser;
+		this.blockListedUser = blockListedUser;
+		this.blockListingUser = blockListingUser;
 
 	}
 

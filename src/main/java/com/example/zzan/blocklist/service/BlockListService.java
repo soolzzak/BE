@@ -1,4 +1,4 @@
-package com.example.zzan.blacklist.service;
+package com.example.zzan.blocklist.service;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.zzan.blacklist.entity.Blacklist;
-import com.example.zzan.blacklist.repository.BlacklistRepository;
+import com.example.zzan.blocklist.entity.BlockList;
+import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.user.entity.User;
@@ -17,9 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class BlacklistService {
+public class BlockListService {
 
-	private final BlacklistRepository blacklistRepository;
+	private final BlockListRepository blockListRepository;
 	private final UserRepository userRepository;
 	public ResponseDto addBlacklist(Long blackListedUserId, User user) {
 
@@ -36,8 +36,8 @@ public class BlacklistService {
 			throw new ApiException(USER_CANNOT_REPORT_SELF);
 		}
 
-		Blacklist blacklist=new Blacklist(blackListedUserOptional.get(),user);
-		blacklistRepository.save(blacklist);
+		BlockList blockList =new BlockList(blackListedUserOptional.get(),user);
+		blockListRepository.save(blockList);
 		
 		return ResponseDto.setSuccess("차단되었습니다");
 	}
