@@ -49,7 +49,7 @@ public class Room extends Timestamped {
     @Column(name = "HAS_GUEST")
     private boolean hasGuest;
 
-    private Boolean roomDelete;
+    private boolean roomDelete;
 
 
     public Room(RoomRequestDto roomRequestDto) {
