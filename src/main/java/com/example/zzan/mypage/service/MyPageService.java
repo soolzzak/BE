@@ -48,7 +48,7 @@ public class MyPageService {
 	public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
 		String storedFileName = null;
 		if(userImage != null && !userImage.isEmpty()) {
-			storedFileName = s3Uploader.upload(userImage, "images");
+			storedFileName = s3Uploader.upload(userImage, "Logo");
 		}
 		User myPage = findUser(email);
 		if(myPage != null) {

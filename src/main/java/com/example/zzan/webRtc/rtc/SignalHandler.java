@@ -124,13 +124,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     if(room.getHostId().equals(userId)){
 
                         realroom.roomDelete(true);
-
+                        roomRepository.save(realroom);
+                        break;
                     }else if(!room.getHostId().equals(userId)){
 
                         realroom.setRoomCapacity(room.getRoomCapacity() - 1);
                         roomRepository.save(realroom);
-
+                        break;
                     }
+
 
 
                     break;
