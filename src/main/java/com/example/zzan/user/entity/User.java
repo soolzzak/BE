@@ -43,9 +43,6 @@ public class User {
     @Column(nullable = true)
     private String userImage;
 
-    @Column(nullable = true)
-    private String providers;
-
     @Column(nullable = false)
     private int reportPoints = 0;
 
@@ -61,7 +58,7 @@ public class User {
     private boolean alcoholDown = false;
 
     @ManyToOne
-    @JoinColumn(name="ROOM_ID")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     @PrePersist
@@ -78,17 +75,15 @@ public class User {
         this.role = role;
         this.userImage = userImage;
         this.gender = gender;
-
     }
-    public User(String email, String password, String username, UserRole role,String provider ,String userImage, Gender gender,Date birthday) {
 
+    public User(String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.role = role;
         this.userImage = userImage;
         this.gender = gender;
-        this.providers = provider;
         this.birthday = birthday;
         this.alcohol = 16;
         this.alcoholUp = false;
@@ -106,11 +101,6 @@ public class User {
 
     public void username(String username) {
         this.username = username;
-    }
-
-    public static class ProvidersList {
-        public static final String SOOLZZAK = "SOOLZZAK";
-        public static final String KAKAO = "KAKAO";
     }
 
     public void addReportPoints(int points) {
