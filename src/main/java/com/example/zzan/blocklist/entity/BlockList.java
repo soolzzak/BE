@@ -28,8 +28,5 @@ public class BlockList extends Timestamped {
 
 		this.blockListedUser = blockListedUser;
 		this.blockListingUser = blockListingUser;
-
 	}
-
-
 }

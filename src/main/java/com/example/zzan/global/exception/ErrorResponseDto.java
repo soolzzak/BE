@@ -10,8 +10,4 @@ public class ErrorResponseDto {
     private int status;
     private String message;
 
-    public ErrorResponseDto (ExceptionEnum exceptionEnum){
-        this.status = exceptionEnum.getStatus();
-        this.message = exceptionEnum.getMessage();
-    }
 }
