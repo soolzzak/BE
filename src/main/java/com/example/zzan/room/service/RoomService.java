@@ -220,14 +220,14 @@ public class RoomService {
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(Pageable pageable,
                                                                 Optional<GenderSetting> genderSettingOptional,
-                                                                Optional<Boolean> hasGuestOptional) {
+                                                                Optional<Boolean> roomCapacityCheckOptional) {
         Page<Room> roomPage;
-        if (genderSettingOptional.isPresent() && hasGuestOptional.isPresent()) {
-            roomPage = roomRepository.findByHasGuestAndGenderSetting(pageable, hasGuestOptional.get(), genderSettingOptional.get());
+        if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+            roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThan(pageable, genderSettingOptional.get(), 2);
         } else if (genderSettingOptional.isPresent()) {
             roomPage = roomRepository.findByGenderSetting(pageable, genderSettingOptional.get());
-        } else if (hasGuestOptional.isPresent()) {
-            roomPage = roomRepository.findByHasGuest(pageable, hasGuestOptional.get());
+        } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+            roomPage = roomRepository.findByRoomCapacityLessThan(pageable, 2);
         } else {
             roomPage = roomRepository.findAll(pageable);
         }
