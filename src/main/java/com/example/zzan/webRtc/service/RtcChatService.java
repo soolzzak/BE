@@ -25,7 +25,7 @@ public class RtcChatService {
 
         return roomDto.get().getUserList();
     }
-
+//
     public ResponseDto addUser(RoomResponseDto roomResponseDto, Long userId, WebSocketSession session) {
 
         Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
