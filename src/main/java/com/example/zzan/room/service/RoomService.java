@@ -88,8 +88,10 @@ public class RoomService {
         room.setRoomImage(roomImageUrl);
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
+
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
+
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
 
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));

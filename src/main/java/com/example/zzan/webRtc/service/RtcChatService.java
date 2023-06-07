@@ -2,6 +2,7 @@ package com.example.zzan.webRtc.service;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.webRtc.dto.SessionListMap;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,9 @@ public class RtcChatService {
 
         Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
         userList.put(userId, session);
+
+        SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());
+        SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
         return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
     }
 
