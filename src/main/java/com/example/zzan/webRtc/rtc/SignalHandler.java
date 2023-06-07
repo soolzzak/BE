@@ -52,8 +52,8 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 
-        Long sessionUserId = sessions.get(session.getId());
-        Long sessionRoomId = sessions2.get(session.getId());
+        Long sessionUserId = sessions.get(session);
+        Long sessionRoomId = sessions2.get(session);
         RoomResponseDto roomDto = rooms.get(sessionRoomId);
         Room realroom = roomRepository.findById(roomDto.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
@@ -64,7 +64,8 @@ public class SignalHandler extends TextWebSocketHandler {
             realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
             roomRepository.save(realroom);
         }
-
+        // sessions.remove(session);
+        // sessions2.remove(session);
     }
 
 
