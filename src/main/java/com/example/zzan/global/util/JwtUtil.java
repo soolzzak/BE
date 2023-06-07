@@ -68,9 +68,10 @@ public class JwtUtil {
         Date date = new Date();
         long time = type.equals(ACCESS_KEY) ? ACCESS_TIME : REFRESH_TIME;
         Map<String, Object> claim = new HashMap<>();
-        claim.put("role",role);
         claim.put("id",user.getId());
+        claim.put("role",role);
         claim.put("email",user.getEmail());
+        claim.put("gender",user.getGender());
         return BEARER_PREFIX
                 + Jwts.builder()
                 .setSubject(user.getEmail())
