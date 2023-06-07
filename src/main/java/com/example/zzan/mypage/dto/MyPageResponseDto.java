@@ -21,7 +21,7 @@ public class MyPageResponseDto {
 	private String socialProvider;
 	private List<UserHistoryDto> metUser;
 	 private List<FollowResponseDto>followingUser;
-	 private List<BlockListDto>blacklistedUser;
+	 private List<BlockListDto> blockListedUser;
 
 	public MyPageResponseDto(User myPage, int alcohol, String socialProvider, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos){
 		this.userImageUrl= myPage.getUserImage();
@@ -31,7 +31,7 @@ public class MyPageResponseDto {
 		this.socialProvider=socialProvider;
 		this.metUser = metUser;
 		this.followingUser=followResponseDtos;
-		this.blacklistedUser= blockListDtos;
+		this.blockListedUser = blockListDtos;
 	}
 
 	public MyPageResponseDto(User myPage) {
