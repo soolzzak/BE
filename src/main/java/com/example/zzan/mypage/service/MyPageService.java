@@ -142,15 +142,15 @@ public class MyPageService {
 	}
 
 	public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
-		Optional<User>OptionalUser=userRepository.findById(targetId);
-		if (!OptionalUser.isPresent()) {
+		Optional<User> optionalUser = userRepository.findById(targetId);
+		if (!optionalUser.isPresent()) {
 			throw new ApiException(USER_NOT_FOUND);
 		}
-
-		User targetUser = OptionalUser.get();
-
+		User targetUser = optionalUser.get();
 		boolean isFollowing = followRepository.findByFollowingUserAndFollowerUser(targetUser, user).isPresent();
-		return ResponseDto.setSuccess("기록 조회하기 성공", new RelatedUserResponseDto(targetUser, isFollowing));
+		boolean isBlocked = blockListRepository.findByBlockListedUserAndBlockListingUser(targetUser, user).isPresent();
+
+		return ResponseDto.setSuccess("기록 조회하기 성공", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
 	}
 }
 
