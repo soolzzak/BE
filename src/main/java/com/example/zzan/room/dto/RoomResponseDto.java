@@ -29,7 +29,7 @@ public class RoomResponseDto {
     private int alcohol;
     private String userImageUrl;
     private String roomImageUrl;
-    private int roomCapacity;
+    private int roomCapacity = 0;
     private boolean roomDelete;
     private Map<Long, WebSocketSession> userList;
 
