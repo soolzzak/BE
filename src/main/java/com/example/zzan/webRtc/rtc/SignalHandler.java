@@ -33,11 +33,9 @@ public class SignalHandler extends TextWebSocketHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
-////////
     private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
     private Map<WebSocketSession, Long> sessions2 = SessionListMap.getInstance().getSessionMapToRoom();
 
-///////////
     private static final String MSG_TYPE_OFFER = "offer";
     // SDP Answer message
     private static final String MSG_TYPE_ANSWER = "answer";
@@ -125,7 +123,6 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
-                     // rtcChatService.addUser(room, userId, session);
                     rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);
