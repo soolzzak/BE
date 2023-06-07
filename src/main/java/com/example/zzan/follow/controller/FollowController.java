@@ -18,9 +18,7 @@ public class FollowController {
 
 	@PostMapping("/follow/{followId}")
 	public ResponseDto<FollowResponseDto> getFollow(@PathVariable("followId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-
 		return followService.getFollow(followId,userDetails.getUser());
-
 	}
 
 	@DeleteMapping("/follow/{followId}")

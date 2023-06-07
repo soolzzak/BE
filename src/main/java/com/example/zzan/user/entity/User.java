@@ -54,6 +54,12 @@ public class User {
     @Max(value = 100, message = "도수는 100도를 초과할 수 없습니다.")
     private int alcohol;
 
+    @Column(name = "LIKES")
+    private boolean alcoholUp = false;
+
+    @Column(name = "DISLIKES")
+    private boolean alcoholDown = false;
+
     @ManyToOne
     @JoinColumn(name="ROOM_ID")
     private Room room;
@@ -72,6 +78,7 @@ public class User {
         this.role = role;
         this.userImage = userImage;
         this.gender = gender;
+
     }
     public User(String email, String password, String username, UserRole role,String provider ,String userImage, Gender gender,Date birthday) {
 
@@ -84,6 +91,8 @@ public class User {
         this.providers = provider;
         this.birthday = birthday;
         this.alcohol = 16;
+        this.alcoholUp = false;
+        this.alcoholDown = false;
     }
 
     public User(String username, String userImage) {

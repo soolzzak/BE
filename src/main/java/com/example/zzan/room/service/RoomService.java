@@ -1,7 +1,7 @@
 package com.example.zzan.room.service;
 
-import com.example.zzan.blacklist.entity.Blacklist;
-import com.example.zzan.blacklist.repository.BlacklistRepository;
+import com.example.zzan.blocklist.entity.BlockList;
+import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
@@ -23,14 +23,19 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -43,10 +48,12 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomHistoryRepository roomHistoryRepository;
+
     private final UserHistoryRepository userHistoryRepository;
     private final SseService sseService;
+
     private final S3Uploader s3Uploader;
-    private final BlacklistRepository blacklistRepository;
+    private final BlockListRepository blockListRepository;
     private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Transactional
@@ -88,6 +95,7 @@ public class RoomService {
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
 
+
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
         Page<Room> roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
@@ -126,6 +134,7 @@ public class RoomService {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
+
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 수정하였습니다.", null);
     }
@@ -162,10 +171,10 @@ public class RoomService {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
-        List<Blacklist> userBlacklists = blacklistRepository.findAllByBlackListingUserOrderByCreatedAtDesc(user);
+        List<BlockList> userBlockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
 
-        for (Blacklist blacklist : userBlacklists) {
-            if (room.getHostUser().equals(blacklist.getBlackListedUser())) {
+        for (BlockList blockList : userBlockLists) {
+            if (room.getHostUser().equals(blockList.getBlockListedUser())) {
                 throw new ApiException(BLOCKED_USER);
             }
         }
@@ -184,6 +193,7 @@ public class RoomService {
 
         return new RoomResponseDto(room);
     }
+
 
     @Transactional
     public ResponseDto leaveRoom(Long roomId, User user) {

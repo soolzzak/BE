@@ -48,11 +48,15 @@ public class LikeService {
                 userRepository.save(targetUser);
                 Like likeEntity = new Like(user, targetUser, like ? LikeEnum.LIKE : LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
+                targetUser.setAlcoholUp(like);
+                targetUser.setAlcoholDown(!like);
                 return ResponseDto.setSuccess(like ? "도수를 올렸습니다." : "도수를 내렸습니다.");
             } else {
                 targetUser.setAlcohol(targetUser.getAlcohol() - (like ? 1 : -1));
                 userRepository.save(targetUser);
                 likeRepository.delete(existingLike);
+                targetUser.setAlcoholUp(false);
+                targetUser.setAlcoholDown(false);
                 return ResponseDto.setSuccess(like ? "도수 올리기를 취소하셨습니다." : "도수 내리기를 취소하셨습니다.");
             }
         } else {
