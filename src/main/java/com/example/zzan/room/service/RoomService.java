@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -54,9 +53,7 @@ public class RoomService {
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
-        room.setRoomCapacity(1); // Set room capacity as the host user is entering.
-
-        roomImageUrl = s3Uploader.upload(roomImage, "images");
+        room.setRoomCapacity(1);
 
         String roomTitle = roomRequestDto.getTitle();
 
@@ -75,10 +72,8 @@ public class RoomService {
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
 
-        if (roomImage == null) {
-            Random random = new Random();
-
-//            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        if (roomImage.isEmpty()) {
+            roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
@@ -92,7 +87,6 @@ public class RoomService {
 
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
-
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
@@ -119,8 +113,8 @@ public class RoomService {
         }
 
         room.update(roomRequestDto);
-        if (roomImage == null) {
-            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
+        if (roomImage.isEmpty()) {
+            roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             if (room.getRoomImage() != null) {
                 s3Uploader.removeNewFile(new File(room.getRoomImage()));
@@ -137,7 +131,6 @@ public class RoomService {
         if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
-
 
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 수정하였습니다.", null);
@@ -197,7 +190,6 @@ public class RoomService {
 
         return new RoomResponseDto(room);
     }
-
 
     @Transactional
     public ResponseDto leaveRoom(Long roomId, User user) {
