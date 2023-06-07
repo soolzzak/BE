@@ -1,4 +1,4 @@
-package com.example.zzan.blacklist.dto;
+package com.example.zzan.blocklist.dto;
 
 import java.time.LocalDateTime;
 
@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BlacklistDto {
-	private Long UserId;
-	private String Username;
-	private String Image;
+public class BlockListDto {
+	private Long userId;
+	private String username;
+	private String userImage;
 	private LocalDateTime createdAt;
 }

@@ -25,7 +25,6 @@ public class myPageController {
 	@ResponseBody
 	@PutMapping(value="/mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value="userImage", required=false) MultipartFile userImage, @RequestParam(value="username", required=false) String username,@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-
 		return myPageService.saveMyPage(userImage, username, userDetails.getUser().getEmail());
 	}
 
@@ -38,6 +37,5 @@ public class myPageController {
 	public ResponseDto<RelatedUserResponseDto> UserInfoFromId (@PathVariable Long targetId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return myPageService.UserInfoFromId(targetId,userDetails.getUser());
 	}
-
 }
 

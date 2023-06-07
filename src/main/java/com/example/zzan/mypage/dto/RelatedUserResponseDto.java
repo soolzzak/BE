@@ -14,8 +14,9 @@ public class RelatedUserResponseDto {
 	private String username;
 	private String email;
 	private int alcohol;
-	// private String reletedRoomName;
-
+	private boolean alcoholUp;
+	private boolean alcoholDown;
+	private boolean follow;
 
 	public RelatedUserResponseDto(User myPage){
 		this.userId = myPage.getId();
@@ -23,8 +24,8 @@ public class RelatedUserResponseDto {
 		this.username = myPage.getUsername();
 		this.email = myPage.getEmail();
 		this.alcohol =myPage.getAlcohol();
-		// this.reletedRoomName = reletedRoomName;
-
+		this.alcoholUp = myPage.isAlcoholUp();
+		this.alcoholDown = myPage.isAlcoholDown();
+		this.follow = isFollow();
 	}
-
 }
