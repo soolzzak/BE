@@ -23,19 +23,14 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +64,6 @@ public class RoomService {
         }
 
         if (!roomRequestDto.getIsPrivate()) {
-            /*NOP*/
         } else {
             String roomPassword = roomRequestDto.getRoomPassword();
             if (roomPassword == null || roomPassword.isEmpty())
@@ -94,7 +88,6 @@ public class RoomService {
 
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
-
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
@@ -133,7 +126,6 @@ public class RoomService {
         if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
-
 
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 수정하였습니다.", null);
@@ -193,7 +185,6 @@ public class RoomService {
 
         return new RoomResponseDto(room);
     }
-
 
     @Transactional
     public ResponseDto leaveRoom(Long roomId, User user) {

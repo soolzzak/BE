@@ -1,7 +1,5 @@
 package com.example.zzan.webRtc.rtc;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
@@ -21,6 +19,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
 
 
 @Component
