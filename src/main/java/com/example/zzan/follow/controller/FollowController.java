@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController {
 
 	private final FollowService followService;
-
+//
 	@PutMapping("/follow/{followId}")
 	public ResponseDto<FollowResponseDto> toggleFollow(@PathVariable Long followId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		User user = userDetails.getUser();
