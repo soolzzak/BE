@@ -4,6 +4,7 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
+import com.example.zzan.mypage.dto.RelatedUserResponseDto;
 import com.example.zzan.mypage.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -32,5 +33,11 @@ public class myPageController {
 	public ResponseDto<MyPageResponseDto> getUserInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return myPageService.getUserInfo(userDetails.getUser());
 	}
+
+	@GetMapping("/mypage/{targetId}")
+	public ResponseDto<RelatedUserResponseDto> UserInfoFromId (@PathVariable Long targetId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return myPageService.UserInfoFromId(targetId,userDetails.getUser());
+	}
+
 }
 

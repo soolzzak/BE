@@ -12,6 +12,7 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
+import com.example.zzan.mypage.dto.RelatedUserResponseDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.userHistory.dto.UserHistoryDto;
@@ -145,9 +146,23 @@ public class MyPageService {
 		return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(),socialProvider,userHistoryDtos,followResponseDtos,blacklistDtos));
 	}
 
+	public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
+
+		Optional<User>OptionalUser=userRepository.findById(targetId);
+		// Optional<UserHistory>OptionalUserHistory=userHistoryRepository.findById(targetId);
 
 
+		// String metUser = "";
+		// String metUserImage = "";
+		// Long metUserId= null;
+		//
+		//
+		// metUserId = OptionalUserHistory.getGuestUser().getId();
+		// metUser = OptionalUserHistory.getGuestUser().getUsername();
+		// metUserImage=OptionalUserHistory.getGuestUser().getUserImage();
 
 
+		return ResponseDto.setSuccess("기록 조회하기 성공",new RelatedUserResponseDto(OptionalUser.get()));
+	}
 }
 
