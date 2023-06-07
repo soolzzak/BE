@@ -1,20 +1,19 @@
 package com.example.zzan.blocklist.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
-import java.util.Optional;
-
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
 import com.example.zzan.blocklist.entity.BlockList;
 import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.USER_CANNOT_BLOCK_SELF;
 
 @RequiredArgsConstructor
 @Service

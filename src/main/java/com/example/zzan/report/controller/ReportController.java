@@ -1,14 +1,12 @@
 package com.example.zzan.report.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.report.dto.ReportRequestDto;
 import com.example.zzan.report.service.ReportService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
