@@ -107,7 +107,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
-                     rtcChatService.addUser(room, userId, session);
+                    rtcChatService.addUser(room, userId, session);
                     rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);
