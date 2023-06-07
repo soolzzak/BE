@@ -1,12 +1,5 @@
 package com.example.zzan.report.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.report.dto.ReportRequestDto;
@@ -14,8 +7,14 @@ import com.example.zzan.report.entity.Report;
 import com.example.zzan.report.repository.ReportRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.USER_CANNOT_REPORT_SELF;
 
 @RequiredArgsConstructor
 @Service
