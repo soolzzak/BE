@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name = "TB_ROOM")
 @Getter
 @Setter
@@ -33,7 +35,6 @@ public class Room extends Timestamped {
     @NotNull(message = "카테고리를 설정해주세요.")
     private Category category;
 
-
     @Enumerated(value = EnumType.STRING)
     private GenderSetting genderSetting;
 
@@ -50,6 +51,9 @@ public class Room extends Timestamped {
     private boolean hasGuest;
 
     private boolean roomDelete;
+
+    @Column
+    private int roomCapacity = 0;
 
 
     public Room(RoomRequestDto roomRequestDto) {
@@ -82,9 +86,6 @@ public class Room extends Timestamped {
     }
 
     public void roomDelete(Boolean roomdelete){
-
         this.roomDelete =roomdelete;
     }
-
-
 }

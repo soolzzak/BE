@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 @Service
 public class SseService {
     private final FollowService followService;
@@ -29,8 +28,6 @@ public class SseService {
 
         return emitter;
     }
-
-
 
     public void notifyFollowers(Long userId) {
         this.followService.getFollowers(userId).forEach(followerId -> {

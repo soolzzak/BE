@@ -29,7 +29,7 @@ public class RoomResponseDto {
     private int alcohol;
     private String userImageUrl;
     private String roomImageUrl;
-    private boolean hasGuest;
+    private int roomCapacity;
     private boolean roomDelete;
     private Map<Long, WebSocketSession> userList;
 
@@ -47,8 +47,7 @@ public class RoomResponseDto {
         this.userImageUrl = room.getHostUser().getUserImage();
         this.roomImageUrl = room.getRoomImage();
         this.userList = new HashMap<>();
-        this.hasGuest = room.isHasGuest();
+        this.roomCapacity = room.getRoomCapacity();
         this.roomDelete=room.isRoomDelete();
-
     }
 }

@@ -23,6 +23,7 @@ public class UserRequestDto {
     private Gender gender;
 
     private boolean admin = false;
+
     private String adminKey = " ";
 
 }

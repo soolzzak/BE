@@ -3,7 +3,6 @@ import com.example.zzan.room.entity.GenderSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.zzan.blacklist.entity.Blacklist;
 import com.example.zzan.blacklist.repository.BlacklistRepository;
 import com.example.zzan.global.dto.ResponseDto;
@@ -25,7 +24,6 @@ import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +39,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -56,10 +53,7 @@ public class RoomService {
     private final SseService sseService;
 
     private final S3Uploader s3Uploader;
-/*
-* true:  비어있음
-* false : 파일 있음
-* */
+
     public static boolean isMultipartFileEmpty(MultipartFile file) {
         return file == null || file.isEmpty();
     }
@@ -87,6 +81,7 @@ public class RoomService {
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
+        room.setRoomCapacity(1); // Set room capacity as the host user is entering.
 
         roomImageUrl = s3Uploader.upload(roomImage, "images");
 
@@ -96,11 +91,9 @@ public class RoomService {
 
         String roomTitle = roomRequestDto.getTitle();
 
-
         if(hasBadWord(roomTitle)){
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
-
 
         if (!roomRequestDto.getIsPrivate()) {
             /*NOP*/
@@ -131,6 +124,7 @@ public class RoomService {
 
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
+
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
@@ -219,7 +213,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        if (room.isHasGuest()) {
+        if (room.getRoomCapacity() >= 2) {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
@@ -231,7 +225,7 @@ public class RoomService {
             }
         }
 
-        room.setHasGuest(true);
+        room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
 
         UserHistory userHistory = new UserHistory();
@@ -246,26 +240,24 @@ public class RoomService {
         return new RoomResponseDto(room);
     }
 
+
     @Transactional
     public ResponseDto leaveRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-
         if(room.getHostUser().getId().equals(user.getId())){
-
             room.roomDelete(true);
-
         }else if(!room.getHostUser().getId().equals(user.getId())){
-            room.setHasGuest(false);
+            room.setRoomCapacity(room.getRoomCapacity() - 1);
             roomRepository.save(room);
         }
 
         return ResponseDto.setSuccess("방나가기 성공", null);
     }
 
-    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
+    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
@@ -273,25 +265,21 @@ public class RoomService {
         Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("검색 성공",roomList);
     }
+
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(Pageable pageable,
                                                                 Optional<GenderSetting> genderSettingOptional,
                                                                 Optional<Boolean> hasGuestOptional) {
         Page<Room> roomPage;
         if(genderSettingOptional.isPresent() && hasGuestOptional.isPresent()) {
-            // Both genderSetting and hasGuest filters are provided
             roomPage = roomRepository.findByHasGuestAndGenderSetting(pageable, hasGuestOptional.get(), genderSettingOptional.get());
         } else if(genderSettingOptional.isPresent()) {
-            // Only genderSetting filter is provided
             roomPage = roomRepository.findByGenderSetting(pageable, genderSettingOptional.get());
         } else if(hasGuestOptional.isPresent()) {
-            // Only hasGuest filter is provided
             roomPage = roomRepository.findByHasGuest(pageable, hasGuestOptional.get());
         } else {
-            // No filters are provided
             roomPage = roomRepository.findAll(pageable);
         }
-
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }

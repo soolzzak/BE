@@ -1,6 +1,5 @@
 package com.example.zzan.user.controller;
 
-
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.dto.PasswordRequestDto;
