@@ -4,6 +4,7 @@ import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.follow.service.FollowService;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
+import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,9 @@ public class FollowController {
 
 	private final FollowService followService;
 
-	@PostMapping("/follow/{followId}")
-	public ResponseDto<FollowResponseDto> getFollow(@PathVariable("followId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return followService.getFollow(followId,userDetails.getUser());
-	}
-
-	@DeleteMapping("/follow/{followId}")
-	public ResponseDto<FollowResponseDto> deleteFollow(@PathVariable("followId") Long followId,  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return followService.deleteFollow(followId,userDetails.getUser());
+	@PutMapping("/follow/{followId}")
+	public ResponseDto<FollowResponseDto> toggleFollow(@PathVariable Long followId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		User user = userDetails.getUser();
+		return followService.updateFollow( followId, user);
 	}
 }

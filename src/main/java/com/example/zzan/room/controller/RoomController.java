@@ -81,10 +81,14 @@ public class RoomController {
         @RequestParam("title") String title) {
         return roomService.getSearchedRoom(pageable, title);
     }
+
     @GetMapping("/rooms/setting")
-    public ResponseDto<Page<RoomResponseDto>> getRoomsWithSetting(Pageable pageable,
-                                                                  @RequestParam("genderSetting") Optional<GenderSetting> genderSetting,
-                                                                  @RequestParam("hasGuest") Optional<Boolean> hasGuest) {
-        return roomService.getRoomsBySetting(pageable, genderSetting, hasGuest);
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(
+            Pageable pageable, @RequestParam(required = false) GenderSetting genderSetting, @RequestParam(required = false) Boolean roomCapacityCheck) {
+
+        Optional<GenderSetting> genderSettingOptional = Optional.ofNullable(genderSetting);
+        Optional<Boolean> roomCapacityCheckOptional = Optional.ofNullable(roomCapacityCheck);
+
+        return roomService.getRoomsBySetting(pageable, genderSettingOptional, roomCapacityCheckOptional);
     }
 }

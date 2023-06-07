@@ -4,6 +4,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.example.zzan.blocklist.entity.BlockList;
@@ -21,24 +22,30 @@ public class BlockListService {
 
 	private final BlockListRepository blockListRepository;
 	private final UserRepository userRepository;
-	public ResponseDto addBlacklist(Long blackListedUserId, User user) {
 
-		Optional<User> blackListedUserOptional= userRepository.findById(blackListedUserId);
+	@Transactional
+	public ResponseDto updateBlock(Long blockListedUserId, User user) {
+		Optional<User> blockListedUserOptional = userRepository.findById(blockListedUserId);
 
-
-		if(!blackListedUserOptional.isPresent()) {
+		if (!blockListedUserOptional.isPresent()) {
 			throw new ApiException(TARGET_USER_NOT_FOUND);
 		}
 
-		User blackListedUser=blackListedUserOptional.get();
+		User blockListedUser = blockListedUserOptional.get();
 
-		if(user.getId().equals(blackListedUser.getId())){
-			throw new ApiException(USER_CANNOT_REPORT_SELF);
+		if (user.getId().equals(blockListedUser.getId())) {
+			throw new ApiException(USER_CANNOT_BLOCK_SELF);
 		}
 
-		BlockList blockList =new BlockList(blackListedUserOptional.get(),user);
-		blockListRepository.save(blockList);
-		
-		return ResponseDto.setSuccess("차단되었습니다");
+		Optional<BlockList> existingBlock = blockListRepository.findByBlockListedUserAndBlockListingUser(blockListedUser, user);
+
+		if (existingBlock.isPresent()) {
+			blockListRepository.delete(existingBlock.get());
+			return ResponseDto.setSuccess("차단이 해제되었습니다.");
+		} else {
+			BlockList blockList = new BlockList(blockListedUser, user);
+			blockListRepository.save(blockList);
+			return ResponseDto.setSuccess("차단되었습니다.");
+		}
 	}
 }
