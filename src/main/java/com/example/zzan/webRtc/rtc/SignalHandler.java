@@ -77,9 +77,9 @@ public class SignalHandler extends TextWebSocketHandler {
                     Object sdp = message.getSdp();
 
                     logger.info("[ws] Signal: {}",
-                            candidate != null
-                                    ? candidate.toString().substring(0, 64)
-                                    : sdp.toString().substring(0, 64));
+                        candidate != null
+                            ? candidate.toString().substring(0, 64)
+                            : sdp.toString().substring(0, 64));
 
                     RoomResponseDto roomDto = rooms.get(roomId);
 
@@ -91,12 +91,12 @@ public class SignalHandler extends TextWebSocketHandler {
                             if (!client.getKey().equals(userId)) {
 
                                 sendMessage(client.getValue(),
-                                        new WebSocketMessage(
-                                                userId,
-                                                message.getType(),
-                                                roomId,
-                                                candidate,
-                                                sdp));
+                                    new WebSocketMessage(
+                                        userId,
+                                        message.getType(),
+                                        roomId,
+                                        candidate,
+                                        sdp));
                             }
                         }
                     }
@@ -107,7 +107,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
-                     rtcChatService.addUser(room, userId, session);
+                    rtcChatService.addUser(room, userId, session);
                     rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);
