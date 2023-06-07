@@ -1,8 +1,7 @@
 package com.example.zzan.mypage.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.example.zzan.global.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE;
@@ -41,6 +42,19 @@ public class S3Uploader {
 		String uploadImageUrl = putS3(uploadFile, fileName);
 		removeNewFile(uploadFile);
 		return uploadImageUrl;
+	}
+
+	public String getRandomImage(String dirName) {
+		ListObjectsRequest request = new ListObjectsRequest()
+				.withBucketName(bucket)
+				.withPrefix(dirName + "/")
+				.withDelimiter("/");
+
+		ObjectListing objectListing = amazonS3Client.listObjects(request);
+		List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
+
+		S3ObjectSummary randomSummary = objectSummaries.get(new Random().nextInt(objectSummaries.size()));
+		return amazonS3Client.getUrl(bucket, randomSummary.getKey()).toString();
 	}
 
 	private String putS3(File uploadFile, String fileName) {

@@ -1,10 +1,7 @@
 package com.example.zzan.room.service;
-import com.example.zzan.room.entity.GenderSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.example.zzan.blacklist.entity.Blacklist;
-import com.example.zzan.blacklist.repository.BlacklistRepository;
+import com.example.zzan.blocklist.entity.BlockList;
+import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.util.BadWords;
@@ -12,6 +9,7 @@ import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
+import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomHistoryRepository;
@@ -22,6 +20,8 @@ import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.Pageable;
@@ -53,45 +53,18 @@ public class RoomService {
     private final SseService sseService;
 
     private final S3Uploader s3Uploader;
-
-    public static boolean isMultipartFileEmpty(MultipartFile file) {
-        return file == null || file.isEmpty();
-    }
-    public String uploadFromUrl(String imageUrl) throws IOException {
-        // 이미지 다운로드
-        InputStream inputStream = new URL(imageUrl).openStream();
-        File tempFile = File.createTempFile("temp", ".jpg");
-        FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-        StreamUtils.copy(inputStream, fileOutputStream);
-        fileOutputStream.close();
-        inputStream.close();
-
-        // S3에 파일 업로드
-        String s3Url =  s3Uploader.upload(tempFile, "images");
-
-        // 임시 파일 삭제
-        tempFile.delete();
-
-        return s3Url;
-    }
-
-    private final BlacklistRepository blacklistRepository;
+    private final BlockListRepository blockListRepository;
+    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Transactional
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
-        room.setRoomCapacity(1); // Set room capacity as the host user is entering.
-
-        roomImageUrl = s3Uploader.upload(roomImage, "images");
-
-        if(roomImage == null){
-            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-        }
+        room.setRoomCapacity(1);
 
         String roomTitle = roomRequestDto.getTitle();
 
-        if(hasBadWord(roomTitle)){
+        if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
@@ -105,16 +78,13 @@ public class RoomService {
 
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
-        if(isMultipartFileEmpty(roomImage) == true) // Client 사진 Upload 요청 없을 때
-        {
-            String randomImage = "https://picsum.photos/200/300?random=" + room.getId();
-            roomImageUrl = uploadFromUrl(randomImage);
-            /*NOP*/
-//            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-        }
-        else{
+
+        if (roomImage.isEmpty()) {
+            roomImageUrl = s3Uploader.getRandomImage("Random");
+        } else {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
+
         room.setRoomImage(roomImageUrl);
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
@@ -141,7 +111,7 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) {
+    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
@@ -151,32 +121,16 @@ public class RoomService {
         }
 
         room.update(roomRequestDto);
-        if(isMultipartFileEmpty(roomImage) == true) // Client 사진 Upload 없을 때
-        {
-            String randomImage = "https://picsum.photos/200/300?random=" + room.getId();
-            try {
-                roomImageUrl = uploadFromUrl(randomImage);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            /*NOP*/
-//            return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-        }
-        else
-        {
-            if (room.getRoomImage() != null) {
-                s3Uploader.removeNewFile(new File(room.getRoomImage()));
-            }
-            try {
-                roomImageUrl = s3Uploader.upload(roomImage, "images");
-            } catch (IOException e) {
-                return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-            }
+        if (roomImage.isEmpty()) {
+            roomImageUrl = s3Uploader.getRandomImage("Random");
+        } else {
+            s3Uploader.removeNewFile(new File(room.getRoomImage()));
+            roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
         room.setRoomImage(roomImageUrl);
 
         String roomTitle = roomRequestDto.getTitle();
-        if(hasBadWord(roomTitle)){
+        if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
 
@@ -199,9 +153,9 @@ public class RoomService {
         }
     }
 
-    private boolean hasBadWord(String input){
-        for(String badWord : BadWords.koreaWord1){
-            if (input.contains(badWord)){
+    private boolean hasBadWord(String input) {
+        for (String badWord : BadWords.koreaWord1) {
+            if (input.contains(badWord)) {
                 return true;
             }
         }
@@ -213,14 +167,14 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        if (room.getRoomCapacity() >= 2) {
+        if (room.getRoomCapacity() >= 3) {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
-        List<Blacklist> userBlacklists = blacklistRepository.findAllByBlackListingUserOrderByCreatedAtDesc(user);
+        List<BlockList> userBlockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
 
-        for (Blacklist blacklist : userBlacklists) {
-            if (room.getHostUser().equals(blacklist.getBlackListedUser())) {
+        for (BlockList blockList : userBlockLists) {
+            if (room.getHostUser().equals(blockList.getBlockListedUser())) {
                 throw new ApiException(BLOCKED_USER);
             }
         }
@@ -246,9 +200,9 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        if(room.getHostUser().getId().equals(user.getId())){
+        if (room.getHostUser().getId().equals(user.getId())) {
             room.roomDelete(true);
-        }else if(!room.getHostUser().getId().equals(user.getId())){
+        } else if (!room.getHostUser().getId().equals(user.getId())) {
             room.setRoomCapacity(room.getRoomCapacity() - 1);
             roomRepository.save(room);
         }
@@ -256,14 +210,11 @@ public class RoomService {
         return ResponseDto.setSuccess("방나가기 성공", null);
     }
 
-
-    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
-
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
         Page<Room> rooms = roomRepository.findAllByTitleContainingAndRoomDeleteIsFalse(title, pageable);
         Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("검색 성공",roomList);
+        return ResponseDto.setSuccess("검색 성공", roomList);
     }
 
     @Transactional(readOnly = true)
@@ -271,11 +222,11 @@ public class RoomService {
                                                                 Optional<GenderSetting> genderSettingOptional,
                                                                 Optional<Boolean> hasGuestOptional) {
         Page<Room> roomPage;
-        if(genderSettingOptional.isPresent() && hasGuestOptional.isPresent()) {
+        if (genderSettingOptional.isPresent() && hasGuestOptional.isPresent()) {
             roomPage = roomRepository.findByHasGuestAndGenderSetting(pageable, hasGuestOptional.get(), genderSettingOptional.get());
-        } else if(genderSettingOptional.isPresent()) {
+        } else if (genderSettingOptional.isPresent()) {
             roomPage = roomRepository.findByGenderSetting(pageable, genderSettingOptional.get());
-        } else if(hasGuestOptional.isPresent()) {
+        } else if (hasGuestOptional.isPresent()) {
             roomPage = roomRepository.findByHasGuest(pageable, hasGuestOptional.get());
         } else {
             roomPage = roomRepository.findAll(pageable);
