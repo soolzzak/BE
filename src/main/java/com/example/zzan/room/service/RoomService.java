@@ -103,7 +103,7 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) {
+    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
@@ -116,14 +116,8 @@ public class RoomService {
         if (roomImage.isEmpty()) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
-            if (room.getRoomImage() != null) {
-                s3Uploader.removeNewFile(new File(room.getRoomImage()));
-            }
-            try {
-                roomImageUrl = s3Uploader.upload(roomImage, "images");
-            } catch (IOException e) {
-                return ResponseDto.setBadRequest("이미지를 업로드해주세요.");
-            }
+            s3Uploader.removeNewFile(new File(room.getRoomImage()));
+            roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
         room.setRoomImage(roomImageUrl);
 
