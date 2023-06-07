@@ -1,6 +1,11 @@
 package com.example.zzan.webRtc.rtc;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.room.entity.Room;
+import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
 import com.example.zzan.webRtc.service.RtcChatService;
@@ -23,7 +28,7 @@ import java.util.Map;
 public class SignalHandler extends TextWebSocketHandler {
 
     private final RtcChatService rtcChatService;
-
+    private final RoomRepository roomRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
@@ -108,10 +113,25 @@ public class SignalHandler extends TextWebSocketHandler {
                     rooms.put(roomId, room);
                     break;
 
+
+
                 case MSG_TYPE_LEAVE:
                     logger.info("[ws] {} is going to leave Room: #{}", userId, message.getData());
 
                     room = rooms.get(message.getData());
+                    Room realroom = roomRepository.findById(room.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+                    if(room.getHostId().equals(userId)){
+
+                        realroom.roomDelete(true);
+
+                    }else if(!room.getHostId().equals(userId)){
+
+                        realroom.setRoomCapacity(room.getRoomCapacity() - 1);
+                        roomRepository.save(realroom);
+
+                    }
+
 
                     break;
 
