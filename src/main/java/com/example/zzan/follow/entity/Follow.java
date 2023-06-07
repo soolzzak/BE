@@ -23,7 +23,6 @@ public class Follow extends Timestamped {
 	@JoinColumn(name = "FOLLOWER_ID", nullable = false)
 	private User followerUser;
 
-
 	public Follow(User followingUser, User followerUser){
 		this.followingUser = followingUser;
 		this.followerUser = followerUser;
