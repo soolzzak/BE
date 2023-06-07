@@ -55,7 +55,7 @@ public class RoomController {
     public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
                                                    @RequestPart(value = "roomRequestDto") RoomRequestDto roomRequestDto,
                                                    @RequestPart(value = "roomImage", required = false) MultipartFile roomImage,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return roomService.updateRoom(roomId, roomRequestDto, roomImage, userDetails.getUser());
     }
 
