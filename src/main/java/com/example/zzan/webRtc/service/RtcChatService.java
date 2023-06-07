@@ -25,7 +25,7 @@ public class RtcChatService {
 
         return roomDto.get().getUserList();
     }
-/////
+
     public ResponseDto addUser(RoomResponseDto roomResponseDto, Long userId, WebSocketSession session) {
 
         Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
@@ -35,7 +35,7 @@ public class RtcChatService {
         SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
         return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
     }
-    //
+
     public boolean findUserCount(WebSocketMessage webSocketMessage){
         RoomResponseDto room = UserListMap.getInstance().getUserMap().get(webSocketMessage.getData());
         log.info("ROOM COUNT : [{} ::: {}]",room.toString(),room.getUserList().size());
