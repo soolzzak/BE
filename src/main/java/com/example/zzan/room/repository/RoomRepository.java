@@ -16,10 +16,12 @@ import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
-	Page<Room> findByHasGuestAndGenderSetting(Pageable pageable, boolean hasGuest, GenderSetting genderSetting);
-	Page<Room> findByHasGuest(Pageable pageable, boolean hasGuest);
+	Page<Room> findByGenderSettingAndRoomCapacityLessThan(Pageable pageable, GenderSetting genderSetting, int roomCapacity);
+	Page<Room> findByRoomCapacityLessThan(Pageable pageable, int roomCapacity);
+
 	Page<Room> findByGenderSetting(Pageable pageable, GenderSetting genderSetting);
 	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
 	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
 	Page<Room> findAllByCategoryAndRoomDeleteIsFalse(Category category, Pageable pageable);
+
 }
