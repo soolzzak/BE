@@ -31,8 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_USERNAME;
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -143,10 +142,15 @@ public class MyPageService {
 	}
 
 	public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
-
 		Optional<User>OptionalUser=userRepository.findById(targetId);
+		if (!OptionalUser.isPresent()) {
+			throw new ApiException(USER_NOT_FOUND);
+		}
 
-		return ResponseDto.setSuccess("기록 조회하기 성공",new RelatedUserResponseDto(OptionalUser.get()));
+		User targetUser = OptionalUser.get();
+
+		boolean isFollowing = followRepository.findByFollowingUserAndFollowerUser(targetUser, user).isPresent();
+		return ResponseDto.setSuccess("기록 조회하기 성공", new RelatedUserResponseDto(targetUser, isFollowing));
 	}
 }
 

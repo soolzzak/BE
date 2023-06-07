@@ -20,7 +20,6 @@ public class ReportController {
 	@PostMapping("api/report/{userId}")
 	public ResponseDto userReport(@PathVariable("userId") Long userId, @RequestBody ReportRequestDto ReportRequestDto,@AuthenticationPrincipal
 		UserDetailsImpl userDetails){
-
 		return reportService.userReport(userId,ReportRequestDto,userDetails.getUser());
 	}
 }
