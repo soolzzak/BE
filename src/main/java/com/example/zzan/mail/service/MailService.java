@@ -39,6 +39,7 @@ public class MailService {
 
         String msg = "";
         msg += "<div style='margin:20px;'>";
+        msg += "<img src='https://mynice.s3.ap-northeast-2.amazonaws.com/Logo/caccfe52c4914a0499db657b4fdeb698.png' width='200' height='200'>";
         msg += "<h1> 안녕하세요 < honsoolzzak > 입니다. </h1>";
         msg += "<br>";
         msg += "<p>아래 코드를 복사해 입력해주세요<p>";

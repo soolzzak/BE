@@ -1,161 +1,106 @@
 package com.example.zzan.user.service;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.util.JwtUtil;
-import com.example.zzan.user.dto.KakaoUserInfoDto;
+import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
+import com.example.zzan.user.entity.KakaoUser;
 import com.example.zzan.user.entity.User;
-import com.example.zzan.user.entity.UserRole;
+import com.example.zzan.user.repository.KakaoUserRepository;
 import com.example.zzan.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+
+    @Value("${kakao.api.key}")
+    private String kakaoApiKey;
+
+    private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
 
-    private boolean ageCheck(String ageRange){
-        String[] age = ageRange.split("~");
-
-        if(Integer.parseInt(age[0]) < 20)
-            return false;
-        else
-            return true;
-    }
-
-    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
 
-        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
 
-        if(ageCheck(kakaoUserInfo.getAgeRange()) == false)
-            return "FAILED";
+        if(!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
+            kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
+        }
+        String token = jwtUtil.createToken(kakaoInfoDto.getKakaoId().toString());
 
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        response.addHeader("Authorization", token);
 
-        String createToken =  jwtUtil.createToken(kakaoUser, kakaoUser.getRole(),"Access");
-
-        return createToken;
+        Cookie cookie = new Cookie("Authorization", token.substring(7));
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
     }
+
     private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;");
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "b39a9a7ab117d1d1c9ca71fa61285f13");
-        body.add("redirect_uri", "http://localhost:8080/api/login/oauth2/code/kakao");
+        body.add("client_id", kakaoApiKey);
+        body.add("redirect_uri", "https://honsoolzzak.com");
         body.add("code", code);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(body, headers);
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class
-        );
+                HttpMethod.POST, kakaoTokenRequest, String.class);
 
+        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
     }
-    private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
 
+    // 토큰에서 사용자 정보 get
+    private KakaoInfoDto getUserInfo(String token) throws JsonProcessingException {
+        // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
+        // HTTP 요청 보내기
+        HttpEntity<MultiValueMap<String, String>> UserInfoRequest = new HttpEntity<>(headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
-                kakaoUserInfoRequest,
-                String.class
-        );
+                HttpMethod.POST, UserInfoRequest, String.class);
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-        Long id = jsonNode.get("id").asLong();
-        String nickname = jsonNode.get("properties")
-                .get("nickname").asText();
-        String imgurl = jsonNode.get("properties")
-                .get("thumbnail_image").asText();
-        Gender gender = jsonNode.get("kakao_account")
-                .get("gender").asText()  == "female" ? Gender.FEMALE : Gender.MALE;
-        String birthday = jsonNode.get("kakao_account")
-                .get("birthday").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
-        String ageRange = jsonNode.get("kakao_account")
-                .get("age_range").asText();
 
-        String birthdayMon = birthday.substring(0,2);
-        String birthdayDay = birthday.substring(2);
+        String username = jsonNode.get("properties").get("nickname").asText();
+        Long kakaoId = jsonNode.get("id").asLong();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
-        try {
-            date = formatter.parse("0000-"+birthdayMon+"-"+birthdayDay);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        log.info("카카오 사용자 정보: " + id + "," + email);
-        return new KakaoUserInfoDto(id,  email,nickname,imgurl,gender,date,ageRange);
-    }
-
-    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
-        Long kakaoId = kakaoUserInfo.getId();
-        User kakaoUser = userRepository.findUserByEmail(kakaoUserInfo.getEmail())
-                .orElse(null);
-        if (kakaoUser == null) {
-            String kakaoEmail = kakaoUserInfo.getEmail();
-            User sameEmailUser = userRepository.findUserByEmail(kakaoEmail).orElse(null);
-            if (sameEmailUser != null) {
-                kakaoUser = sameEmailUser;
-            } else {
-                String password = UUID.randomUUID().toString();
-                String encodedPassword = passwordEncoder.encode(password);
-                String email = kakaoUserInfo.getEmail();
-                kakaoUser = new User(email,
-                        encodedPassword,
-                        kakaoUserInfo.getNickname(),
-                        UserRole.USER,
-                        User.ProvidersList.KAKAO,
-                        kakaoUserInfo.getImgurl(),
-                        kakaoUserInfo.getGender(),
-                        kakaoUserInfo.getBirthday()
-                );
-            }
-            userRepository.save(kakaoUser);
-        }
-        return kakaoUser;
+        return new KakaoInfoDto(username, kakaoId);
     }
 }
+

@@ -18,17 +18,15 @@ public class MyPageResponseDto {
 	private String username;
 	private String email;
 	private int alcohol;
-	private String socialProvider;
 	private List<UserHistoryDto> metUser;
-	 private List<FollowResponseDto>followingUser;
-	 private List<BlockListDto> blockListedUser;
+	private List<FollowResponseDto>followingUser;
+	private List<BlockListDto> blockListedUser;
 
-	public MyPageResponseDto(User myPage, int alcohol, String socialProvider, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos){
+	public MyPageResponseDto(User myPage, int alcohol, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos){
 		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
 		this.email=myPage.getEmail();
 		this.alcohol=alcohol;
-		this.socialProvider=socialProvider;
 		this.metUser = metUser;
 		this.followingUser=followResponseDtos;
 		this.blockListedUser = blockListDtos;
@@ -38,6 +36,5 @@ public class MyPageResponseDto {
 		this.userImageUrl= myPage.getUserImage();
 		this.username= myPage.getUsername();
 	}
-
 
 }
