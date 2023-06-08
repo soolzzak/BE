@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class FollowResponseDto {
-	private Long UserId;
-	private String Username;
-	private String Image;
+	private Long userId;
+	private String username;
+	private String userImage;
 	private LocalDateTime createdAt;
 }
