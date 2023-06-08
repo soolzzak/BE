@@ -40,7 +40,7 @@ public class KakaoService {
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
 
-    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws IOException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws IOException {
         String accessToken = getToken(code);
 
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
@@ -66,10 +66,7 @@ public class KakaoService {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-//        String redirectUrl = "https://honsoolzzak.com";
-//        response.sendRedirect(redirectUrl);
-
-        return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
+        return "redirect:https://honsoolzzak.com";
     }
 
     private String getToken(String code) throws JsonProcessingException {
