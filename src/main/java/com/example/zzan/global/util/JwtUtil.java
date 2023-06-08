@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Slf4j
@@ -47,8 +49,7 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     public TokenDto createAllToken(User user, UserRole role) {
@@ -80,6 +81,21 @@ public class JwtUtil {
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + time))
                 .compact();
+    }
+
+    public String createToken(String kakaoId) {
+        Date date = new Date();
+        Date exprTime = (Date)Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .signWith(SignatureAlgorithm.HS512, key)
+                        .claim("Authorization", "USER")
+                        .setSubject(kakaoId)
+                        .setExpiration(exprTime)
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
     }
     public Long getExpiration(String accessToken){
 
@@ -123,7 +139,6 @@ public class JwtUtil {
 
         String userEmail = getUserInfoFromToken(token);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
-
         return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
     }
 

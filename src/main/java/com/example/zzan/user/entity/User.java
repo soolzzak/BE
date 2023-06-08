@@ -1,6 +1,7 @@
 package com.example.zzan.user.entity;
 
 import com.example.zzan.room.entity.Room;
+import com.example.zzan.user.dto.KakaoInfoDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,6 +20,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
+
+    @Column
+    private String kakaoId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -64,6 +68,7 @@ public class User {
     @Column(name = "ROOM_TITLE")
     private String roomTitle;
 
+
     @PrePersist
     public void setDefaultValues() {
         if (alcohol == 0) {
@@ -80,7 +85,13 @@ public class User {
         this.gender = gender;
     }
 
-    public User(String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
+    public User(KakaoInfoDto kakaoInfoDto) {
+        this.username = kakaoInfoDto.getUsername();
+        this.kakaoId = kakaoInfoDto.getKakaoId().toString();
+    }
+
+    public User(KakaoInfoDto kakaoInfoDto, String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
+        this.kakaoId =kakaoInfoDto.getKakaoId().toString();
         this.email = email;
         this.password = password;
         this.username = username;

@@ -1,10 +1,13 @@
 package com.example.zzan.user.controller;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
+import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @Tag(name = "UserController", description = "로그인 및 회원가입 파트")
 @Slf4j
 @CrossOrigin
@@ -22,10 +27,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final KakaoService kakaoService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserRequestDto requestDto) {
         return userService.signup(requestDto);
+    }
+
+    @GetMapping("/login")
+    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException, ParseException {
+        return kakaoService.kakaoLogin (code, response);
     }
 
     @PostMapping("/login")
