@@ -48,9 +48,9 @@ public class KakaoService {
         }
         String token = jwtUtil.createToken(kakaoInfoDto.getKakaoId().toString());
 
-        response.addHeader("Authorization", token);
+        response.addHeader("AccessToken", token);
 
-        Cookie cookie = new Cookie("Authorization", token.substring(7));
+        Cookie cookie = new Cookie("AccessToken", token.substring(7));
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/");
         response.addCookie(cookie);

@@ -7,6 +7,7 @@ import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
+import com.example.zzan.user.repository.KakaoUserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -45,13 +46,14 @@ public class JwtUtil {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private Key key;
+    private Key kakaoKey;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
-        //key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        kakaoKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     public TokenDto createAllToken(User user, UserRole role) {
@@ -96,7 +98,7 @@ public class JwtUtil {
                         .setSubject(kakaoId)
                         .setExpiration(exprTime)
                         .setIssuedAt(date)
-                        .signWith(key, signatureAlgorithm)
+                        .signWith(kakaoKey, signatureAlgorithm)
                         .compact();
     }
     public Long getExpiration(String accessToken){
