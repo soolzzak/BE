@@ -5,6 +5,7 @@ import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "UserController", description = "로그인 및 회원가입 파트")
 @Slf4j
 @CrossOrigin
 @RestController

@@ -7,6 +7,8 @@ import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
+
+@Tag(name = "TokenController", description = "토큰 파트")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

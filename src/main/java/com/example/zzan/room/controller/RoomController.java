@@ -7,6 +7,8 @@ import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.service.RoomService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
+@Tag(name = "RoomController", description = "혼술방 파트")
 @Slf4j
 @RestController
 @CrossOrigin

@@ -46,8 +46,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-
                 .requestMatchers( "/api/signup/**", "/api/login/**", "/api/main", "/api/rooms", "/test/**", "/signal","/api/search/**","/api/change_password", "/api/rooms/setting").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll() // 스웨거 관련 경로 추가
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
