@@ -26,6 +26,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -59,12 +61,14 @@ public class KakaoService {
 
         response.addHeader("AccessToken", token);
 
-        Cookie cookie = new Cookie("AccessToken", token.substring(7));
+        Cookie cookie = new Cookie("AccessToken", token);
+//        Cookie cookie = new Cookie("AccessToken", token.substring(7));
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/");
         response.addCookie(cookie);
 
         String redirectUrl = "https://honsoolzzak.com";
+//        String redirectUrl = "https://honsoolzzak.com?token=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
 
         return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
