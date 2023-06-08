@@ -71,7 +71,12 @@ public class SignalHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        sendMessage(session, new WebSocketMessage(null, MSG_TYPE_JOIN, null, null, null));
+
+        Long sessionRoomId = sessions2.get(session);
+        RoomResponseDto roomDto = rooms.get(sessionRoomId);
+        Long sessionHostId=roomDto.getHostId();
+
+        sendMessage(session, new WebSocketMessage(sessionHostId, MSG_TYPE_JOIN, sessionRoomId, null, null));
     }
 
     @Override
@@ -152,8 +157,6 @@ public class SignalHandler extends TextWebSocketHandler {
                         break;
                     }
                     break;
-
-
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
