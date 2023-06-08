@@ -52,7 +52,6 @@ public class RoomResponseDto {
     }
 
     public void putDelete(boolean roomDelete) {
-
         this.roomDelete = roomDelete;
     }
 }
