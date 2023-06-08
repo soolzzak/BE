@@ -36,12 +36,12 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException, ParseException {
+    public String kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException, ParseException {
 
         String accessToken = response.getHeader("ACCESS_KEY");
         response.setHeader("ACCESS_KEY", "Bearer " + accessToken);
 
-        return kakaoService.kakaoLogin (code, response);
+        return kakaoService.kakaoLogin(code, response);
     }
 
     @PostMapping("/login")
