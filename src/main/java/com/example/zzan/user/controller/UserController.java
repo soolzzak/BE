@@ -31,6 +31,11 @@ public class UserController {
         return userService.login(requestDto, response);
     }
 
+//    @GetMapping("/oauth/kakao/callback")
+//    public ResponseEntity<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+//        return kakaoService.kakaoLogin(code, response);
+//    }
+
     @PutMapping("/change_password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordRequestDto passwordRequestDto) {
         return userService.changePassword(passwordRequestDto);
