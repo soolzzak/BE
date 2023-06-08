@@ -79,7 +79,7 @@ public class RoomService {
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
 
-        if (roomImage.isEmpty()) {
+        if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
@@ -120,7 +120,7 @@ public class RoomService {
         }
 
         room.update(roomRequestDto);
-        if (roomImage.isEmpty()) {
+        if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             s3Uploader.removeNewFile(new File(room.getRoomImage()));
