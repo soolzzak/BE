@@ -50,16 +50,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (validationError == null) {
                 String userEmail = jwtUtil.getUserInfoFromToken(access_token);
                 setAuthentication(userEmail);
-            } else {
-                sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
-                return;
-            }
-        } else if (refresh_token != null) {
-            if (jwtUtil.refreshTokenValidation(refresh_token)) {
+            } else if (refresh_token != null && jwtUtil.refreshTokenValidation(refresh_token)) {
+                // access token has expired and a valid refresh token is present
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                        () -> new ApiException(EMAIL_NOT_FOUND)
+                    () -> new ApiException(EMAIL_NOT_FOUND)
                 );
                 String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
                 jwtUtil.setHeaderAccessToken(response, newAccessToken);
