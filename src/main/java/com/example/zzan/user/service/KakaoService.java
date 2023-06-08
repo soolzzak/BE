@@ -46,9 +46,18 @@ public class KakaoService {
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
         }
-        String token = jwtUtil.createToken(kakaoInfoDto.getKakaoId().toString());
 
-        response.addHeader("Access Token", token);
+        String token = jwtUtil.createToken(
+                kakaoInfoDto.getUsername(),
+                kakaoInfoDto.getKakaoId(),
+                kakaoInfoDto.getKakaoImage(),
+                kakaoInfoDto.getEmail(),
+                kakaoInfoDto.getGender(),
+                kakaoInfoDto.getAgeRange(),
+                kakaoInfoDto.getBirthday()
+        );
+
+        response.addHeader("AccessToken", token);
 
         Cookie cookie = new Cookie("AccessToken", token.substring(7));
         cookie.setMaxAge(Integer.MAX_VALUE);
@@ -68,6 +77,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
+//        body.add("redirect_uri", "http://localhost:8080/api/login");
         body.add("redirect_uri", "https://api.honsoolzzak.com/api/login");
         body.add("code", code);
 
