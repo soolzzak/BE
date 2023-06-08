@@ -20,9 +20,6 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(unique = true)
-    private Long kakaoId;
-
     @Column(nullable = false, unique = true)
     private String email;
 
