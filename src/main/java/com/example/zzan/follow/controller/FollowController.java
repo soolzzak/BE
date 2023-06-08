@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class FollowController {
-
+//
 	private final FollowService followService;
 
 	@PutMapping("/follow/{followId}")

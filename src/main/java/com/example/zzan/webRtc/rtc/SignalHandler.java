@@ -1,9 +1,12 @@
 package com.example.zzan.webRtc.rtc;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
+import com.example.zzan.webRtc.dto.SessionListMap;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
 import com.example.zzan.webRtc.service.RtcChatService;
@@ -20,8 +23,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
-
 
 @Component
 @RequiredArgsConstructor
@@ -32,8 +33,11 @@ public class SignalHandler extends TextWebSocketHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
+    ////////
+    private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
+    private Map<WebSocketSession, Long> sessions2 = SessionListMap.getInstance().getSessionMapToRoom();
 
-
+    ///////////
     private static final String MSG_TYPE_OFFER = "offer";
     // SDP Answer message
     private static final String MSG_TYPE_ANSWER = "answer";
@@ -43,12 +47,27 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_JOIN = "join";
     // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
-
+    ///
     // 연결 끊어졌을 때 이벤트처리
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        logger.info("[ws] Session has been closed with status [{} {}]", status, session);
+
+        Long sessionUserId = sessions.get(session);
+        Long sessionRoomId = sessions2.get(session);
+        RoomResponseDto roomDto = rooms.get(sessionRoomId);
+        Room realroom = roomRepository.findById(roomDto.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        if(roomDto.getHostId().equals(sessionUserId)){
+            realroom.roomDelete(true);
+            roomRepository.save(realroom);
+        }else if(!roomDto.getHostId().equals(sessionUserId)){
+            realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
+            roomRepository.save(realroom);
+        }
+        // sessions.remove(session);
+        // sessions2.remove(session);
     }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -77,9 +96,9 @@ public class SignalHandler extends TextWebSocketHandler {
                     Object sdp = message.getSdp();
 
                     logger.info("[ws] Signal: {}",
-                            candidate != null
-                                    ? candidate.toString().substring(0, 64)
-                                    : sdp.toString().substring(0, 64));
+                        candidate != null
+                            ? candidate.toString().substring(0, 64)
+                            : sdp.toString().substring(0, 64));
 
                     RoomResponseDto roomDto = rooms.get(roomId);
 
@@ -91,12 +110,12 @@ public class SignalHandler extends TextWebSocketHandler {
                             if (!client.getKey().equals(userId)) {
 
                                 sendMessage(client.getValue(),
-                                        new WebSocketMessage(
-                                                userId,
-                                                message.getType(),
-                                                roomId,
-                                                candidate,
-                                                sdp));
+                                    new WebSocketMessage(
+                                        userId,
+                                        message.getType(),
+                                        roomId,
+                                        candidate,
+                                        sdp));
                             }
                         }
                     }
@@ -107,7 +126,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
 
-                    rtcChatService.addUser(room, userId, session);
+                    // rtcChatService.addUser(room, userId, session);
                     rtcChatService.addUser(room, userId, session);
 
                     rooms.put(roomId, room);
@@ -132,10 +151,9 @@ public class SignalHandler extends TextWebSocketHandler {
                         roomRepository.save(realroom);
                         break;
                     }
-
-
-
                     break;
+
+
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
