@@ -12,21 +12,12 @@ public class RelatedUserResponseDto {
 	private String userImage;
 	private String username;
 	private String email;
+	private String roomTitle;
 	private int alcohol;
 	private boolean alcoholUp;
 	private boolean alcoholDown;
 	private boolean follow;
 	private boolean block;
-
-	public RelatedUserResponseDto(User myPage) {
-		this.userId = myPage.getId();
-		this.userImage = myPage.getUserImage();
-		this.username = myPage.getUsername();
-		this.email = myPage.getEmail();
-		this.alcohol = myPage.getAlcohol();
-		this.alcoholUp = myPage.isAlcoholUp();
-		this.alcoholDown = myPage.isAlcoholDown();
-	}
 
 	public RelatedUserResponseDto(User myPage, boolean follow, boolean block) {
 		this.userId = myPage.getId();
@@ -34,6 +25,7 @@ public class RelatedUserResponseDto {
 		this.username = myPage.getUsername();
 		this.email = myPage.getEmail();
 		this.alcohol = myPage.getAlcohol();
+		this.roomTitle = myPage.getRoomTitle();
 		this.alcoholUp = myPage.isAlcoholUp();
 		this.alcoholDown = myPage.isAlcoholDown();
 		this.follow = follow;

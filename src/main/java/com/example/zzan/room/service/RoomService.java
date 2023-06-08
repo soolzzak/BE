@@ -16,6 +16,7 @@ import com.example.zzan.room.repository.RoomHistoryRepository;
 import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.sse.service.SseService;
 import com.example.zzan.user.entity.User;
+import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.userHistory.repository.UserHistoryRepository;
 import com.example.zzan.webRtc.dto.UserListMap;
@@ -43,6 +44,8 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomHistoryRepository roomHistoryRepository;
+    private final UserRepository userRepository;
+
 
     private final UserHistoryRepository userHistoryRepository;
     private final SseService sseService;
@@ -69,6 +72,9 @@ public class RoomService {
             if (roomPassword == null || roomPassword.isEmpty())
                 return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
         }
+
+        user.setRoomTitle(roomTitle);
+        userRepository.save(user);
 
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
@@ -136,7 +142,6 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
-
         if (room.getHostUser().getId().equals(user.getId())) {
             roomRepository.delete(room);
             return ResponseDto.setSuccess("방을 삭제하였습니다.", null);
@@ -174,6 +179,13 @@ public class RoomService {
         room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
 
+        if (room.getTitle() != null) {
+            user.setRoomTitle(room.getTitle());
+            userRepository.save(user);
+        } else {
+            throw new ApiException(ROOM_NOT_FOUND);
+        }
+
         UserHistory userHistory = new UserHistory();
         userHistory.setHostUser(room.getHostUser());
         userHistory.setGuestUser(user);
@@ -197,7 +209,6 @@ public class RoomService {
             room.setRoomCapacity(room.getRoomCapacity() - 1);
             roomRepository.save(room);
         }
-
         return ResponseDto.setSuccess("방나가기 성공", null);
     }
 
