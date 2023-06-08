@@ -72,11 +72,11 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
 
-        Long sessionRoomId = sessions2.get(session);
-        RoomResponseDto roomDto = rooms.get(sessionRoomId);
-        Long sessionHostId=roomDto.getHostId();
+//        Long sessionRoomId = sessions2.get(session);
+//        RoomResponseDto roomDto = rooms.get(sessionRoomId);
+//        Long sessionHostId=roomDto.getHostId();
 
-        sendMessage(session, new WebSocketMessage(sessionHostId, MSG_TYPE_JOIN, null, null, null));
+        sendMessage(session, new WebSocketMessage(null, MSG_TYPE_JOIN, null, null, null));
     }
 
     @Override

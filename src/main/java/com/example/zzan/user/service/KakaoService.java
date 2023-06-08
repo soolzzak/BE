@@ -25,6 +25,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class KakaoService {
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
 
-    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws IOException {
         String accessToken = getToken(code);
 
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
@@ -52,6 +54,10 @@ public class KakaoService {
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/");
         response.addCookie(cookie);
+
+        String redirectUrl = "https://honsoolzzak.com";
+        response.sendRedirect(redirectUrl);
+
         return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
     }
 

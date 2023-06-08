@@ -49,7 +49,9 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        byte[] bytes = Base64.getDecoder().decode(secretKey);
+        key = Keys.hmacShaKeyFor(bytes);
+        //key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     public TokenDto createAllToken(User user, UserRole role) {
