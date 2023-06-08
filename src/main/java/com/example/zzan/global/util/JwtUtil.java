@@ -7,7 +7,6 @@ import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
-import com.example.zzan.user.repository.KakaoUserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -94,8 +93,8 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .signWith(SignatureAlgorithm.HS512, key)
-                        .claim("Authorization", "USER")
+                        .signWith(SignatureAlgorithm.HS512, kakaoKey)
+                        .claim("ACCESS_KEY", "USER")
                         .setSubject(kakaoId)
                         .setExpiration(exprTime)
                         .setIssuedAt(date)
