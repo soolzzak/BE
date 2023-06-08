@@ -5,6 +5,7 @@ import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import io.jsonwebtoken.*;
@@ -86,7 +87,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createToken(String kakaoId) {
+    public String createToken(String username, Long kakaoId, String kakaoImage, String email, Gender gender, String ageRange, String birthday) {
         Date date = new Date();
         Date exprTime = (Date)Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
@@ -94,7 +95,13 @@ public class JwtUtil {
                 Jwts.builder()
                         .signWith(SignatureAlgorithm.HS512, kakaoKey)
                         .claim("ACCESS_KEY", "USER")
-                        .setSubject(kakaoId)
+                        .setSubject(kakaoId.toString())
+                        .claim("username", username)
+                        .claim("kakaoImage", kakaoImage)
+                        .claim("email", email)
+                        .claim("gender", gender)
+                        .claim("ageRange", ageRange)
+                        .claim("birthday", birthday)
                         .setExpiration(exprTime)
                         .setIssuedAt(date)
                         .signWith(kakaoKey, signatureAlgorithm)
