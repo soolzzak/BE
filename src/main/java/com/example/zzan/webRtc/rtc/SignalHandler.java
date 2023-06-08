@@ -76,7 +76,8 @@ public class SignalHandler extends TextWebSocketHandler {
         RoomResponseDto roomDto = rooms.get(sessionRoomId);
         Long sessionHostId=roomDto.getHostId();
 
-        sendMessage(session, new WebSocketMessage(sessionHostId, MSG_TYPE_JOIN, sessionRoomId, null, null));
+
+        sendMessage(session, new WebSocketMessage(sessionHostId, MSG_TYPE_JOIN, null, null, null));
     }
 
     @Override
