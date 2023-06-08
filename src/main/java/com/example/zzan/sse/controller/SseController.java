@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "BlockListController", description = "SSe 파트")
 @RestController
 public class SseController {
     private final SseService sseService;
