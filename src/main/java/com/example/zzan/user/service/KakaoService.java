@@ -59,16 +59,14 @@ public class KakaoService {
                 kakaoInfoDto.getBirthday()
         );
 
-        response.addHeader("AccessToken", token);
+        response.addHeader("ACCESS_KEY", token);
 
-        Cookie cookie = new Cookie("AccessToken", token);
-//        Cookie cookie = new Cookie("AccessToken", token.substring(7));
+        Cookie cookie = new Cookie("AccessToken", token.substring(7));
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/");
         response.addCookie(cookie);
 
         String redirectUrl = "https://honsoolzzak.com";
-//        String redirectUrl = "https://honsoolzzak.com?token=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
 
         return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
