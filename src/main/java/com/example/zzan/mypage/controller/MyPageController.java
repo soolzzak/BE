@@ -6,6 +6,8 @@ import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
 import com.example.zzan.mypage.dto.RelatedUserResponseDto;
 import com.example.zzan.mypage.service.MyPageService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,11 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "MyPageController", description = "마이페이지 파트")
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class myPageController {
+public class MyPageController {
 
 	private final MyPageService myPageService;
 

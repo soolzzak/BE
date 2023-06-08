@@ -8,6 +8,8 @@ import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name = "UserController", description = "로그인 및 회원가입 파트")
 @Slf4j
 @CrossOrigin
 @RestController
