@@ -55,8 +55,8 @@ public class KakaoService {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        String redirectUrl = "https://honsoolzzak.com";
-        response.sendRedirect(redirectUrl);
+        // String redirectUrl = "https://honsoolzzak.com";
+        // response.sendRedirect(redirectUrl);
 
         return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
     }
