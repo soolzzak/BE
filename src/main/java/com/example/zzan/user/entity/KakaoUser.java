@@ -19,9 +19,29 @@ public class KakaoUser {
     @Column(nullable = false)
     private String username;
 
+    @Column
+    private String kakaoImage;
+
+    @Column
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column
+    private String ageRange;
+
+    @Column
+    private String birthday;
+
     public KakaoUser(KakaoInfoDto kakaoInfoDto) {
         this.id = kakaoInfoDto.getKakaoId();
         this.username = kakaoInfoDto.getUsername();
         this.kakaoId = kakaoInfoDto.getKakaoId().toString();
+        this.kakaoImage = kakaoInfoDto.getKakaoImage();
+        this.email = kakaoInfoDto.getEmail();
+        this.gender = kakaoInfoDto.getGender();
+        this.ageRange = kakaoInfoDto.getAgeRange();
+        this.birthday = kakaoInfoDto.getBirthday();
     }
 }

@@ -43,12 +43,12 @@ public class KakaoService {
 
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
 
-        if(!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
+        if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
         }
         String token = jwtUtil.createToken(kakaoInfoDto.getKakaoId().toString());
 
-        response.addHeader("AccessToken", token);
+        response.addHeader("Access Token", token);
 
         Cookie cookie = new Cookie("AccessToken", token.substring(7));
         cookie.setMaxAge(Integer.MAX_VALUE);
@@ -105,8 +105,20 @@ public class KakaoService {
 
         String username = jsonNode.get("properties").get("nickname").asText();
         Long kakaoId = jsonNode.get("id").asLong();
+        String kakaoImage = jsonNode.get("properties").get("profile_image").asText();
+        String email = jsonNode.get("kakao_account").get("email").asText();
+        Gender gender = Gender.valueOf(jsonNode.get("kakao_account").get("gender").asText().toUpperCase());
+        String ageRange = jsonNode.get("kakao_account").get("age_range").asText();
+        String birthday = jsonNode.get("kakao_account").get("birthday").asText();
 
-        return new KakaoInfoDto(username, kakaoId);
+        KakaoInfoDto kakaoInfoDto = new KakaoInfoDto(username, kakaoId, kakaoImage, email, gender, ageRange, birthday);
+        kakaoInfoDto.setKakaoImage(kakaoImage);
+        kakaoInfoDto.setEmail(email);
+        kakaoInfoDto.setGender(gender);
+        kakaoInfoDto.setAgeRange(ageRange);
+        kakaoInfoDto.setBirthday(birthday);
+
+        return kakaoInfoDto;
     }
 }
 
