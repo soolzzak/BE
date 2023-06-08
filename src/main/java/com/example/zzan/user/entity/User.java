@@ -64,6 +64,9 @@ public class User {
     @JoinColumn(name="ROOM_ID")
     private Room room;
 
+    @Column(name = "ROOM_TITLE")
+    private String roomTitle;
+
     @PrePersist
     public void setDefaultValues() {
         if (alcohol == 0) {
