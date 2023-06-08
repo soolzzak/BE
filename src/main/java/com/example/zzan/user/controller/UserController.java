@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @Tag(name = "UserController", description = "로그인 및 회원가입 파트")
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException, ParseException {
+    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException, ParseException {
         return kakaoService.kakaoLogin (code, response);
     }
 
