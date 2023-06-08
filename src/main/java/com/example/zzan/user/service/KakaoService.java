@@ -66,8 +66,8 @@ public class KakaoService {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        String redirectUrl = "https://honsoolzzak.com";
-        response.sendRedirect(redirectUrl);
+//        String redirectUrl = "https://honsoolzzak.com";
+//        response.sendRedirect(redirectUrl);
 
         return ResponseDto.setSuccess("로그인 성공", kakaoInfoDto.getUsername());
     }
@@ -80,7 +80,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
 //        body.add("redirect_uri", "http://localhost:8080/api/login");
-        body.add("redirect_uri", "https://api.honsoolzzak.com/api/login");
+        body.add("redirect_uri", "https://honsoolzzak.com");
         body.add("code", code);
 
         // HTTP 요청 보내기
