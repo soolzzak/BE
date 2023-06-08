@@ -29,9 +29,6 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    @Column(unique = true)
-    private Long kakaoId;
-
     @Column(nullable = false)
     private Date birthday;
 
