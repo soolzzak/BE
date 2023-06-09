@@ -103,11 +103,23 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Page<RoomResponseDto>> chooseCategory(Category category, Pageable pageable) {
-        Page<Room> roomPage = roomRepository.findAllByCategoryAndRoomDeleteIsFalse(category, pageable);
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(Category category, Pageable pageable,
+                                                                           Optional<GenderSetting> genderSettingOptional,
+                                                                           Optional<Boolean> roomCapacityCheckOptional) {
+        Page<Room> roomPage;
+        if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+            roomPage = roomRepository.findByCategoryAndGenderSettingAndRoomCapacityLessThan(category, pageable, genderSettingOptional.get(), 2);
+        } else if (genderSettingOptional.isPresent()) {
+            roomPage = roomRepository.findByCategoryAndGenderSetting(category, pageable, genderSettingOptional.get());
+        } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+            roomPage = roomRepository.findByCategoryAndRoomCapacityLessThan(category, pageable, 2);
+        } else {
+            roomPage = roomRepository.findByCategory(category, pageable);
+        }
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("카테고리 검색 성공", roomList);
+        return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
+
 
     @Transactional
     public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
@@ -217,23 +229,5 @@ public class RoomService {
         Page<Room> rooms = roomRepository.findAllByTitleContainingAndRoomDeleteIsFalse(title, pageable);
         Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("검색 성공", roomList);
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(Pageable pageable,
-                                                                Optional<GenderSetting> genderSettingOptional,
-                                                                Optional<Boolean> roomCapacityCheckOptional) {
-        Page<Room> roomPage;
-        if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
-            roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThan(pageable, genderSettingOptional.get(), 2);
-        } else if (genderSettingOptional.isPresent()) {
-            roomPage = roomRepository.findByGenderSetting(pageable, genderSettingOptional.get());
-        } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
-            roomPage = roomRepository.findByRoomCapacityLessThan(pageable, 2);
-        } else {
-            roomPage = roomRepository.findAll(pageable);
-        }
-        Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
 }

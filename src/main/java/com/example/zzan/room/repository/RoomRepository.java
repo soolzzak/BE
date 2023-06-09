@@ -10,12 +10,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
-	Page<Room> findByGenderSettingAndRoomCapacityLessThan(Pageable pageable, GenderSetting genderSetting, int roomCapacity);
-	Page<Room> findByRoomCapacityLessThan(Pageable pageable, int roomCapacity);
-
-	Page<Room> findByGenderSetting(Pageable pageable, GenderSetting genderSetting);
 	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
 	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
-	Page<Room> findAllByCategoryAndRoomDeleteIsFalse(Category category, Pageable pageable);
-
+    Page<Room> findByCategoryAndGenderSettingAndRoomCapacityLessThan(Category category, Pageable pageable, GenderSetting genderSetting, int i);
+	Page<Room> findByCategoryAndGenderSetting(Category category, Pageable pageable, GenderSetting genderSetting);
+	Page<Room> findByCategoryAndRoomCapacityLessThan(Category category, Pageable pageable, int i);
+	Page<Room> findByCategory(Category category, Pageable pageable);
 }
