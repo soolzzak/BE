@@ -18,11 +18,11 @@ public class LikeController {
 
     @PutMapping("/alcohol/like/{targetId}")
     public ResponseDto likeUser(@PathVariable Long targetId) {
-        return likeService.updateAlcohol(targetId, true);
+        return likeService.increaseAlcohol(targetId, true);
     }
 
     @PutMapping("/alcohol/dislike/{targetId}")
     public ResponseDto dislikeUser(@PathVariable Long targetId) {
-        return likeService.updateAlcohol(targetId, false);
+        return likeService.decreaseAlcohol(targetId, false);
     }
 }

@@ -53,7 +53,6 @@ public class JwtUtil {
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
-
         kakaoKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
