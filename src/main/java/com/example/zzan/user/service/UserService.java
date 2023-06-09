@@ -7,6 +7,7 @@ import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.BadWords;
 import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.mypage.service.S3Uploader;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -39,6 +40,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
 
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -83,7 +85,7 @@ public class UserService {
             throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
         }
 
-        User user = new User(userEmail, userPassword, username, role, null, gender);
+        User user = new User(userEmail, userPassword, username, role, s3Uploader.getSingleImage("Logo","caccfe52c4914a0499db657b4fdeb698.png"), gender);
         user.setBirthday(birthday);
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.", null));
