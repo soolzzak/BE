@@ -23,9 +23,7 @@ public class WebRtcConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
-            .setAllowedOrigins("*")
-            .withSockJS()
-            .setHeartbeatTime(40000);
+                .setAllowedOrigins("*");
     }
     // @Bean
     // public ServletServerContainerFactoryBean createWebSocketContainer() {
