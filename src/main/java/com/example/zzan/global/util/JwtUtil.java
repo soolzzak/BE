@@ -107,6 +107,7 @@ public class JwtUtil {
                         .signWith(kakaoKey, signatureAlgorithm)
                         .compact();
     }
+
     public Long getExpiration(String accessToken){
 
         Date expiration = Jwts.parserBuilder().setSigningKey(secretKey)
@@ -143,13 +144,21 @@ public class JwtUtil {
 
     public Boolean refreshTokenValidation(String token) {
         String validationError = validateToken(token);
+        log.info("Adding user {} to blacklist for user {}", validationError, token);
         if (validationError != null){
             return false;
         }
 
         String userEmail = getUserInfoFromToken(token);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
+        String actualRefreshToken = refreshToken.get().getRefreshToken();
+        // log.info("Adding user {} to blacklist for user {}", userEmail, refreshToken);
+
+        // if (token.startsWith("Bearer ")) {
+        //     token = token.substring(7);
+        // }
+
+        return refreshToken.isPresent() && token.equals(actualRefreshToken);
     }
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {

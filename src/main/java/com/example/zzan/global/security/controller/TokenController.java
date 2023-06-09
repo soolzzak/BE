@@ -10,6 +10,8 @@ import com.example.zzan.user.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
 
+@Slf4j
 @Tag(name = "TokenController", description = "토큰 파트")
 @RestController
 @RequestMapping("/api")
@@ -34,20 +37,26 @@ public class TokenController {
     @PostMapping("/getAccessToken")
     public ResponseEntity<ResponseDto<TokenDto>> getAccessTokenFromRefreshToken(@RequestHeader(REFRESH_KEY) String refreshToken) {
 
-        if (jwtUtil.refreshTokenValidation(refreshToken)) {
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring("Bearer ".length());
+        }
+
+         if (jwtUtil.refreshTokenValidation(refreshToken)) {
             String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                     () -> new ApiException(EMAIL_NOT_FOUND)
             );
             String newAccessToken = jwtUtil.createToken(user, UserRole.USER, JwtUtil.ACCESS_KEY);
 
+            log.info("Adding user {} to blacklist for user {}", newAccessToken);
             HttpHeaders headers = new HttpHeaders();
             headers.add(JwtUtil.ACCESS_KEY, newAccessToken);
 
             TokenDto tokenDto = new TokenDto(newAccessToken, refreshToken);
 
+        log.info("Adding user {} to blacklist for user {}",newAccessToken);
             return ResponseEntity.ok().headers(headers).body(ResponseDto.setSuccess("Access Token 재발행 하였습니다.", tokenDto));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token 값이 만료되었습니다."));
+         }
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token 값이 만료되었습니다."));
     }
 }
