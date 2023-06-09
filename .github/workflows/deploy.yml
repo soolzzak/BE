@@ -40,8 +40,8 @@ jobs:
     - name: Set YML
       run: |
         mkdir -p src/main/resources
-        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-        echo "${{ secrets.APPLICATION_NAVERMAIL_YML }}" | base64 --decode > src/main/resources/application-navermail.yml
+        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/master/resources/application.yml
+        echo "${{ secrets.APPLICATION_NAVERMAIL_YML }}" | base64 --decode > src/master/resources/application-navermail.yml
         find src
 
     # (5) Gradle build (Test 제외)
