@@ -33,8 +33,14 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/main")
-    public ResponseDto<Page<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return roomService.getRooms(pageable);
+    public ResponseDto<Page<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                                       @RequestParam(required = false) GenderSetting genderSetting,
+                                                       @RequestParam(required = false) Boolean roomCapacityCheck
+    ) {
+        Optional<GenderSetting> genderSettingOptional = Optional.ofNullable(genderSetting);
+        Optional<Boolean> roomCapacityCheckOptional = Optional.ofNullable(roomCapacityCheck);
+
+        return roomService.getRooms(pageable, genderSettingOptional, roomCapacityCheckOptional);
     }
 
 
