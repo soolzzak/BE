@@ -3,7 +3,6 @@ package com.example.zzan.mail.controller;
 import com.example.zzan.mail.dto.MailRequestDto;
 import com.example.zzan.mail.dto.MailResponseDto;
 import com.example.zzan.mail.service.MailService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

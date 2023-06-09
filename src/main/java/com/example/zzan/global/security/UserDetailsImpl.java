@@ -1,6 +1,5 @@
 package com.example.zzan.global.security;
 
-
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import org.springframework.security.core.GrantedAuthority;

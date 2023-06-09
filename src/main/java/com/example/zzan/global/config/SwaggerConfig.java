@@ -1,11 +1,6 @@
 package com.example.zzan.global.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.jwt.Jwt;
-
-import com.example.zzan.global.util.JwtUtil;
-
+import com.example.zzan.global.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,12 +8,13 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
 @Tag(name = "My Controller", description = "This is swagger")
 public class SwaggerConfig {
-
 
 	private final JwtUtil jwtUtil;
 	@Bean
@@ -37,8 +33,6 @@ public class SwaggerConfig {
 				.name(token_header)
 				.type(SecurityScheme.Type.APIKEY)
 				.in(SecurityScheme.In.HEADER));
-
-
 
 		return new OpenAPI()
 			.info(info)

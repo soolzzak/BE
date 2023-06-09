@@ -13,11 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_LIKE;
-import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +90,7 @@ public class LikeService {
             Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, LikeEnum.DISLIKE);
 
             if (existingLike == null) {
-                targetUser.setAlcohol(targetUser.getAlcohol() -1);
+                targetUser.setAlcohol(targetUser.getAlcohol() - 1);
                 userRepository.save(targetUser);
                 Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
@@ -100,7 +98,7 @@ public class LikeService {
                 targetUser.setAlcoholDown(!like);
                 return ResponseDto.setSuccess("도수를 내렸습니다.");
             } else {
-                 if (!like && existingLike.getLikeEnum() == LikeEnum.DISLIKE) {
+                if (!like && existingLike.getLikeEnum() == LikeEnum.DISLIKE) {
                     targetUser.setAlcohol(targetUser.getAlcohol() + 1);
                     userRepository.save(targetUser);
                     likeRepository.delete(existingLike);
@@ -108,14 +106,14 @@ public class LikeService {
                     targetUser.setAlcoholDown(false);
                     return ResponseDto.setSuccess("도수 내리기를 취소하였습니다.");
                 } else {
-                     targetUser.setAlcohol(targetUser.getAlcohol() - 2);
-                     likeRepository.delete(existingLike);
-                     Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
-                     likeRepository.save(likeEntity);
-                     targetUser.setAlcoholUp(false);
-                     targetUser.setAlcoholDown(true);
-                     return ResponseDto.setSuccess("도수 올리기 취소 후 도수 내리기 적용");
-                 }
+                    targetUser.setAlcohol(targetUser.getAlcohol() - 2);
+                    likeRepository.delete(existingLike);
+                    Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
+                    likeRepository.save(likeEntity);
+                    targetUser.setAlcoholUp(false);
+                    targetUser.setAlcoholDown(true);
+                    return ResponseDto.setSuccess("도수 올리기 취소 후 도수 내리기 적용");
+                }
             }
         } else {
             throw new ApiException(TARGET_USER_NOT_FOUND);

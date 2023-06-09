@@ -2,7 +2,6 @@ package com.example.zzan.like.controller;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.like.service.LikeService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

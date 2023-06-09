@@ -1,4 +1,4 @@
-package com.example.zzan.global.util;
+package com.example.zzan.global.jwt;
 
 import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.global.security.UserDetailsServiceImpl;
@@ -108,15 +108,6 @@ public class JwtUtil {
                         .compact();
     }
 
-    public Long getExpiration(String accessToken){
-
-        Date expiration = Jwts.parserBuilder().setSigningKey(secretKey)
-                .build().parseClaimsJws(accessToken).getBody().getExpiration();
-
-        long now = new Date().getTime();
-        return expiration.getTime() - now;
-    }
-
     public String validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -138,7 +129,6 @@ public class JwtUtil {
 
     public Authentication createAuthentication(String userId) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -152,11 +142,6 @@ public class JwtUtil {
         String userEmail = getUserInfoFromToken(token);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
         String actualRefreshToken = refreshToken.get().getRefreshToken();
-        // log.info("Adding user {} to blacklist for user {}", userEmail, refreshToken);
-
-        // if (token.startsWith("Bearer ")) {
-        //     token = token.substring(7);
-        // }
 
         return refreshToken.isPresent() && token.equals(actualRefreshToken);
     }

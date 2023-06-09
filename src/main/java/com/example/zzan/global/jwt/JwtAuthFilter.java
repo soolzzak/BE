@@ -2,7 +2,6 @@ package com.example.zzan.global.jwt;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.ExceptionEnum;
-import com.example.zzan.global.util.JwtUtil;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
@@ -18,11 +17,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
+import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
+
 import java.io.IOException;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
-import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
 
 @Slf4j
 @Component

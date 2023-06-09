@@ -1,6 +1,4 @@
-package com.example.zzan.mypage.service;
-
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+package com.example.zzan.global.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,7 +32,7 @@ public class S3Uploader {
 
 	public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 		File uploadFile = convert(multipartFile)
-			.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+				.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
 		return upload(uploadFile, dirName);
 	}
 
@@ -63,29 +62,24 @@ public class S3Uploader {
 
 		boolean isExist = amazonS3Client.doesObjectExist(bucket, imagePath);
 		if (!isExist) {
-			throw new ApiException(IMAGE_NOT_FOUND);  // 적절한 예외를 생성하세요
+			throw new ApiException(IMAGE_NOT_FOUND);
 		}
-
 		String imageUrl = amazonS3Client.getUrl(bucket, imagePath).toString();
-
 		return imageUrl;
 	}
 
 
-
 	private String putS3(File uploadFile, String fileName) {
 		amazonS3Client.putObject(
-			new PutObjectRequest(bucket, fileName, uploadFile)
-				.withCannedAcl(CannedAccessControlList.PublicRead)
+				new PutObjectRequest(bucket, fileName, uploadFile)
+						.withCannedAcl(CannedAccessControlList.PublicRead)
 		);
 		return amazonS3Client.getUrl(bucket, fileName).toString();
 	}
 
 	public void removeNewFile(File targetFile) {
-		if(targetFile.delete()) {
-			log.info("파일이 삭제되었습니다.");
-		}else {
-			log.info("파일이 삭제되지 못했습니다.");
+		if (targetFile.delete()) {
+		} else {
 		}
 	}
 
@@ -94,13 +88,11 @@ public class S3Uploader {
 		String originalFileName = file.getOriginalFilename();
 		String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-
 		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg")) {
 			throw new ApiException(INVALID_FILE);
 		}
 
 		String uuidFileName = UUID.randomUUID().toString().replace("-", "") + ext;
-
 
 		File convertFile = new File(uuidFileName);
 		if(convertFile.createNewFile()) {

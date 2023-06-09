@@ -1,14 +1,12 @@
 package com.example.zzan.webRtc.dto;
 
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.springframework.web.socket.WebSocketSession;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter

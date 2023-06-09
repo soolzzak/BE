@@ -1,13 +1,11 @@
 package com.example.zzan.user.controller;
 
-import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

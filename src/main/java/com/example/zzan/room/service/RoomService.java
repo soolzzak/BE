@@ -4,8 +4,8 @@ import com.example.zzan.blocklist.entity.BlockList;
 import com.example.zzan.blocklist.repository.BlockListRepository;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.global.util.BadWords;
-import com.example.zzan.mypage.service.S3Uploader;
+import com.example.zzan.global.exception.BadWords;
+import com.example.zzan.global.util.S3Uploader;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
@@ -15,7 +15,6 @@ import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomHistoryRepository;
 import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.sse.service.SseService;
-import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.userHistory.entity.UserHistory;
@@ -46,13 +45,12 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomHistoryRepository roomHistoryRepository;
     private final UserRepository userRepository;
-
-
     private final UserHistoryRepository userHistoryRepository;
-    private final SseService sseService;
-
-    private final S3Uploader s3Uploader;
     private final BlockListRepository blockListRepository;
+
+    private final SseService sseService;
+    private final S3Uploader s3Uploader;
+
     private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Transactional
@@ -133,7 +131,6 @@ public class RoomService {
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
-
 
     @Transactional
     public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
@@ -218,7 +215,6 @@ public class RoomService {
         if (user.getId() !=room.getHostUser().getId()) {
             userHistory.setGuestUser(user);
         }
-        // userHistory.setGuestUser(user);
 
         RoomHistory roomHistory = new RoomHistory(room);
         userHistory.setRoom(roomHistory.getRoom());
