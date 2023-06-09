@@ -26,6 +26,7 @@ out/
 application.properties
 application.yml
 application-navermail.yml
+application-gmail.yml
 !**/src/main/**/out/
 !**/src/test/**/out/
 
