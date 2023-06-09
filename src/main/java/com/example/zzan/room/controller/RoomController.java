@@ -39,8 +39,16 @@ public class RoomController {
 
 
     @GetMapping("/rooms")
-    public ResponseDto<Page<RoomResponseDto>> chooseCategory(@RequestParam("category") Category category, @PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return roomService.chooseCategory(category, pageable);
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(
+            @RequestParam("category") Category category,
+            Pageable pageable,
+            @RequestParam(required = false) GenderSetting genderSetting,
+            @RequestParam(required = false) Boolean roomCapacityCheck
+    ) {
+        Optional<GenderSetting> genderSettingOptional = Optional.ofNullable(genderSetting);
+        Optional<Boolean> roomCapacityCheckOptional = Optional.ofNullable(roomCapacityCheck);
+
+        return roomService.getRoomsBySettingAndCategory(category, pageable, genderSettingOptional, roomCapacityCheckOptional);
     }
 
     @PostMapping(value = "/room", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
@@ -79,15 +87,5 @@ public class RoomController {
     public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
         @RequestParam("title") String title) {
         return roomService.getSearchedRoom(pageable, title);
-    }
-
-    @GetMapping("/rooms/setting")
-    public ResponseDto<Page<RoomResponseDto>> getRoomsBySetting(
-            Pageable pageable, @RequestParam(required = false) GenderSetting genderSetting, @RequestParam(required = false) Boolean roomCapacityCheck) {
-
-        Optional<GenderSetting> genderSettingOptional = Optional.ofNullable(genderSetting);
-        Optional<Boolean> roomCapacityCheckOptional = Optional.ofNullable(roomCapacityCheck);
-
-        return roomService.getRoomsBySetting(pageable, genderSettingOptional, roomCapacityCheckOptional);
     }
 }
