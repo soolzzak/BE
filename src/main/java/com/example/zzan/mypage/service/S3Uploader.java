@@ -1,5 +1,7 @@
 package com.example.zzan.mypage.service;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.example.zzan.global.exception.ApiException;
@@ -17,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-
-import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,6 +56,22 @@ public class S3Uploader {
 		S3ObjectSummary randomSummary = objectSummaries.get(new Random().nextInt(objectSummaries.size()));
 		return amazonS3Client.getUrl(bucket, randomSummary.getKey()).toString();
 	}
+
+
+	public String getSingleImage(String dirName, String imageName) {
+		String imagePath = dirName + "/" + imageName;
+
+		boolean isExist = amazonS3Client.doesObjectExist(bucket, imagePath);
+		if (!isExist) {
+			throw new ApiException(IMAGE_NOT_FOUND);  // 적절한 예외를 생성하세요
+		}
+
+		String imageUrl = amazonS3Client.getUrl(bucket, imagePath).toString();
+
+		return imageUrl;
+	}
+
+
 
 	private String putS3(File uploadFile, String fileName) {
 		amazonS3Client.putObject(

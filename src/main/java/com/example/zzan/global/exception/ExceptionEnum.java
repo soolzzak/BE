@@ -36,7 +36,9 @@ public enum ExceptionEnum {
     ROOM_ALREADY_FULL(HttpStatus.BAD_REQUEST.value(), "다른 유저가 이미 입장하였습니다."),
     BLOCKED_USER(HttpStatus.BAD_REQUEST.value(), "차단된 유저입니다."),
     USER_NOT_IN_ROOM(HttpStatus.BAD_REQUEST.value(), "방에 없는 유저입니다."),
-    USER_CANNOT_BLOCK_SELF(HttpStatus.BAD_REQUEST.value(), "스스로 차단 기능을 사용할 수 없습니다.");
+    USER_CANNOT_BLOCK_SELF(HttpStatus.BAD_REQUEST.value(), "스스로 차단 기능을 사용할 수 없습니다."),
+    IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "이미지가 존재하지 않습니다");
+
 
     private final int status;
     private final String message;
