@@ -23,13 +23,15 @@ public class WebRtcConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
-                .setAllowedOrigins("*");
+            .setAllowedOrigins("*")
+            .withSockJS()
+            .setHeartbeatTime(40000);
     }
-    @Bean
-    public ServletServerContainerFactoryBean createWebSocketContainer() {
-        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxSessionIdleTimeout(500000L); // 500,000 milliseconds (8.33 minutes)
-        return container;
-    }
+    // @Bean
+    // public ServletServerContainerFactoryBean createWebSocketContainer() {
+    //     ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+    //     container.setMaxSessionIdleTimeout(500000L); // 500,000 milliseconds (8.33 minutes)
+    //     return container;
+    // }
 
 }
