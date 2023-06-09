@@ -200,7 +200,11 @@ public class RoomService {
 
         UserHistory userHistory = new UserHistory();
         userHistory.setHostUser(room.getHostUser());
-        userHistory.setGuestUser(user);
+
+        if (user.getId() !=room.getHostUser().getId()) {
+            userHistory.setGuestUser(user);
+        }
+        // userHistory.setGuestUser(user);
 
         RoomHistory roomHistory = new RoomHistory(room);
         userHistory.setRoom(roomHistory.getRoom());
