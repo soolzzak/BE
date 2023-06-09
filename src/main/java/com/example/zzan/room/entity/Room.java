@@ -71,7 +71,6 @@ public class Room extends Timestamped {
         this.roomDelete = false;
     }
 
-
     public void update(RoomRequestDto roomRequestDto) {
         this.title = roomRequestDto.getTitle();
         this.roomImage = roomRequestDto.getRoomImage();

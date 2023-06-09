@@ -1,4 +1,4 @@
-package com.example.zzan.global;
+package com.example.zzan.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

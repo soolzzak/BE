@@ -1,7 +1,7 @@
 package com.example.zzan.global.config;
 
 import com.example.zzan.global.jwt.JwtAuthFilter;
-import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

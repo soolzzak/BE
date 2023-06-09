@@ -10,11 +10,9 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_CANNOT_REPORT_SELF;
 
 @RequiredArgsConstructor
 @Service
@@ -28,7 +26,6 @@ public class ReportService {
 
 		Optional<User> reportedUserOptional = userRepository.findById(userId);
 
-
 		if(!reportedUserOptional.isPresent()){
 			throw new ApiException(TARGET_USER_NOT_FOUND);
 		}
@@ -36,12 +33,11 @@ public class ReportService {
 		User reportedUser = reportedUserOptional.get();
 
 		if(user.getId().equals(reportedUser.getId())){
-			throw new ApiException(USER_CANNOT_REPORT_SELF);
+			throw new ApiException(NOT_ALLOWED_SELF_REPORT);
 		}
 
 		Optional<Report> existingReport = reportRepository.findByReportingUserAndReportedUser(user,reportedUser);
 		if (existingReport.isPresent()) {
-			// This user has already reported the same user.
 			return ResponseDto.setSuccess("이미 신고한 유저입니다");
 		}
 

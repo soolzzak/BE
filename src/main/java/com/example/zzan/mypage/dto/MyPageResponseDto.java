@@ -1,6 +1,5 @@
 package com.example.zzan.mypage.dto;
 
-
 import com.example.zzan.blocklist.dto.BlockListDto;
 import com.example.zzan.follow.dto.FollowResponseDto;
 import com.example.zzan.user.entity.User;
@@ -19,22 +18,16 @@ public class MyPageResponseDto {
 	private String email;
 	private int alcohol;
 	private List<UserHistoryDto> metUser;
-	private List<FollowResponseDto>followingUser;
+	private List<FollowResponseDto> followingUser;
 	private List<BlockListDto> blockListedUser;
 
-	public MyPageResponseDto(User myPage, int alcohol, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos){
-		this.userImageUrl= myPage.getUserImage();
-		this.username= myPage.getUsername();
-		this.email=myPage.getEmail();
-		this.alcohol=alcohol;
+	public MyPageResponseDto(User myPage, int alcohol, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos) {
+		this.userImageUrl = myPage.getUserImage();
+		this.username = myPage.getUsername();
+		this.email = myPage.getEmail();
+		this.alcohol = alcohol;
 		this.metUser = metUser;
-		this.followingUser=followResponseDtos;
+		this.followingUser = followResponseDtos;
 		this.blockListedUser = blockListDtos;
 	}
-
-	public MyPageResponseDto(User myPage) {
-		this.userImageUrl= myPage.getUserImage();
-		this.username= myPage.getUsername();
-	}
-
 }

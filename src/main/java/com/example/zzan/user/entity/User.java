@@ -68,7 +68,6 @@ public class User {
     @Column(name = "ROOM_TITLE")
     private String roomTitle;
 
-
     @PrePersist
     public void setDefaultValues() {
         if (alcohol == 0) {

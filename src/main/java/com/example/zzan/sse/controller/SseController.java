@@ -1,13 +1,12 @@
 package com.example.zzan.sse.controller;
 
 import com.example.zzan.sse.service.SseService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "BlockListController", description = "SSe 파트")
 @RestController

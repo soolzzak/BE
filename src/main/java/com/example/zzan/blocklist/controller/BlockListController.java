@@ -3,7 +3,6 @@ package com.example.zzan.blocklist.controller;
 import com.example.zzan.blocklist.service.BlockListService;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.security.UserDetailsImpl;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

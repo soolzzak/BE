@@ -11,15 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_FOLLOW;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

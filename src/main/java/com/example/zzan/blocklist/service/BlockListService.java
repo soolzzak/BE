@@ -9,11 +9,9 @@ import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
-import static com.example.zzan.global.exception.ExceptionEnum.USER_CANNOT_BLOCK_SELF;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +31,7 @@ public class BlockListService {
 		User blockListedUser = blockListedUserOptional.get();
 
 		if (user.getId().equals(blockListedUser.getId())) {
-			throw new ApiException(USER_CANNOT_BLOCK_SELF);
+			throw new ApiException(NOT_ALLOWED_SELF_BLOCK);
 		}
 
 		Optional<BlockList> existingBlock = blockListRepository.findByBlockListedUserAndBlockListingUser(blockListedUser, user);

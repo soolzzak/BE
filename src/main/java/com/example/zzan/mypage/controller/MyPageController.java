@@ -6,7 +6,6 @@ import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
 import com.example.zzan.mypage.dto.RelatedUserResponseDto;
 import com.example.zzan.mypage.service.MyPageService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

@@ -2,12 +2,12 @@ package com.example.zzan.user.service;
 
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.global.exception.BadWords;
+import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
-import com.example.zzan.global.util.BadWords;
-import com.example.zzan.global.util.JwtUtil;
-import com.example.zzan.mypage.service.S3Uploader;
+import com.example.zzan.global.util.S3Uploader;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
-import static com.example.zzan.global.util.JwtUtil.ACCESS_KEY;
-import static com.example.zzan.global.util.JwtUtil.REFRESH_KEY;
+import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
+import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
 
 
 @Service

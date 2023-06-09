@@ -7,7 +7,6 @@ import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.service.RoomService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,6 @@ public class RoomController {
         return roomService.getRooms(pageable, genderSettingOptional, roomCapacityCheckOptional);
     }
 
-
     @GetMapping("/rooms")
     public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(
             @RequestParam("category") Category category,
@@ -77,12 +75,10 @@ public class RoomController {
         return roomService.deleteRoom(roomId, userDetails.getUser());
     }
 
-
     @GetMapping("/room/{roomId}")
     public RoomResponseDto enterRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
         return roomService.enterRoom(roomId,userDetails.getUser());
     }
-
 
     @DeleteMapping("/room/{roomId}/leave")
     public ResponseDto leaveRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -90,8 +86,7 @@ public class RoomController {
     }
 
     @GetMapping("/search")
-    public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-        @RequestParam("title") String title) {
+    public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam("title") String title) {
         return roomService.getSearchedRoom(pageable, title);
     }
 }

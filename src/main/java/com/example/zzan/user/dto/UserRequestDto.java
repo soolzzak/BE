@@ -11,19 +11,11 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UserRequestDto {
-
     private String email;
-
     private String password;
-
     private String username;
-
     private Date birthday;
-
     private Gender gender;
-
     private boolean admin = false;
-
     private String adminKey = " ";
-
 }
