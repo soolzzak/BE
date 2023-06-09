@@ -49,8 +49,4 @@ public class RoomResponseDto {
         this.roomCapacity = room.getRoomCapacity();
         this.roomDelete=room.isRoomDelete();
     }
-
-    public void putDelete(boolean roomDelete) {
-        this.roomDelete = roomDelete;
-    }
 }

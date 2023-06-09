@@ -76,12 +76,12 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public RoomResponseDto enterRoom(@PathVariable Long roomId,@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.enterRoom(roomId,userDetails.getUser());
+    public RoomResponseDto enterRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return roomService.enterRoom(roomId, userDetails.getUser());
     }
 
     @DeleteMapping("/room/{roomId}/leave")
-    public ResponseDto leaveRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto leaveRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.leaveRoom(roomId, userDetails.getUser());
     }
 
