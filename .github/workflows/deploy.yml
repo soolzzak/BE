@@ -38,11 +38,11 @@ jobs:
     
     # (4) yml 파일 가져오기
     - name: Set YML
-        run: |
-          mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_NAVERMAIL_YML }}" | base64 --decode > src/main/resources/application-navermail.yml
-          find src
+      run: |
+        mkdir -p src/main/resources
+        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+        echo "${{ secrets.APPLICATION_NAVERMAIL_YML }}" | base64 --decode > src/main/resources/application-navermail.yml
+        find src
 
     # (5) Gradle build (Test 제외)
     - name: Build with Gradle
