@@ -50,12 +50,12 @@ public class TokenController {
 
             log.info("Adding user {} to blacklist for user {}", newAccessToken);
             HttpHeaders headers = new HttpHeaders();
-            headers.add(JwtUtil.ACCESS_KEY, newAccessToken);
+            // headers.add(JwtUtil.ACCESS_KEY, newAccessToken);
 
-            TokenDto tokenDto = new TokenDto(newAccessToken, refreshToken);
+            // TokenDto tokenDto = new TokenDto(newAccessToken, refreshToken);
 
         log.info("Adding user {} to blacklist for user {}",newAccessToken);
-            return ResponseEntity.ok().headers(headers).body(ResponseDto.setSuccess("Access Token 재발행 하였습니다.", tokenDto));
+            return ResponseEntity.ok().headers(headers).body(ResponseDto.setSuccess("Access Token 재발행 하였습니다."));
          }
          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token 값이 만료되었습니다."));
     }
