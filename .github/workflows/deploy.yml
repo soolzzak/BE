@@ -12,7 +12,7 @@ env:
   S3_BUCKET_NAME: honsoolzzak-bucket
   CODE_DEPLOY_APPLICATION_NAME: honsoolzzak-deployment-group
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: honsoolzzak-cicd-deployment-group
-
+ 
 permissions:
   contents: read
 
