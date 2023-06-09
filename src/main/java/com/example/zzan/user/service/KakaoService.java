@@ -66,7 +66,7 @@ public class KakaoService {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:https://honsoolzzak.com";  // 프론트에서 처리?하는게 낫다고 함..... 처리 방법은 몰러...
+        return "redirect: https://api.honsoolzzak.com/api/login";  // 프론트와 맞추기.
     }
 
     private String getToken(String code) throws JsonProcessingException {
@@ -77,7 +77,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
 //        body.add("redirect_uri", "http://localhost:8080/api/login");
-        body.add("redirect_uri", "https://honsoolzzak.com/api/login");  // 프론트랑 redirect_uri 맞춰야함
+        body.add("redirect_uri", "https://api.honsoolzzak.com/api/login");  // 프론트랑 redirect_uri 맞춰야함
         body.add("code", code);
 
         // HTTP 요청 보내기

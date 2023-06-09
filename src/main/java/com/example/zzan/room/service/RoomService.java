@@ -15,6 +15,7 @@ import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomHistoryRepository;
 import com.example.zzan.room.repository.RoomRepository;
 import com.example.zzan.sse.service.SseService;
+import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.userHistory.entity.UserHistory;
@@ -96,10 +97,23 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable) {
-        Page<Room> roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
+    public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable,
+                                                       Optional<GenderSetting> genderSettingOptional,
+                                                       Optional<Boolean> roomCapacityCheckOptional) {
+        Page<Room> roomPage;
+        if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent()) {
+            if (roomCapacityCheckOptional.get()) {
+                roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThan(genderSettingOptional.get(), 2, pageable);
+            } else {
+                roomPage = roomRepository.findByGenderSetting(genderSettingOptional.get(), pageable);
+            }
+        } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+            roomPage = roomRepository.findByRoomCapacityLessThan(2, pageable);
+        } else {
+            roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
+        }
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("전체 조회 성공", roomList);
+        return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
 
     @Transactional(readOnly = true)
@@ -200,7 +214,11 @@ public class RoomService {
 
         UserHistory userHistory = new UserHistory();
         userHistory.setHostUser(room.getHostUser());
-        userHistory.setGuestUser(user);
+
+        if (user.getId() !=room.getHostUser().getId()) {
+            userHistory.setGuestUser(user);
+        }
+        // userHistory.setGuestUser(user);
 
         RoomHistory roomHistory = new RoomHistory(room);
         userHistory.setRoom(roomHistory.getRoom());
