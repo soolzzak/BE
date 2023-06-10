@@ -22,7 +22,7 @@ public class UserHistory extends Timestamped {
 	private User hostUser;
 
 	@ManyToOne
-	@JoinColumn(name = "GUEST_ID", nullable = false)
+	@JoinColumn(name = "GUEST_ID", nullable = true)
 	private User guestUser;
 
 	@ManyToOne

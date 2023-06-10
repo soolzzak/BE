@@ -101,12 +101,12 @@ public class RoomService {
         Page<Room> roomPage;
         if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent()) {
             if (roomCapacityCheckOptional.get()) {
-                roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThan(genderSettingOptional.get(), 2, pageable);
+                roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(genderSettingOptional.get(), 2, pageable);
             } else {
-                roomPage = roomRepository.findByGenderSetting(genderSettingOptional.get(), pageable);
+                roomPage = roomRepository.findByGenderSettingAndRoomDeleteIsFalse(genderSettingOptional.get(), pageable);
             }
         } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
-            roomPage = roomRepository.findByRoomCapacityLessThan(2, pageable);
+            roomPage = roomRepository.findByRoomCapacityLessThanAndRoomDeleteIsFalse(2, pageable);
         } else {
             roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
         }
