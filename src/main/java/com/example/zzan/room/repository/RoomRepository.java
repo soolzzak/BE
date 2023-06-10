@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
 	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
-    Page<Room> findByCategoryAndGenderSettingAndRoomCapacityLessThan(Category category, Pageable pageable, GenderSetting genderSetting, int i);
-	Page<Room> findByCategoryAndGenderSetting(Category category, Pageable pageable, GenderSetting genderSetting);
-	Page<Room> findByCategoryAndRoomCapacityLessThan(Category category, Pageable pageable, int i);
-	Page<Room> findByCategory(Category category, Pageable pageable);
-	Page<Room> findByGenderSettingAndRoomCapacityLessThan(GenderSetting genderSetting, int i, Pageable pageable);
-	Page<Room> findByGenderSetting(GenderSetting genderSetting, Pageable pageable);
-	Page<Room> findByRoomCapacityLessThan(int i, Pageable pageable);
+    Page<Room> findByCategoryAndGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(Category category, Pageable pageable, GenderSetting genderSetting, int i);
+	Page<Room> findByCategoryAndGenderSettingAndRoomDeleteIsFalse(Category category, Pageable pageable, GenderSetting genderSetting);
+	Page<Room> findByCategoryAndRoomCapacityLessThanAndRoomDeleteIsFalse(Category category, Pageable pageable, int i);
+	Page<Room> findByCategoryAndRoomDeleteIsFalse(Category category, Pageable pageable);
+	Page<Room> findByGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(GenderSetting genderSetting, int i, Pageable pageable);
+	Page<Room> findByGenderSettingAndRoomDeleteIsFalse(GenderSetting genderSetting, Pageable pageable);
+	Page<Room> findByRoomCapacityLessThanAndRoomDeleteIsFalse(int i, Pageable pageable);
 }
