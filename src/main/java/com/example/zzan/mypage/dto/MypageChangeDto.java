@@ -8,11 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MypageChangeDto {
 
-	private String userImageUrl;
+	private String userImage;
 	private String username;
 
 	public MypageChangeDto(User myPage) {
-		this.userImageUrl= myPage.getUserImage();
+		this.userImage= myPage.getUserImage();
 		this.username= myPage.getUsername();
 	}
 }
