@@ -96,20 +96,16 @@ public class RoomService {
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable,
-                                                       Optional<GenderSetting> genderSettingOptional,
                                                        Optional<Boolean> roomCapacityCheckOptional) {
+
         Page<Room> roomPage;
-        if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent()) {
-            if (roomCapacityCheckOptional.get()) {
-                roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(genderSettingOptional.get(), 2, pageable);
-            } else {
-                roomPage = roomRepository.findByGenderSettingAndRoomDeleteIsFalse(genderSettingOptional.get(), pageable);
-            }
-        } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
+
+        if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
             roomPage = roomRepository.findByRoomCapacityLessThanAndRoomDeleteIsFalse(2, pageable);
         } else {
             roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
         }
+
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
@@ -209,18 +205,18 @@ public class RoomService {
             throw new ApiException(ROOM_NOT_FOUND);
         }
 
-        UserHistory userHistory = new UserHistory();
 
+        if (!room.getHostUser().getId().equals(user.getId())) {
+            UserHistory userHistory = new UserHistory();
 
-        if (user.getId() !=room.getHostUser().getId()) {
             userHistory.setGuestUser(user);
             userHistory.setHostUser(room.getHostUser());
+
+            RoomHistory roomHistory = new RoomHistory(room);
+            userHistory.setRoom(roomHistory.getRoom());
+
+            userHistoryRepository.save(userHistory);
         }
-
-        RoomHistory roomHistory = new RoomHistory(room);
-        userHistory.setRoom(roomHistory.getRoom());
-
-        userHistoryRepository.save(userHistory);
 
         return new RoomResponseDto(room);
     }
