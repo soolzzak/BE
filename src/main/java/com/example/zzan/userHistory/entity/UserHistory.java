@@ -22,14 +22,17 @@ public class UserHistory extends Timestamped {
 	private User hostUser;
 
 	@ManyToOne
-	@JoinColumn(name = "GUEST_ID", nullable = true)
+	@JoinColumn(name = "GUEST_ID", nullable = false)
 	private User guestUser;
 
 	@ManyToOne
 	@JoinColumn(name = "ROOMHISTORY_ID", nullable = false)
 	private Room room;
 
+
+
 	public void setHostUser(User hostUser) {
+
 		this.hostUser = hostUser;
 	}
 

@@ -99,24 +99,25 @@ public class MyPageService {
         User myPage = findUser(user.getEmail());
 
         for (UserHistory userHistory : userHistories) {
+            if (userHistory.getGuestUser() != null) {
+                String metUser = "";
+                String metUserImage = "";
+                Long metUserId = null;
+                if (userHistory.getHostUser().getId().equals(user.getId())) {
+                    metUserId = userHistory.getGuestUser().getId();
+                    metUser = userHistory.getGuestUser().getUsername();
+                    metUserImage = userHistory.getGuestUser().getUserImage();
+                } else if (!userHistory.getHostUser().getId().equals(user.getId())) {
+                    metUserId = userHistory.getHostUser().getId();
+                    metUser = userHistory.getHostUser().getUsername();
+                    metUserImage = userHistory.getHostUser().getUserImage();
+                }
 
-            String metUser = "";
-            String metUserImage = "";
-            Long metUserId = null;
-            if (userHistory.getHostUser().getId().equals(user.getId())) {
-                metUserId = userHistory.getGuestUser().getId();
-                metUser = userHistory.getGuestUser().getUsername();
-                metUserImage = userHistory.getGuestUser().getUserImage();
-            } else if (!userHistory.getHostUser().getId().equals(user.getId())) {
-                metUserId = userHistory.getHostUser().getId();
-                metUser = userHistory.getHostUser().getUsername();
-                metUserImage = userHistory.getHostUser().getUserImage();
+                LocalDateTime metCreatedAt = userHistory.getCreatedAt();
+
+                UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId, metUser, metUserImage, metCreatedAt);
+                userHistoryDtos.add(userHistoryDto);
             }
-
-            LocalDateTime metCreatedAt = userHistory.getCreatedAt();
-
-            UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId, metUser, metUserImage, metCreatedAt);
-            userHistoryDtos.add(userHistoryDto);
         }
 
         for (Follow follow : follows) {

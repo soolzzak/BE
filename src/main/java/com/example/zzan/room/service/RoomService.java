@@ -120,13 +120,13 @@ public class RoomService {
                                                                            Optional<Boolean> roomCapacityCheckOptional) {
         Page<Room> roomPage;
         if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
-            roomPage = roomRepository.findByCategoryAndGenderSettingAndRoomCapacityLessThan(category, pageable, genderSettingOptional.get(), 2);
+            roomPage = roomRepository.findByCategoryAndGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(category, pageable, genderSettingOptional.get(), 2);
         } else if (genderSettingOptional.isPresent()) {
-            roomPage = roomRepository.findByCategoryAndGenderSetting(category, pageable, genderSettingOptional.get());
+            roomPage = roomRepository.findByCategoryAndGenderSettingAndRoomDeleteIsFalse(category, pageable, genderSettingOptional.get());
         } else if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
-            roomPage = roomRepository.findByCategoryAndRoomCapacityLessThan(category, pageable, 2);
+            roomPage = roomRepository.findByCategoryAndRoomCapacityLessThanAndRoomDeleteIsFalse(category, pageable, 2);
         } else {
-            roomPage = roomRepository.findByCategory(category, pageable);
+            roomPage = roomRepository.findByCategoryAndRoomDeleteIsFalse(category, pageable);
         }
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
@@ -210,10 +210,11 @@ public class RoomService {
         }
 
         UserHistory userHistory = new UserHistory();
-        userHistory.setHostUser(room.getHostUser());
+
 
         if (user.getId() !=room.getHostUser().getId()) {
             userHistory.setGuestUser(user);
+            userHistory.setHostUser(room.getHostUser());
         }
 
         RoomHistory roomHistory = new RoomHistory(room);
