@@ -16,7 +16,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 	Page<Room> findByCategoryAndGenderSetting(Category category, Pageable pageable, GenderSetting genderSetting);
 	Page<Room> findByCategoryAndRoomCapacityLessThan(Category category, Pageable pageable, int i);
 	Page<Room> findByCategory(Category category, Pageable pageable);
-	Page<Room> findByGenderSettingAndRoomCapacityLessThan(GenderSetting genderSetting, int i, Pageable pageable);
-	Page<Room> findByGenderSetting(GenderSetting genderSetting, Pageable pageable);
-	Page<Room> findByRoomCapacityLessThan(int i, Pageable pageable);
+	Page<Room> findByGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(GenderSetting genderSetting, int i, Pageable pageable);
+	Page<Room> findByGenderSettingAndRoomDeleteIsFalse(GenderSetting genderSetting, Pageable pageable);
+	Page<Room> findByRoomCapacityLessThanAndRoomDeleteIsFalse(int i, Pageable pageable);
 }

@@ -65,7 +65,9 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
 
-        sendMessage(session, new WebSocketMessage(null, MSG_TYPE_JOIN, null, null, null));
+        Long sessionUserId = sessions.get(session);
+
+        sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_JOIN, null, null, null));
     }
 
     @Override
