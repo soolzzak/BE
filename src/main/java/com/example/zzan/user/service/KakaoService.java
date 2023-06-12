@@ -4,6 +4,7 @@ import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
+import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.KakaoUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +34,7 @@ public class KakaoService {
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
 
-    public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
         String accessToken = getToken(code);
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
@@ -42,22 +43,27 @@ public class KakaoService {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
         }
 
-        String token = jwtUtil.createToken(
-                kakaoInfoDto.getUsername(),
-                kakaoInfoDto.getKakaoId(),
-                kakaoInfoDto.getKakaoImage(),
-                kakaoInfoDto.getEmail(),
-                kakaoInfoDto.getGender(),
-                kakaoInfoDto.getAgeRange(),
-                kakaoInfoDto.getBirthday()
-        );
+        // String token = jwtUtil.createToken(
+        //         kakaoInfoDto.getUsername(),
+        //         kakaoInfoDto.getKakaoId(),
+        //         kakaoInfoDto.getKakaoImage(),
+        //         kakaoInfoDto.getEmail(),
+        //         kakaoInfoDto.getGender(),
+        //         kakaoInfoDto.getAgeRange(),
+        //         kakaoInfoDto.getBirthday()
+        // );
 
-        response.addHeader("USER ROLE", token);
+        // response.addHeader("Authorization", "Bearer " + token);
 
-        Cookie cookie = new Cookie("AccessToken", token.substring(7));
-        cookie.setMaxAge(60 * 60 * 1000);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        // User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        // Cookie cookie = new Cookie("AccessToken", token);
+        //
+        // cookie.setMaxAge(60 * 60 * 1000);
+        // cookie.setPath("/");
+        String createToken =  jwtUtil.createToken(kakaoInfoDto.getUsername(),kakaoInfoDto.getKakaoId(),kakaoInfoDto.getKakaoImage(),
+            kakaoInfoDto.getEmail(),kakaoInfoDto.getGender(),kakaoInfoDto.getAgeRange(),kakaoInfoDto.getBirthday());
+
+        return createToken;
     }
 
     private String getToken(String code) throws JsonProcessingException {
