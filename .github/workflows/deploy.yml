@@ -11,8 +11,8 @@ env:
   CODE_DEPLOY_APPLICATION_NAME: honsoolzzak-deployment-group
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: honsoolzzak-cicd-deployment-group
 
-# permissions:
-#   contents: read and write
+permissions:
+  contents: write-all
 
 jobs:
   deploy:
