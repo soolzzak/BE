@@ -63,7 +63,6 @@ public class WebSecurityConfig {
         config.addAllowedOrigin("http://api.honsoolzzak.com");
         config.addAllowedOrigin("http://honsoolzzak.com");
         config.addAllowedOrigin("https://api.honsoolzzak.com/api/main");
-
         config.addAllowedOrigin("http://mynice.s3-website.ap-northeast-2.amazonaws.com");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080");
