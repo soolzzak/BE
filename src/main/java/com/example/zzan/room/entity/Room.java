@@ -53,11 +53,6 @@ public class Room extends Timestamped {
     @Column
     private int roomCapacity = 0;
 
-
-    public Room(RoomRequestDto roomRequestDto) {
-        this.title = roomRequestDto.getTitle();
-    }
-
     public Room(RoomRequestDto roomRequestDto, User user) {
         this.title = roomRequestDto.getTitle();
         this.roomImage = roomRequestDto.getRoomImage();

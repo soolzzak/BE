@@ -30,28 +30,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
-
     private final RoomRepository roomRepository;
     private final RoomHistoryRepository roomHistoryRepository;
     private final UserRepository userRepository;
     private final UserHistoryRepository userHistoryRepository;
     private final BlockListRepository blockListRepository;
-
     private final SseService sseService;
     private final S3Uploader s3Uploader;
-
     private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     @Transactional
@@ -59,54 +54,43 @@ public class RoomService {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
         room.setRoomCapacity(1);
-
         String roomTitle = roomRequestDto.getTitle();
-
         if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
-
         if (!roomRequestDto.getIsPrivate()) {
         } else {
             String roomPassword = roomRequestDto.getRoomPassword();
             if (roomPassword == null || roomPassword.isEmpty())
                 return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
         }
-
         user.setRoomTitle(roomTitle);
         userRepository.save(user);
-
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
-
         if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
-
         room.setRoomImage(roomImageUrl);
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
-
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getRooms(Pageable pageable,
                                                        Optional<Boolean> roomCapacityCheckOptional) {
-
         Page<Room> roomPage;
-
         if (roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
             roomPage = roomRepository.findByRoomCapacityLessThanAndRoomDeleteIsFalse(2, pageable);
         } else {
             roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
         }
-
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
@@ -138,7 +122,6 @@ public class RoomService {
         if (!room.getHostUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED_USER);
         }
-
         room.update(roomRequestDto);
         if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
@@ -147,12 +130,10 @@ public class RoomService {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
         room.setRoomImage(roomImageUrl);
-
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
         }
-
         roomRepository.save(room);
         return ResponseDto.setSuccess("방을 수정하였습니다.", null);
     }
@@ -187,14 +168,13 @@ public class RoomService {
         if (room.getRoomCapacity() >= 2) {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
-
         List<BlockList> userBlockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
-
         for (BlockList blockList : userBlockLists) {
             if (room.getHostUser().equals(blockList.getBlockListedUser())) {
                 throw new ApiException(BLOCKED_USER);
             }
         }
+
         RoomCheckResponseDto roomCheckResponseDto = new RoomCheckResponseDto(room.getRoomCapacity());
 
         return ResponseDto.setSuccess("Room check passed successfully.", roomCheckResponseDto);
@@ -207,7 +187,6 @@ public class RoomService {
 
         room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
-
         if (room.getTitle() != null) {
             user.setRoomTitle(room.getTitle());
             userRepository.save(user);
@@ -230,7 +209,6 @@ public class RoomService {
     public ResponseDto leaveRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
-
         if (room.getHostUser().getId().equals(user.getId())) {
             room.roomDelete(true);
         } else if (!room.getHostUser().getId().equals(user.getId())) {
