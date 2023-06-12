@@ -12,7 +12,7 @@ env:
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: honsoolzzak-cicd-deployment-group
 
 permissions:
-  contents: write
+  contents: read-all|write-all
 
 jobs:
   deploy:
