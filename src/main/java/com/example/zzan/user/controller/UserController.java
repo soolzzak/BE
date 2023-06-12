@@ -39,11 +39,13 @@ public class UserController {
             return "https://honsoolzzak.com"; // Redirect to the desired page after successful login
         } catch (Exception e) {
             // Handle any exceptions or errors that may occur during the login process
+            System.out.println("Exception caught: " + e.getMessage());  // print the error message
             e.printStackTrace();
             return "redirect:/error"; // Redirect to an error page
         }
     }
-//    public RedirectView kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+
+    //    public RedirectView kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
 //        kakaoService.kakaoLogin(code, response);
 //        RedirectView redirectView = new RedirectView();
 //        redirectView.setUrl("https://api.honsoolzzak.com/api/login");
