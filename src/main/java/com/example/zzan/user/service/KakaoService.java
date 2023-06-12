@@ -74,7 +74,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
 //        body.add("redirect_uri", "http://localhost:8080/api/login");
-        body.add("redirect_uri", "https://api.honsoolzzak.com/api/login");  // 프론트랑 redirect_uri 맞춰야함
+        body.add("redirect_uri", "http://localhost:3000/api/login");  // 프론트랑 redirect_uri 맞춰야함
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
