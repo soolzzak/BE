@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TokenDto {
     private String accessToken;
-    @Column(length = 500)
+    @Column(length = 1000)
     private String refreshToken;
 
     public TokenDto(String accessToken, String refreshToken) {
