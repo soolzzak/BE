@@ -6,6 +6,7 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.BadWords;
 import com.example.zzan.global.util.S3Uploader;
+import com.example.zzan.room.dto.RoomCheckResponseDto;
 import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
@@ -57,7 +58,7 @@ public class RoomService {
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
-        room.setRoomCapacity(0);
+        room.setRoomCapacity(1);
 
         String roomTitle = roomRequestDto.getTitle();
 
@@ -179,11 +180,11 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDto enterRoom(Long roomId, User user) {
+    public ResponseDto<RoomCheckResponseDto> checkRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        if (room.getRoomCapacity() >= 3) {
+        if (room.getRoomCapacity() >= 2) {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
@@ -194,6 +195,15 @@ public class RoomService {
                 throw new ApiException(BLOCKED_USER);
             }
         }
+        RoomCheckResponseDto roomCheckResponseDto = new RoomCheckResponseDto(room.getRoomCapacity());
+
+        return ResponseDto.setSuccess("Room check passed successfully.", roomCheckResponseDto);
+    }
+
+    @Transactional
+    public RoomResponseDto enterRoom(Long roomId, User user) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
         room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
@@ -205,19 +215,14 @@ public class RoomService {
             throw new ApiException(ROOM_NOT_FOUND);
         }
 
-
         if (!room.getHostUser().getId().equals(user.getId())) {
             UserHistory userHistory = new UserHistory();
-
             userHistory.setGuestUser(user);
             userHistory.setHostUser(room.getHostUser());
-
             RoomHistory roomHistory = new RoomHistory(room);
             userHistory.setRoom(roomHistory.getRoom());
-
             userHistoryRepository.save(userHistory);
         }
-
         return new RoomResponseDto(room);
     }
 

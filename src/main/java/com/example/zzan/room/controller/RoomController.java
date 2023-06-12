@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,11 @@ public class RoomController {
     @DeleteMapping("/room/{roomId}")
     public ResponseDto<RoomResponseDto> deleteRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(roomId, userDetails.getUser());
+    }
+
+    @GetMapping("/room/{roomId}/check")
+    public ResponseDto checkRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return roomService.checkRoom(roomId,userDetails.getUser());
     }
 
     @GetMapping("/room/{roomId}")
