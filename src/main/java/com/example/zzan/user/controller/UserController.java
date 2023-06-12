@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Tag(name = "UserController", description = "로그인 및 회원가입 파트")
 @Slf4j
@@ -39,26 +38,14 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException{
+    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
 
         String createToken =  kakaoService.kakaoLogin(code, response);
-
         jwtUtil.setHeaderAccessToken(response, createToken);
-        // Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
-        // cookie.setPath("/");
-        // response.addCookie(cookie);
-       return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token이 발행되었습니다"));
-       //      return "https://honsoolzzak.com"; // Redirect to the desired page after successful login
 
+       return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token이 발행되었습니다"));
     }
 
-    //    public RedirectView kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
-//        kakaoService.kakaoLogin(code, response);
-//        RedirectView redirectView = new RedirectView();
-//        redirectView.setUrl("https://api.honsoolzzak.com/api/login");
-////        redirectView.setUrl("http://localhost:8080/api/login");
-//        return redirectView;
-//    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto requestDto, HttpServletResponse response) {

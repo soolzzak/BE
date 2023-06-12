@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ import java.util.Optional;
 @Service
 public class RtcChatService {
 
-    public Map<Long, WebSocketSession> getUser (RoomResponseDto roomResponseDto) {
+    public Map<Long, WebSocketSession> getUser(RoomResponseDto roomResponseDto) {
 
         Optional<RoomResponseDto> roomDto = Optional.ofNullable(roomResponseDto);
 
@@ -34,11 +36,5 @@ public class RtcChatService {
         SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());
         SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
         return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
-    }
-
-    public boolean findUserCount(WebSocketMessage webSocketMessage){
-        RoomResponseDto room = UserListMap.getInstance().getUserMap().get(webSocketMessage.getData());
-        log.info("ROOM COUNT : [{} ::: {}]",room.toString(),room.getUserList().size());
-        return room.getUserList().size() > 1;
     }
 }
