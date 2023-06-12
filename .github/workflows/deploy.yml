@@ -12,7 +12,7 @@ env:
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: honsoolzzak-cicd-deployment-group
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
@@ -27,7 +27,7 @@ jobs:
 
     # (2) gradlew 실행 권한 부여
     - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
+      run: sudo chmod +x ./gradlew
 
     # (3) JDK 17 세팅
     - name: Set up JDK 17
@@ -41,7 +41,6 @@ jobs:
       run: |
         mkdir -p src/main/resources
         echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-        echo "${{ secrets.APPLICATION_NAVERMAIL_YML }}" | base64 --decode > src/main/resources/application-navermail.yml
         find src
 
     # (5) Gradle build (Test 제외)

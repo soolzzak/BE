@@ -19,7 +19,6 @@
 | Front-end | 조선아 | https://github.com/elfinana| 
 | Back-end | 지현경(VL)|  https://github.com/Jello92|
 | Back-end | 김지현 | https://github.com/jihyeon117|
-| Back-end | 박영준 | https://github.com/june9152|
 | Back-end | 김상우 | https://github.com/kimsangwoo0505|
 | Designer | 곽준희 | |
 
