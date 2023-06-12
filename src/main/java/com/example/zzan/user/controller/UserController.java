@@ -1,6 +1,9 @@
 package com.example.zzan.user.controller;
 
+import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.UserDetailsImpl;
+import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -8,6 +11,7 @@ import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,8 @@ import org.springframework.web.servlet.view.RedirectView;
 public class UserController {
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final JwtUtil jwtUtil;
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserRequestDto requestDto) {
@@ -33,16 +39,17 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        try {
-            kakaoService.kakaoLogin(code, response);
-            return "https://honsoolzzak.com"; // Redirect to the desired page after successful login
-        } catch (Exception e) {
-            // Handle any exceptions or errors that may occur during the login process
-            System.out.println("Exception caught: " + e.getMessage());  // print the error message
-            e.printStackTrace();
-            return "redirect:/error"; // Redirect to an error page
-        }
+    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException{
+
+        String createToken =  kakaoService.kakaoLogin(code, response);
+
+        jwtUtil.setHeaderAccessToken(response, createToken);
+        // Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
+        // cookie.setPath("/");
+        // response.addCookie(cookie);
+       return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token이 발행되었습니다"));
+       //      return "https://honsoolzzak.com"; // Redirect to the desired page after successful login
+
     }
 
     //    public RedirectView kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
