@@ -44,6 +44,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_JOIN = "join";
     private static final String MSG_TYPE_LEAVE = "leave";
 
+    private static final String MSG_TYPE_TOAST = "toast";
+
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 
@@ -147,6 +149,30 @@ public class SignalHandler extends TextWebSocketHandler {
                         break;
                     }
                     break;
+
+
+                case MSG_TYPE_TOAST:
+
+                    room = rooms.get(message.getData());
+                    Room toastingRoom = roomRepository.findById(room.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+                    Map<Long,WebSocketSession>clients = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
+
+                        if (!client.getKey().equals(userId)) {
+
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    null,
+                                    null));
+                        }
+                    }
+
+                    break;
+
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
