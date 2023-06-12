@@ -6,6 +6,7 @@ import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,13 +35,12 @@ public class UserController {
         return userService.signup(requestDto);
     }
 
-    @GetMapping("/login")
-    public String kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException, ParseException {
-
-        String accessToken = response.getHeader("ACCESS_KEY");
-        response.setHeader("ACCESS_KEY", "Bearer " + accessToken);
-
-        return kakaoService.kakaoLogin(code, response);
+    @GetMapping("/login/oauth/kakao")
+    public RedirectView kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+        kakaoService.kakaoLogin(code, response);
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("https://api.honsoolzzak.com/api/login");
+        return redirectView;
     }
 
     @PostMapping("/login")

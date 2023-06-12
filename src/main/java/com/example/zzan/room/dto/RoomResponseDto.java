@@ -26,7 +26,7 @@ public class RoomResponseDto {
     private String roomPassword;
     private LocalDateTime createdAt;
     private int alcohol;
-    private String userImageUrl;
+    private String userImage;
     private String roomImageUrl;
     private int roomCapacity = 0;
     private boolean roomDelete;
@@ -43,7 +43,7 @@ public class RoomResponseDto {
         this.roomPassword = room.getRoomPassword();
         this.createdAt = room.getCreatedAt();
         this.alcohol = room.getHostUser().getAlcohol();
-        this.userImageUrl = room.getHostUser().getUserImage();
+        this.userImage = room.getHostUser().getUserImage();
         this.roomImageUrl = room.getRoomImage();
         this.userList = new HashMap<>();
         this.roomCapacity = room.getRoomCapacity();

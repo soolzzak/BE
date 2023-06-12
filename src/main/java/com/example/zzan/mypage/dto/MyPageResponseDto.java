@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MyPageResponseDto {
 
-	private String userImageUrl;
+	private String userImage;
 	private String username;
 	private String email;
 	private int alcohol;
@@ -22,7 +22,7 @@ public class MyPageResponseDto {
 	private List<BlockListDto> blockListedUser;
 
 	public MyPageResponseDto(User myPage, int alcohol, List<UserHistoryDto> metUser, List<FollowResponseDto> followResponseDtos, List<BlockListDto> blockListDtos) {
-		this.userImageUrl = myPage.getUserImage();
+		this.userImage = myPage.getUserImage();
 		this.username = myPage.getUsername();
 		this.email = myPage.getEmail();
 		this.alcohol = alcohol;
