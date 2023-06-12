@@ -53,7 +53,7 @@ public class RoomService {
     public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto roomRequestDto, MultipartFile roomImage, User user) throws IOException {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
-        room.setRoomCapacity(1);
+        room.setRoomCapacity(0);
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
             return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
