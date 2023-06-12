@@ -46,6 +46,8 @@ public class SignalHandler extends TextWebSocketHandler {
 
     private static final String MSG_TYPE_TOAST = "toast";
 
+    private static final String MSG_TYPE_PING = "ping";
+
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 
@@ -154,7 +156,7 @@ public class SignalHandler extends TextWebSocketHandler {
                 case MSG_TYPE_TOAST:
 
                     room = rooms.get(message.getData());
-                    Room toastingRoom = roomRepository.findById(room.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                    // Room toastingRoom = roomRepository.findById(room.getRoomId()). orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
                     Map<Long,WebSocketSession>clients = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
@@ -172,6 +174,28 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
 
                     break;
+
+
+
+                case MSG_TYPE_PING :
+                    room = rooms.get(message.getData());
+
+                    Long hostId = room.getHostId();
+
+                    Map<Long, WebSocketSession> pingUser = rtcChatService.getUser(room);
+
+                    WebSocketSession hostSession = pingUser.get(hostId);
+
+                    sendMessage(hostSession,
+                        new WebSocketMessage(
+                            userId,
+                            message.getType(),
+                            roomId,
+                            null,
+                            null));
+                    break;
+
+
 
 
                 default:
