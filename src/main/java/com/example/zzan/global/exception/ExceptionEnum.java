@@ -21,7 +21,6 @@ public enum ExceptionEnum {
     INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
     NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),
 
-
     TARGET_USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The specified user cannot be found."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"You are already following this user."),
     FAILED_SEND_MAIL(HttpStatus.BAD_REQUEST.value(), "Failed to send the verification email."),
@@ -44,8 +43,7 @@ public enum ExceptionEnum {
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "The REFRESH token has expired."),
     INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT signature."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED.value(), "Unsupported JWT token."),
-    EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token."),
-    USER_ALREADY_EXISTS(HttpStatus.UNAUTHORIZED.value(),"Already exist");
+    EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token.");
 
     private final int status;
     private final String message;

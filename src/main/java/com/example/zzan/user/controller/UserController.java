@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping("/login")
     public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
         String createToken =  kakaoService.kakaoLogin(code, response);
-         jwtUtil.setHeaderAccessToken(response, createToken);
+        jwtUtil.setHeaderAccessToken(response, createToken);
         // Cookie 생성 및 직접 브라우저에 Set
         // Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
         // cookie.setPath("/");
