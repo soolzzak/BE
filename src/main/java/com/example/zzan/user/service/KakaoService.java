@@ -47,7 +47,7 @@ public class KakaoService {
         String ageRange = kakaoInfoDto.getAgeRange();
         String[] ages = ageRange.split("~");
         int lowerAge = Integer.parseInt(ages[0]);
-        User user = null;
+
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
@@ -57,6 +57,7 @@ public class KakaoService {
                 SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
                 Date birthday = null;
                 String password= UUID.randomUUID().toString();
+                User user;
 
                 try {
                     birthday=formatter.parse(birthdayString);
@@ -67,12 +68,16 @@ public class KakaoService {
 
                 user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
                 userRepository.save(user);
+
             }else {
                 throw new ApiException(NOT_AN_ADULT);
             }
 
         }
 
+        User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
+            () -> new ApiException(EMAIL_NOT_FOUND)
+        );
 
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         return createToken;
