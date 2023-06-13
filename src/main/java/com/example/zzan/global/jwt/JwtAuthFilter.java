@@ -17,11 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import java.io.IOException;
+
+import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
-
-import java.io.IOException;
 
 
 @Slf4j

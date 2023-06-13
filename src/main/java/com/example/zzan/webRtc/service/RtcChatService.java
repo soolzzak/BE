@@ -3,15 +3,11 @@ package com.example.zzan.webRtc.service;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.webRtc.dto.SessionListMap;
-import com.example.zzan.webRtc.dto.UserListMap;
-import com.example.zzan.webRtc.dto.WebSocketMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +31,6 @@ public class RtcChatService {
 
         SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());
         SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
-        return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
+        return ResponseDto.setSuccess("User list has been added.", userList);
     }
 }

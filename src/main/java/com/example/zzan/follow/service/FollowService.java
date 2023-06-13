@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.List;
 import java.util.Map;
@@ -19,43 +18,43 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_FOLLOW;
+import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class FollowService {
 
-	private final FollowRepository followRepository;
-	private final UserRepository userRepository;
-	private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository;
+    private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-	@Transactional
-	public ResponseDto<FollowResponseDto> updateFollow (Long followId, User user) {
-		Optional<User> followingUser = userRepository.findById(followId);
+    @Transactional
+    public ResponseDto<FollowResponseDto> updateFollow(Long followId, User user) {
+        if (user.getId().equals(followId)) {
+            throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
+        }
 
-		if (user.getId().equals(followId)) {
-			throw new ApiException(NOT_ALLOWED_SELF_FOLLOW);
-		}
+        User followingUser = userRepository.findById(followId)
+                .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
-		if (followingUser.isPresent()) {
-			Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser.get(), user);
+        Optional<Follow> followList = followRepository.findByFollowingUserAndFollowerUser(followingUser, user);
 
-			if (followList.isPresent()) {
-				followRepository.delete(followList.get());
-				return ResponseDto.setSuccess("팔로우를 취소 하였습니다");
-			} else {
-				Follow follow = new Follow(followingUser.get(), user);
-				followRepository.save(follow);
-				return ResponseDto.setSuccess("팔로잉하였습니다");
-			}
-		} else {
-			throw new ApiException(USER_NOT_FOUND);
-		}
-	}
+        if (followList.isPresent()) {
+            followRepository.delete(followList.get());
+            return ResponseDto.setSuccess("Successfully unfollowed the user.");
+        } else {
+            Follow follow = new Follow(followingUser, user);
+            followRepository.save(follow);
+            return ResponseDto.setSuccess("Successfully followed the user.");
+        }
+    }
 
-	public List<User> getFollowers(Long userId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-		return followRepository.findByFollowingUser(user)
-				.stream()
-				.map(Follow::getFollowerUser)
-				.collect(Collectors.toList());
-	}
+    public List<User> getFollowers(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        return followRepository.findByFollowingUser(user)
+                .stream()
+                .map(Follow::getFollowerUser)
+                .collect(Collectors.toList());
+    }
 }

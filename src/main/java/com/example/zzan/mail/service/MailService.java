@@ -12,10 +12,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
+
+import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_DUPLICATION;
+import static com.example.zzan.global.exception.ExceptionEnum.FAILED_SEND_MAIL;
 
 @PropertySource("classpath:application.yml")
 @Slf4j

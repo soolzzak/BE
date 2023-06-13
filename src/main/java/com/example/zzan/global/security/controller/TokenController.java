@@ -42,8 +42,8 @@ public class TokenController {
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                     () -> new ApiException(EMAIL_NOT_FOUND)
             );
-            return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token 재발행 하였습니다."));
+            return ResponseEntity.ok().body(ResponseDto.setSuccess("Successfully reissued Access Token."));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token 값이 만료되었습니다."));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token value has expired."));
     }
 }

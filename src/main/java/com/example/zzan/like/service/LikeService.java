@@ -9,13 +9,14 @@ import com.example.zzan.like.repository.LikeRepository;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_LIKE;
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -30,45 +31,45 @@ public class LikeService {
         Long userId = currentUser.getUser().getId();
         Optional<User> targetOptional = userRepository.findById(targetId);
 
-        if (targetOptional.isPresent()) {
-            User targetUser = targetOptional.get();
+        if (targetOptional.isEmpty()) {
+            throw new ApiException(TARGET_USER_NOT_FOUND);
+        }
 
-            if (userId.equals(targetId)) {
-                throw new ApiException(NOT_ALLOWED_SELF_LIKE);
-            }
+        User targetUser = targetOptional.get();
 
-            User user = userRepository.getOne(userId);
+        if (userId.equals(targetId)) {
+            throw new ApiException(NOT_ALLOWED_SELF_LIKE);
+        }
 
-            Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, LikeEnum.LIKE);
+        User user = userRepository.getById(userId);
 
-            if (existingLike == null) {
-                targetUser.setAlcohol(targetUser.getAlcohol() + 1);
+        Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, LikeEnum.LIKE);
+
+        if (existingLike == null) {
+            targetUser.setAlcohol(targetUser.getAlcohol() + 1);
+            userRepository.save(targetUser);
+            Like likeEntity = new Like(user, targetUser, LikeEnum.LIKE);
+            likeRepository.save(likeEntity);
+            targetUser.setAlcoholUp(like);
+            targetUser.setAlcoholDown(!like);
+            return ResponseDto.setSuccess("Successfully increased the alcohol status.");
+        } else {
+            if (like && existingLike.getLikeEnum() == LikeEnum.LIKE) {
+                targetUser.setAlcohol(targetUser.getAlcohol() - 1);
                 userRepository.save(targetUser);
+                likeRepository.delete(existingLike);
+                targetUser.setAlcoholUp(false);
+                targetUser.setAlcoholDown(false);
+                return ResponseDto.setSuccess("Successfully cancelled the increase of the alcohol status.");
+            } else {
+                targetUser.setAlcohol(targetUser.getAlcohol() + 2);
+                likeRepository.delete(existingLike);
                 Like likeEntity = new Like(user, targetUser, LikeEnum.LIKE);
                 likeRepository.save(likeEntity);
-                targetUser.setAlcoholUp(like);
-                targetUser.setAlcoholDown(!like);
-                return ResponseDto.setSuccess("도수를 올렸습니다.");
-            } else {
-                if (like && existingLike.getLikeEnum() == LikeEnum.LIKE) {
-                    targetUser.setAlcohol(targetUser.getAlcohol() - 1);
-                    userRepository.save(targetUser);
-                    likeRepository.delete(existingLike);
-                    targetUser.setAlcoholUp(false);
-                    targetUser.setAlcoholDown(false);
-                    return ResponseDto.setSuccess("도수 올리기를 취소하였습니다.");
-                } else {
-                    targetUser.setAlcohol(targetUser.getAlcohol() + 2);
-                    likeRepository.delete(existingLike);
-                    Like likeEntity = new Like(user, targetUser, LikeEnum.LIKE);
-                    likeRepository.save(likeEntity);
-                    targetUser.setAlcoholUp(true);
-                    targetUser.setAlcoholDown(false);
-                    return ResponseDto.setSuccess("도수 내리기 취소 후 도수 올리기 적용");
-                }
+                targetUser.setAlcoholUp(true);
+                targetUser.setAlcoholDown(false);
+                return ResponseDto.setSuccess("Successfully cancelled the decrease and increased the alcohol status.");
             }
-        } else {
-            throw new ApiException(TARGET_USER_NOT_FOUND);
         }
     }
 
@@ -78,50 +79,49 @@ public class LikeService {
         Long userId = currentUser.getUser().getId();
         Optional<User> targetOptional = userRepository.findById(targetId);
 
-        if (targetOptional.isPresent()) {
-            User targetUser = targetOptional.get();
+        if (targetOptional.isEmpty()) {
+            throw new ApiException(TARGET_USER_NOT_FOUND);
+        }
 
-            if (userId.equals(targetId)) {
-                throw new ApiException(NOT_ALLOWED_SELF_LIKE);
-            }
+        User targetUser = targetOptional.get();
 
-            User user = userRepository.getOne(userId);
+        if (userId.equals(targetId)) {
+            throw new ApiException(NOT_ALLOWED_SELF_LIKE);
+        }
 
-            Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, LikeEnum.DISLIKE);
+        User user = userRepository.getById(userId);
 
-            if (existingLike == null) {
-                targetUser.setAlcohol(targetUser.getAlcohol() - 1);
+        Like existingLike = likeRepository.findByUserAndTargetUserAndLikeEnum(user, targetUser, LikeEnum.DISLIKE);
+
+        if (existingLike == null) {
+            targetUser.setAlcohol(targetUser.getAlcohol() - 1);
+            userRepository.save(targetUser);
+            Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
+            likeRepository.save(likeEntity);
+            targetUser.setAlcoholUp(like);
+            targetUser.setAlcoholDown(!like);
+            return ResponseDto.setSuccess("Successfully decreased the alcohol status.");
+        } else {
+            if (!like && existingLike.getLikeEnum() == LikeEnum.DISLIKE) {
+                targetUser.setAlcohol(targetUser.getAlcohol() + 1);
                 userRepository.save(targetUser);
+                likeRepository.delete(existingLike);
+                targetUser.setAlcoholUp(false);
+                targetUser.setAlcoholDown(false);
+                return ResponseDto.setSuccess("Successfully cancelled the decrease of the alcohol status.");
+            } else {
+                targetUser.setAlcohol(targetUser.getAlcohol() - 2);
+                likeRepository.delete(existingLike);
                 Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
                 likeRepository.save(likeEntity);
-                targetUser.setAlcoholUp(like);
-                targetUser.setAlcoholDown(!like);
-                return ResponseDto.setSuccess("도수를 내렸습니다.");
-            } else {
-                if (!like && existingLike.getLikeEnum() == LikeEnum.DISLIKE) {
-                    targetUser.setAlcohol(targetUser.getAlcohol() + 1);
-                    userRepository.save(targetUser);
-                    likeRepository.delete(existingLike);
-                    targetUser.setAlcoholUp(false);
-                    targetUser.setAlcoholDown(false);
-                    return ResponseDto.setSuccess("도수 내리기를 취소하였습니다.");
-                } else {
-                    targetUser.setAlcohol(targetUser.getAlcohol() - 2);
-                    likeRepository.delete(existingLike);
-                    Like likeEntity = new Like(user, targetUser, LikeEnum.DISLIKE);
-                    likeRepository.save(likeEntity);
-                    targetUser.setAlcoholUp(false);
-                    targetUser.setAlcoholDown(true);
-                    return ResponseDto.setSuccess("도수 올리기 취소 후 도수 내리기 적용");
-                }
+                targetUser.setAlcoholUp(false);
+                targetUser.setAlcoholDown(true);
+                return ResponseDto.setSuccess("Successfully cancelled the increase and decreased the alcohol status.");
             }
-        } else {
-            throw new ApiException(TARGET_USER_NOT_FOUND);
         }
     }
 
     private UserDetailsImpl getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (UserDetailsImpl) authentication.getPrincipal();
+        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
