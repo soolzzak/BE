@@ -1,10 +1,21 @@
 package com.example.zzan.user.service;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
+import com.example.zzan.user.entity.User;
+import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.KakaoUserRepository;
+import com.example.zzan.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,16 +39,47 @@ public class KakaoService {
     private String kakaoApiKey;
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
+        String ageRange = kakaoInfoDto.getAgeRange();
+        String[] ages = ageRange.split("~");
+        int lowerAge = Integer.parseInt(ages[0]);
+
+
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
+        if(lowerAge>=20){
+            String year = "1990";
+            String birthdayString = year + kakaoInfoDto.getBirthday();
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
+            Date birthday = null;
+            String password= UUID.randomUUID().toString();
+
+            try {
+                birthday=formatter.parse(birthdayString);
+            }catch (ParseException e){
+                throw new ApiException(INVALID_FORMAT);
+            }
+
+
+            User user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
+            userRepository.save(user);
+        }else {
+            throw new ApiException(NOT_AN_ADULT);
         }
+
+        }
+
         String createToken =  jwtUtil.createToken(kakaoInfoDto.getUsername(),kakaoInfoDto.getKakaoId(),kakaoInfoDto.getKakaoImage(),
                 kakaoInfoDto.getEmail(),kakaoInfoDto.getGender(),kakaoInfoDto.getAgeRange(),kakaoInfoDto.getBirthday());
         return createToken;
     }
+
+
+
     private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
