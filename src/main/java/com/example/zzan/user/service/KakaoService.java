@@ -84,7 +84,7 @@ public class KakaoService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
+        body.add("grant_type", "ACCESS_KEY");
         body.add("client_id", kakaoApiKey);
          body.add("redirect_uri", "https://honsoolzzak.com/api/login");
         // body.add("redirect_uri", "http://localhost:3000/api/login");
