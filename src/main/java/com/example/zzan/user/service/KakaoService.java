@@ -50,8 +50,9 @@ public class KakaoService {
 
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
-            kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
-        if(lowerAge>=20){
+            kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));}
+
+        // if(lowerAge>=20){
             String year = "1990";
             String birthdayString = year + kakaoInfoDto.getBirthday();
             SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
@@ -68,16 +69,17 @@ public class KakaoService {
             User user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
             userRepository.save(user);
             String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-            return createToken;
-
-        }else {
-            throw new ApiException(NOT_AN_ADULT);
-        }
-
-        }
 
 
-        throw new ApiException(USER_ALREADY_EXISTS);
+        //
+        // }else {
+        //     throw new ApiException(NOT_AN_ADULT);
+        // }
+
+
+
+
+        return createToken;
     }
 
 
