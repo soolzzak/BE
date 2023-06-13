@@ -82,7 +82,7 @@ public class UserService {
             throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
         }
 
-        User user = new User(userEmail, userPassword, username, role, s3Uploader.getRandomImage("Logo"), gender);
+        User user = new User(userEmail, userPassword, username, role, s3Uploader.getRandomImage("profile"), gender);
         user.setBirthday(birthday);
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("Signup registration has been completed.", null));
