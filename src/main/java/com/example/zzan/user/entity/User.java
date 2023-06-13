@@ -89,19 +89,37 @@ public class User {
         this.kakaoId = kakaoInfoDto.getKakaoId().toString();
     }
 
-    public User(KakaoInfoDto kakaoInfoDto, String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
+    // public User(KakaoInfoDto kakaoInfoDto, String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
+    //     this.kakaoId =kakaoInfoDto.getKakaoId().toString();
+    //     this.email = email;
+    //     this.password = password;
+    //     this.username = username;
+    //     this.role = role;
+    //     this.userImage = userImage;
+    //     this.gender = gender;
+    //     this.birthday = birthday;
+    //     this.alcohol = 16;
+    //     this.alcoholUp = false;
+    //     this.alcoholDown = false;
+    // }
+
+    public User(KakaoInfoDto kakaoInfoDto,String password,UserRole role,Date birthday) {
         this.kakaoId =kakaoInfoDto.getKakaoId().toString();
-        this.email = email;
+        this.email = kakaoInfoDto.getEmail();
         this.password = password;
-        this.username = username;
+        this.username = kakaoInfoDto.getUsername();
         this.role = role;
-        this.userImage = userImage;
-        this.gender = gender;
+        this.userImage = kakaoInfoDto.getKakaoImage();
+        this.gender = kakaoInfoDto.getGender();
         this.birthday = birthday;
         this.alcohol = 16;
         this.alcoholUp = false;
         this.alcoholDown = false;
     }
+
+
+
+
 
     public User(String username, String userImage) {
         this.username = username;

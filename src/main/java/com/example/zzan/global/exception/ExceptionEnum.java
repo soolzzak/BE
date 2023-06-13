@@ -17,6 +17,9 @@ public enum ExceptionEnum {
     NOT_ALLOWED(HttpStatus.UNAUTHORIZED.value(), "This action is only allowed for logged-in users."),
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "The file format is incorrect."),
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED.value(), "You do not have permission to access this resource."),
+    INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
+    NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),
+
 
     TARGET_USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The specified user cannot be found."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"You are already following this user."),
