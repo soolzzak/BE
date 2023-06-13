@@ -5,10 +5,14 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
+import com.example.zzan.global.security.entity.RefreshToken;
+import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
@@ -40,6 +44,7 @@ public class KakaoService {
     private final KakaoUserRepository kakaoUserRepository;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
@@ -64,15 +69,11 @@ public class KakaoService {
                 }catch (ParseException e){
                     throw new ApiException(INVALID_FORMAT);
                 }
-
-
                 user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
                 userRepository.save(user);
-
             }else {
                 throw new ApiException(NOT_AN_ADULT);
             }
-
         }
 
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
@@ -80,7 +81,20 @@ public class KakaoService {
         );
 
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-        return createToken;
+        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
+
+        RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
+        refreshTokenRepository.save(newRefreshToken);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", createToken);
+        tokens.put("refreshToken", refreshToken);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonTokens = objectMapper.writeValueAsString(tokens);
+
+
+        return jsonTokens;
     }
 
 
