@@ -67,8 +67,6 @@ public class SignalHandler extends TextWebSocketHandler {
                     roomRepository.save(realroom);
                 }
             }
-
-
         }
     }
 

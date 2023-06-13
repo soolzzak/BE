@@ -191,8 +191,6 @@ public class RoomService {
                 throw new ApiException(BLOCKED_USER);
             }
         }
-
-
         RoomCheckResponseDto roomCheckResponseDto = new RoomCheckResponseDto(room.getRoomCapacity());
         return ResponseDto.setSuccess("Room check passed successfully.", roomCheckResponseDto);
     }
