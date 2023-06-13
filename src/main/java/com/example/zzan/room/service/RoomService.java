@@ -177,6 +177,7 @@ public class RoomService {
         if (room.getRoomCapacity() >= 2) {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
+
         List<BlockList> userBlockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
         for (BlockList blockList : userBlockLists) {
             if (room.getHostUser().equals(blockList.getBlockListedUser())) {
