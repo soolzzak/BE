@@ -93,9 +93,9 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
+                        .signWith(SignatureAlgorithm.HS512, kakaoKey)
                         .claim("ACCESS_KEY", "USER")
                         .setSubject(kakaoId.toString())
-                        .signWith(signatureAlgorithm, secretKey)
                         .claim("username", username)
                         .claim("kakaoImage", kakaoImage)
                         .claim("email", email)
@@ -104,7 +104,7 @@ public class JwtUtil {
                         .claim("birthday", birthday)
                         .setExpiration(exprTime)
                         .setIssuedAt(date)
-                        // .signWith(kakaoKey, signatureAlgorithm)
+                        .signWith(kakaoKey, signatureAlgorithm)
                         .compact();
     }
 
