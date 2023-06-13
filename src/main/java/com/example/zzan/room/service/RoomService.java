@@ -178,15 +178,22 @@ public class RoomService {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
-        List<BlockList> userBlockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
-        for (BlockList blockList : userBlockLists) {
+        List<BlockList> userBlockListing = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
+        for (BlockList blockList : userBlockListing) {
             if (room.getHostUser().equals(blockList.getBlockListedUser())) {
                 throw new ApiException(BLOCKED_USER);
             }
         }
 
-        RoomCheckResponseDto roomCheckResponseDto = new RoomCheckResponseDto(room.getRoomCapacity());
+        List<BlockList> userBlockListed = blockListRepository.findAllByBlockListedUserOrderByCreatedAtDesc(user);
+        for (BlockList blockList : userBlockListed) {
+            if (room.getHostUser().equals(blockList.getBlockListingUser())) {
+                throw new ApiException(BLOCKED_USER);
+            }
+        }
 
+
+        RoomCheckResponseDto roomCheckResponseDto = new RoomCheckResponseDto(room.getRoomCapacity());
         return ResponseDto.setSuccess("Room check passed successfully.", roomCheckResponseDto);
     }
 
