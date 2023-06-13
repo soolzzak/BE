@@ -25,9 +25,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 @Component
 @Service
 public class S3Uploader {
-
 	private final AmazonS3Client amazonS3Client;
-
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
@@ -56,19 +54,6 @@ public class S3Uploader {
 		S3ObjectSummary randomSummary = objectSummaries.get(new Random().nextInt(objectSummaries.size()));
 		return amazonS3Client.getUrl(bucket, randomSummary.getKey()).toString();
 	}
-
-
-	public String getSingleImage(String dirName, String imageName) {
-		String imagePath = dirName + "/" + imageName;
-
-		boolean isExist = amazonS3Client.doesObjectExist(bucket, imagePath);
-		if (!isExist) {
-			throw new ApiException(IMAGE_NOT_FOUND);
-		}
-		String imageUrl = amazonS3Client.getUrl(bucket, imagePath).toString();
-		return imageUrl;
-	}
-
 
 	private String putS3(File uploadFile, String fileName) {
 		amazonS3Client.putObject(
