@@ -93,9 +93,9 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                    .signWith(signatureAlgorithm, secretKey)
                         .claim("ACCESS_KEY", "USER")
                         .setSubject(kakaoId.toString())
+                        .signWith(signatureAlgorithm, secretKey)
                         .claim("username", username)
                         .claim("kakaoImage", kakaoImage)
                         .claim("email", email)
