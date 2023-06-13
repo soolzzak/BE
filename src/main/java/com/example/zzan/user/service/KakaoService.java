@@ -86,19 +86,24 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
-        // body.add("redirect_uri", "https://honsoolzzak.com/api/login");
-        body.add("redirect_uri", "http://localhost:3000/api/login");
+         body.add("redirect_uri", "https://honsoolzzak.com/api/login");
+        // body.add("redirect_uri", "http://localhost:3000/api/login");
         body.add("code", code);
+
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST, kakaoTokenRequest, String.class);
+
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
+
     }
+
+
     private KakaoInfoDto getUserInfo(String token) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
