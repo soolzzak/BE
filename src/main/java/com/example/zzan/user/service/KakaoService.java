@@ -67,15 +67,17 @@ public class KakaoService {
 
             User user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
             userRepository.save(user);
+            String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
+            return createToken;
+
         }else {
             throw new ApiException(NOT_AN_ADULT);
         }
 
         }
 
-        String createToken =  jwtUtil.createToken(kakaoInfoDto.getUsername(),kakaoInfoDto.getKakaoId(),kakaoInfoDto.getKakaoImage(),
-                kakaoInfoDto.getEmail(),kakaoInfoDto.getGender(),kakaoInfoDto.getAgeRange(),kakaoInfoDto.getBirthday());
-        return createToken;
+
+        throw new ApiException(USER_ALREADY_EXISTS);
     }
 
 

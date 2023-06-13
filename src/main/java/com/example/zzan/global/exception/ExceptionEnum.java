@@ -44,7 +44,8 @@ public enum ExceptionEnum {
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "The REFRESH token has expired."),
     INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT signature."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED.value(), "Unsupported JWT token."),
-    EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token.");
+    EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token."),
+    USER_ALREADY_EXISTS(HttpStatus.UNAUTHORIZED.value(),"Already exist");
 
     private final int status;
     private final String message;
