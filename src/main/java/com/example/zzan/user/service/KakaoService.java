@@ -51,33 +51,32 @@ public class KakaoService {
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
-        if(lowerAge>=20){
-            String year = "1990";
-            String birthdayString = year + kakaoInfoDto.getBirthday();
-            SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
-            Date birthday = null;
-            String password= UUID.randomUUID().toString();
+            if(lowerAge>=20){
+                String year = "1990";
+                String birthdayString = year + kakaoInfoDto.getBirthday();
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
+                Date birthday = null;
+                String password= UUID.randomUUID().toString();
 
-            try {
-                birthday=formatter.parse(birthdayString);
-            }catch (ParseException e){
-                throw new ApiException(INVALID_FORMAT);
+                try {
+                    birthday=formatter.parse(birthdayString);
+                }catch (ParseException e){
+                    throw new ApiException(INVALID_FORMAT);
+                }
+
+
+                User user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
+                userRepository.save(user);
+            }else {
+                throw new ApiException(NOT_AN_ADULT);
             }
-
-
-            User user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
-            userRepository.save(user);
-        }else {
-            throw new ApiException(NOT_AN_ADULT);
-        }
 
         }
 
         String createToken =  jwtUtil.createToken(kakaoInfoDto.getUsername(),kakaoInfoDto.getKakaoId(),kakaoInfoDto.getKakaoImage(),
-                kakaoInfoDto.getEmail(),kakaoInfoDto.getGender(),kakaoInfoDto.getAgeRange(),kakaoInfoDto.getBirthday());
+            kakaoInfoDto.getEmail(),kakaoInfoDto.getGender(),kakaoInfoDto.getAgeRange(),kakaoInfoDto.getBirthday());
         return createToken;
     }
-
 
 
     private String getToken(String code) throws JsonProcessingException {
@@ -87,17 +86,24 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
         body.add("redirect_uri", "https://honsoolzzak.com/api/login");
+        // body.add("redirect_uri", "http://localhost:3000/api/login");
         body.add("code", code);
+
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST, kakaoTokenRequest, String.class);
+            "https://kauth.kakao.com/oauth/token",
+            HttpMethod.POST, kakaoTokenRequest, String.class);
+
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
+
     }
+
+
+
     private KakaoInfoDto getUserInfo(String token) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);

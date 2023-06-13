@@ -78,13 +78,13 @@ public class JwtUtil {
         claim.put("email",user.getEmail());
         claim.put("gender",user.getGender());
         return BEARER_PREFIX
-                + Jwts.builder()
-                .setSubject(user.getEmail())
-                .signWith(signatureAlgorithm, secretKey)
-                .claim(AUTHORIZATION_KEY, claim)
-                .setIssuedAt(date)
-                .setExpiration(new Date(date.getTime() + time))
-                .compact();
+            + Jwts.builder()
+            .setSubject(user.getEmail())
+            .signWith(signatureAlgorithm, secretKey)
+            .claim(AUTHORIZATION_KEY, claim)
+            .setIssuedAt(date)
+            .setExpiration(new Date(date.getTime() + time))
+            .compact();
     }
 
     public String createToken(String username, Long kakaoId, String kakaoImage, String email, Gender gender, String ageRange, String birthday) {
@@ -92,20 +92,20 @@ public class JwtUtil {
         Date exprTime = (Date)Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
         return BEARER_PREFIX +
-                Jwts.builder()
-                        .signWith(SignatureAlgorithm.HS512, kakaoKey)
-                        .claim("ACCESS_KEY", "USER")
-                        .setSubject(kakaoId.toString())
-                        .claim("username", username)
-                        .claim("kakaoImage", kakaoImage)
-                        .claim("email", email)
-                        .claim("gender", gender)
-                        .claim("ageRange", ageRange)
-                        .claim("birthday", birthday)
-                        .setExpiration(exprTime)
-                        .setIssuedAt(date)
-                        .signWith(kakaoKey, signatureAlgorithm)
-                        .compact();
+            Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, kakaoKey)
+                .claim("ACCESS_KEY", "USER")
+                .setSubject(kakaoId.toString())
+                .claim("username", username)
+                .claim("kakaoImage", kakaoImage)
+                .claim("email", email)
+                .claim("gender", gender)
+                .claim("ageRange", ageRange)
+                .claim("birthday", birthday)
+                .setExpiration(exprTime)
+                .setIssuedAt(date)
+                .signWith(kakaoKey, signatureAlgorithm)
+                .compact();
     }
 
     public String validateToken(String token) {
