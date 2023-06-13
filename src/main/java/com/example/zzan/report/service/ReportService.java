@@ -10,9 +10,11 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_REPORT;
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -38,35 +40,35 @@ public class ReportService {
 
 		Optional<Report> existingReport = reportRepository.findByReportingUserAndReportedUser(user,reportedUser);
 		if (existingReport.isPresent()) {
-			return ResponseDto.setSuccess("이미 신고한 유저입니다");
+			return ResponseDto.setSuccess("Already reported user.");
 		}
 
 		int pointsToAdd;
-		if (reportRequestDto.getReportKind().equals("광고/사기")) {
+		if (reportRequestDto.getReportKind().equals("Advertisement/Scam")) {
 			pointsToAdd = 1;
-		}else if(reportRequestDto.getReportKind().equals("금지된 표현")){
+		}else if(reportRequestDto.getReportKind().equals("Forbidden Expression")){
 
 			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("욕설")){
+		}else if(reportRequestDto.getReportKind().equals("Abusive Language")){
 
 			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("음담패설")){
+		}else if(reportRequestDto.getReportKind().equals("Indecent Remark")){
 
 			pointsToAdd = 3;
-		}else if(reportRequestDto.getReportKind().equals("노출")){
+		}else if(reportRequestDto.getReportKind().equals("Exposure")){
 
 			pointsToAdd = 5;
-		}else if(reportRequestDto.getReportKind().equals("기타")){
+		}else if(reportRequestDto.getReportKind().equals("Others")){
 
 			pointsToAdd = 0;
 		}else {
-			return ResponseDto.setBadRequest("신고사유가 적절치 않습니다");
+			return ResponseDto.setBadRequest("The reason for reporting is not appropriate.");
 		}
 
 		reportedUser.addReportPoints(pointsToAdd);
 		Report report=new Report(reportedUser,reportRequestDto,user);
 		reportRepository.save(report);
 
-		return ResponseDto.setSuccess("신고가 처리 되었습니다");
+		return ResponseDto.setSuccess("Your report has been processed.");
 	}
 }

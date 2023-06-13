@@ -11,7 +11,6 @@ import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class UserController {
         String createToken =  kakaoService.kakaoLogin(code, response);
         jwtUtil.setHeaderAccessToken(response, createToken);
 
-       return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token이 발행되었습니다"));
+       return ResponseEntity.ok().body(ResponseDto.setSuccess("Access Token has been issued."));
     }
 
 
