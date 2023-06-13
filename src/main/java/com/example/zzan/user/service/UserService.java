@@ -41,15 +41,12 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
-
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
-
 
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
 
         String username = requestDto.getUsername();
-        Optional<User> foundByUsername = userRepository.findByUsername(username);
 
         if (hasBadWord(username)) {
             throw new ApiException(NOT_ALLOWED_USERNAME);
@@ -85,7 +82,7 @@ public class UserService {
             throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
         }
 
-        User user = new User(userEmail, userPassword, username, role, s3Uploader.getSingleImage("Logo","caccfe52c4914a0499db657b4fdeb698.png"), gender);
+        User user = new User(userEmail, userPassword, username, role, s3Uploader.getRandomImage("profile"), gender);
         user.setBirthday(birthday);
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("Signup registration has been completed.", null));
