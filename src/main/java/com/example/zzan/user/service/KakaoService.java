@@ -5,6 +5,8 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.example.zzan.global.exception.ApiException;
@@ -64,15 +66,11 @@ public class KakaoService {
                 }catch (ParseException e){
                     throw new ApiException(INVALID_FORMAT);
                 }
-
-
                 user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
                 userRepository.save(user);
-
             }else {
                 throw new ApiException(NOT_AN_ADULT);
             }
-
         }
 
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
@@ -80,7 +78,19 @@ public class KakaoService {
         );
 
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-        return createToken;
+        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
+
+        // Create a map to store both tokens
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", createToken);
+        tokens.put("refreshToken", refreshToken);
+
+        // Convert the map to a JSON string
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonTokens = objectMapper.writeValueAsString(tokens);
+
+
+        return jsonTokens;
     }
 
 
