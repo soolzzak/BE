@@ -30,11 +30,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Service
@@ -117,7 +119,7 @@ public class RoomService {
             roomPage = roomRepository.findByCategoryAndRoomDeleteIsFalse(category, pageable);
         }
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
+        return ResponseDto.setSuccess("Successfully matched room lookups.", roomList);
     }
 
     @Transactional
@@ -139,10 +141,10 @@ public class RoomService {
         room.setRoomImage(roomImageUrl);
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
-            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
+            return ResponseDto.setBadRequest("There is a word in the room title that cannot be used.");
         }
         roomRepository.save(room);
-        return ResponseDto.setSuccess("방을 수정하였습니다.", null);
+        return ResponseDto.setSuccess("Successfully modified the room.", null);
     }
 
     @Transactional
@@ -152,7 +154,7 @@ public class RoomService {
         );
         if (room.getHostUser().getId().equals(user.getId())) {
             roomRepository.delete(room);
-            return ResponseDto.setSuccess("방을 삭제하였습니다.", null);
+            return ResponseDto.setSuccess("Successfully deleted the room.", null);
         } else {
             throw new ApiException(UNAUTHORIZED_USER);
         }
@@ -222,13 +224,13 @@ public class RoomService {
             room.setRoomCapacity(room.getRoomCapacity() - 1);
             roomRepository.save(room);
         }
-        return ResponseDto.setSuccess("방나가기 성공", null);
+        return ResponseDto.setSuccess("Successfully exited the room", null);
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> getSearchedRoom(Pageable pageable, String title) {
         Page<Room> rooms = roomRepository.findAllByTitleContainingAndRoomDeleteIsFalse(title, pageable);
         Page<RoomResponseDto> roomList = rooms.map(RoomResponseDto::new);
-        return ResponseDto.setSuccess("검색 성공", roomList);
+        return ResponseDto.setSuccess("Search success.", roomList);
     }
 }

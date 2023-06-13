@@ -16,6 +16,7 @@ public enum ExceptionEnum {
     EMAIL_DUPLICATION(HttpStatus.CONFLICT.value(), "The email address is already registered."),
     NOT_ALLOWED(HttpStatus.UNAUTHORIZED.value(), "This action is only allowed for logged-in users."),
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "The file format is incorrect."),
+    INVALID_FILE_CONVERSION(HttpStatus.BAD_REQUEST.value(), "MultipartFile -> File Convert Fail."),
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED.value(), "You do not have permission to access this resource."),
     INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
     NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),

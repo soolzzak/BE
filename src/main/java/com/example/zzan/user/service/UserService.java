@@ -88,7 +88,7 @@ public class UserService {
         User user = new User(userEmail, userPassword, username, role, s3Uploader.getSingleImage("Logo","caccfe52c4914a0499db657b4fdeb698.png"), gender);
         user.setBirthday(birthday);
         userRepository.save(user);
-        return ResponseEntity.ok(ResponseDto.setSuccess("회원가입이 완료되었습니다.", null));
+        return ResponseEntity.ok(ResponseDto.setSuccess("Signup registration has been completed.", null));
     }
 
     @Transactional
@@ -107,7 +107,7 @@ public class UserService {
         user.setPassword(userPassword);
         userRepository.save(user);
 
-        return ResponseEntity.ok(ResponseDto.setSuccess("비밀번호 변경이 완료되었습니다.", null));
+        return ResponseEntity.ok(ResponseDto.setSuccess("Password change completed.", null));
     }
 
     @Transactional
@@ -138,7 +138,7 @@ public class UserService {
             }
             setHeader(response, tokenDto, user.getEmail());
 
-            ResponseDto responseDto = ResponseDto.setSuccess("로그인에 성공하였습니다.", null);
+            ResponseDto responseDto = ResponseDto.setSuccess("Login successful.", null);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
@@ -160,7 +160,7 @@ public class UserService {
                 );
 
         refreshTokenRepository.delete(refreshToken);
-        ResponseDto responseDto = ResponseDto.setSuccess("정상적으로 로그아웃하였습니다.", null);
+        ResponseDto responseDto = ResponseDto.setSuccess("Successfully logged out.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
     }
 

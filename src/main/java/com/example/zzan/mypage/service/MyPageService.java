@@ -65,7 +65,7 @@ public class MyPageService {
         } else {
             throw new ApiException(ROOM_NOT_FOUND);
         }
-        return ResponseDto.setSuccess("프로필이 저장되었습니다", new MypageChangeDto(myPage));
+        return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
 
     }
 
@@ -139,7 +139,7 @@ public class MyPageService {
             BlockListDto blockListDto = new BlockListDto(blacklistedUserId, blacklistedUser, blackUserImage, BlacklistCreatedAt);
             blockListDtos.add(blockListDto);
         }
-        return ResponseDto.setSuccess("기록이 조회되었습니다", new MyPageResponseDto(myPage, myPage.getAlcohol(), userHistoryDtos, followResponseDtos, blockListDtos));
+        return ResponseDto.setSuccess("Successfully checked the record.", new MyPageResponseDto(myPage, myPage.getAlcohol(), userHistoryDtos, followResponseDtos, blockListDtos));
     }
 
     public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
@@ -151,7 +151,7 @@ public class MyPageService {
         boolean isFollowing = followRepository.findByFollowingUserAndFollowerUser(targetUser, user).isPresent();
         boolean isBlocked = blockListRepository.findByBlockListedUserAndBlockListingUser(targetUser, user).isPresent();
 
-        return ResponseDto.setSuccess("기록 조회하기 성공", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
+        return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
     }
 }
 

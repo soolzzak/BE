@@ -107,9 +107,11 @@ public class KakaoService {
         ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST, UserInfoRequest, String.class);
+
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
+
         String username = jsonNode.get("properties").get("nickname").asText();
         Long kakaoId = jsonNode.get("id").asLong();
         String kakaoImage = jsonNode.get("properties").get("profile_image").asText();
@@ -117,6 +119,7 @@ public class KakaoService {
         Gender gender = Gender.valueOf(jsonNode.get("kakao_account").get("gender").asText().toUpperCase());
         String ageRange = jsonNode.get("kakao_account").get("age_range").asText();
         String birthday = jsonNode.get("kakao_account").get("birthday").asText();
+
         KakaoInfoDto kakaoInfoDto = new KakaoInfoDto(username, kakaoId, kakaoImage, email, gender, ageRange, birthday);
         kakaoInfoDto.setKakaoImage(kakaoImage);
         kakaoInfoDto.setEmail(email);

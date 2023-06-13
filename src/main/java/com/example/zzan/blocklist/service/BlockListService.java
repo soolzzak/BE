@@ -9,9 +9,11 @@ import com.example.zzan.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_BLOCK;
+import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -38,11 +40,11 @@ public class BlockListService {
 
 		if (existingBlock.isPresent()) {
 			blockListRepository.delete(existingBlock.get());
-			return ResponseDto.setSuccess("차단이 해제되었습니다.");
+			return ResponseDto.setSuccess("Successfully unblocked the user.");
 		} else {
 			BlockList blockList = new BlockList(blockListedUser, user);
 			blockListRepository.save(blockList);
-			return ResponseDto.setSuccess("차단되었습니다.");
+			return ResponseDto.setSuccess("Successfully blocked the user.");
 		}
 	}
 }

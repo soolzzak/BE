@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class S3Uploader {
 
 	public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 		File uploadFile = convert(multipartFile)
-				.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+				.orElseThrow(() -> new ApiException(INVALID_FILE_CONVERSION));
 		return upload(uploadFile, dirName);
 	}
 
@@ -83,19 +84,18 @@ public class S3Uploader {
 		}
 	}
 
-	private Optional<File> convert(MultipartFile file) throws  IOException {
-
+	private Optional<File> convert(MultipartFile file) throws IOException {
 		String originalFileName = file.getOriginalFilename();
 		String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg")) {
+		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg") && !ext.equalsIgnoreCase(".jpeg")) {
 			throw new ApiException(INVALID_FILE);
 		}
 
 		String uuidFileName = UUID.randomUUID().toString().replace("-", "") + ext;
 
 		File convertFile = new File(uuidFileName);
-		if(convertFile.createNewFile()) {
+		if (convertFile.createNewFile()) {
 			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
 				fos.write(file.getBytes());
 			}
