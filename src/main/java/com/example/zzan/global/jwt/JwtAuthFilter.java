@@ -46,7 +46,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String refresh_token = jwtUtil.resolveToken(request, REFRESH_KEY);
 
 
-
         if (access_token != null) {
             String validationError = jwtUtil.validateToken(access_token);
             if (validationError == null) {
