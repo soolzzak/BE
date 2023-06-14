@@ -44,22 +44,21 @@ public class ReportService {
 		}
 
 		int pointsToAdd;
-		if (reportRequestDto.getReportKind().equals("Advertisement/Scam")) {
+		if (reportRequestDto.getReportKind().equals("광고/사기")) {
 			pointsToAdd = 1;
-
-		}else if(reportRequestDto.getReportKind().equals("Forbidden Expression")){
-
-			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("Abusive Language")){
+		}else if(reportRequestDto.getReportKind().equals("금지된 표현")){
 
 			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("Indecent Remark")){
+		}else if(reportRequestDto.getReportKind().equals("욕설")){
+
+			pointsToAdd = 2;
+		}else if(reportRequestDto.getReportKind().equals("음담패설")){
 
 			pointsToAdd = 3;
-		}else if(reportRequestDto.getReportKind().equals("Exposure")){
+		}else if(reportRequestDto.getReportKind().equals("노출")){
 
 			pointsToAdd = 5;
-		}else if(reportRequestDto.getReportKind().equals("Others")){
+		}else if(reportRequestDto.getReportKind().equals("기타")){
 
 			pointsToAdd = 0;
 		}else {
