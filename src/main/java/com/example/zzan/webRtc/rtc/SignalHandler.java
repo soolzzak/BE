@@ -196,6 +196,9 @@ public class SignalHandler extends TextWebSocketHandler {
                             null));
                     break;
 
+
+
+
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
             }
