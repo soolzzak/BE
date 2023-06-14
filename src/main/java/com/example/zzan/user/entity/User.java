@@ -103,13 +103,13 @@ public class User {
     //     this.alcoholDown = false;
     // }
 
-    public User(KakaoInfoDto kakaoInfoDto,String password,UserRole role,Date birthday) {
+    public User(KakaoInfoDto kakaoInfoDto,String password,UserRole role,String userImage,Date birthday) {
         this.kakaoId =kakaoInfoDto.getKakaoId().toString();
         this.email = kakaoInfoDto.getEmail();
         this.password = password;
         this.username = kakaoInfoDto.getUsername();
         this.role = role;
-        this.userImage = kakaoInfoDto.getKakaoImage();
+        this.userImage = userImage;
         this.gender = kakaoInfoDto.getGender();
         this.birthday = birthday;
         this.alcohol = 16;
