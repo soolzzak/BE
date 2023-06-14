@@ -72,7 +72,7 @@ public class KakaoService {
                     throw new ApiException(INVALID_FORMAT);
                 }
                 user = new User(kakaoInfoDto,password, UserRole.USER,s3Uploader.getRandomImage("profile"),birthday);
-                userRepository.save(user);
+                userRepository.saveAndFlush(user);
             }else {
                 throw new ApiException(NOT_AN_ADULT);
             }
