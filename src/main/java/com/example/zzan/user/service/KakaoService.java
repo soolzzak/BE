@@ -13,6 +13,7 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.global.util.S3Uploader;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
@@ -45,6 +46,7 @@ public class KakaoService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final S3Uploader s3Uploader;
 
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
@@ -69,8 +71,8 @@ public class KakaoService {
                 }catch (ParseException e){
                     throw new ApiException(INVALID_FORMAT);
                 }
-                user = new User(kakaoInfoDto,password, UserRole.USER,birthday);
-                userRepository.save(user);
+                user = new User(kakaoInfoDto,password, UserRole.USER,s3Uploader.getRandomImage("profile"),birthday);
+                userRepository.saveAndFlush(user);
             }else {
                 throw new ApiException(NOT_AN_ADULT);
             }
