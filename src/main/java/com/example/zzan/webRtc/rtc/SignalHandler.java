@@ -37,6 +37,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
     private Map<WebSocketSession, Long> sessions2 = SessionListMap.getInstance().getSessionMapToRoom();
 
+    private static final String MSG_TYPE_INFO = "info";
     private static final String MSG_TYPE_OFFER = "offer";
     private static final String MSG_TYPE_ANSWER = "answer";
     private static final String MSG_TYPE_ICE = "ice";
@@ -76,7 +77,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
         Long sessionUserId = sessions.get(session);
 
-        sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_JOIN, null, null, null));
+        sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null, null, null));
     }
 
     @Override
