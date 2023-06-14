@@ -66,9 +66,7 @@ public class MyPageService {
             throw new ApiException(ROOM_NOT_FOUND);
         }
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
-
     }
-
 
     public User findUser(String email) {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
@@ -83,7 +81,6 @@ public class MyPageService {
         }
         return false;
     }
-
 
     @Transactional
     public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
@@ -154,4 +151,3 @@ public class MyPageService {
         return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
     }
 }
-

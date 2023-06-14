@@ -46,6 +46,7 @@ public class ReportService {
 		int pointsToAdd;
 		if (reportRequestDto.getReportKind().equals("Advertisement/Scam")) {
 			pointsToAdd = 1;
+
 		}else if(reportRequestDto.getReportKind().equals("Forbidden Expression")){
 
 			pointsToAdd = 2;
