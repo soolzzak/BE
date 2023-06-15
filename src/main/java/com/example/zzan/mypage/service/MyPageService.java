@@ -109,7 +109,6 @@ public class MyPageService {
                     metUser = userHistory.getHostUser().getUsername();
                     metUserImage = userHistory.getHostUser().getUserImage();
                 }
-
                 LocalDateTime metCreatedAt = userHistory.getCreatedAt();
 
                 UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId, metUser, metUserImage, metCreatedAt);

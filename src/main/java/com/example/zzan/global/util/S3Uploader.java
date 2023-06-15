@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE;
+import static com.example.zzan.global.exception.ExceptionEnum.INVALID_FILE_CONVERSION;
 
 @Slf4j
 @RequiredArgsConstructor

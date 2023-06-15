@@ -1,6 +1,6 @@
 package com.example.zzan;
 
-import org.springframework.boot.SpringApplication;
+import com.example.zzan.game.IdiomGameService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class ZzanApplication {
 
+//    public static void main(String[] args) {
+//        SpringApplication.run(ZzanApplication.class, args);
+//    }
     public static void main(String[] args) {
-        SpringApplication.run(ZzanApplication.class, args);
+        IdiomGameService idiomGameService = new IdiomGameService();
+        idiomGameService.startGame();
     }
 }

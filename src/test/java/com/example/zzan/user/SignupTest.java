@@ -5,7 +5,6 @@ import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
-import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_DUPLICATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional

@@ -58,13 +58,13 @@ public class RoomService {
         room.setRoomCapacity(0);
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
-            return ResponseDto.setBadRequest("방 제목에 사용할 수 없는 단어가 있습니다.");
+            throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
         if (!roomRequestDto.getIsPrivate()) {
         } else {
             String roomPassword = roomRequestDto.getRoomPassword();
             if (roomPassword == null || roomPassword.isEmpty())
-                return ResponseDto.setBadRequest("방 비밀번호를 설정해주세요.");
+                throw  new ApiException(REQUIRE_PASSWORD);
         }
         user.setRoomTitle(roomTitle);
         userRepository.save(user);
@@ -141,7 +141,7 @@ public class RoomService {
         room.setRoomImage(roomImageUrl);
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
-            return ResponseDto.setBadRequest("There is a word in the room title that cannot be used.");
+            throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
         roomRepository.save(room);
         return ResponseDto.setSuccess("Successfully modified the room.", null);

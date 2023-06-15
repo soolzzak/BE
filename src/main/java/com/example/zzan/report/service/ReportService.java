@@ -62,7 +62,7 @@ public class ReportService {
 
 			pointsToAdd = 0;
 		}else {
-			return ResponseDto.setBadRequest("The reason for reporting is not appropriate.");
+			throw new ApiException();
 		}
 
 		reportedUser.addReportPoints(pointsToAdd);

@@ -10,6 +10,8 @@ public enum ExceptionEnum {
     INVALID_BIRTHDAY(HttpStatus.BAD_REQUEST.value(), "Please specify your date of birth."),
     INVALID_GENDER(HttpStatus.BAD_REQUEST.value(), "Please specify your gender."),
     NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(),"The username contains forbidden words. Please choose a different username."),
+    NOT_ALLOWED_ROOMTITLE(HttpStatus.BAD_REQUEST.value(), "The room title contains forbidden words. Please use different room title."),
+    REQUIRE_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Please set password to create a private room."),
     INVALID_LOGIN(HttpStatus.BAD_REQUEST.value(), "The username or password is incorrect."),
     INVALID_ADMIN_INPUT(HttpStatus.BAD_REQUEST.value(), "Incorrect administrator password input."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "The passwords do not match."),
@@ -20,14 +22,15 @@ public enum ExceptionEnum {
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED.value(), "You do not have permission to access this resource."),
     INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
     NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),
+    REPORT_NOT_REASONABLE(HttpStatus.BAD_REQUEST.value(), "The reason for reporting is not appropriate."),
 
-    TARGET_USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The specified user cannot be found."),
+    TARGET_USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The specified user cannot be found."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"You are already following this user."),
     FAILED_SEND_MAIL(HttpStatus.BAD_REQUEST.value(), "Failed to send the verification email."),
     ROOM_ALREADY_FULL(HttpStatus.BAD_REQUEST.value(), "Another user has already joined the room."),
 
     BLOCKED_USER(HttpStatus.BAD_REQUEST.value(), "This user is blocked."),
-    USER_NOT_IN_ROOM(HttpStatus.BAD_REQUEST.value(), "The user is not in the room."),
+    USER_NOT_IN_ROOM(HttpStatus.NOT_FOUND.value(), "The user is not in the room."),
 
     NOT_ALLOWED_SELF_LIKE(HttpStatus.BAD_REQUEST.value(), "You cannot modify your own likes."),
     NOT_ALLOWED_SELF_FOLLOW(HttpStatus.BAD_REQUEST.value(), "You cannot follow yourself."),
@@ -37,7 +40,8 @@ public enum ExceptionEnum {
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The room does not exist."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The username does not exist."),
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The email address does not exist."),
-    IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The image does not exist."),
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The image does not exist."),
+    URL_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "URL is not available."),
 
     ACCESS_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "The ACCESS token has expired."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED.value(), "The REFRESH token has expired."),
