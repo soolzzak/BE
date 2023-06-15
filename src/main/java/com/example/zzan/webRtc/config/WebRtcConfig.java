@@ -1,6 +1,5 @@
 package com.example.zzan.webRtc.config;
 
-import com.example.zzan.game.MusicGameService;
 import com.example.zzan.webRtc.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,7 @@ import java.io.IOException;
 public class WebRtcConfig implements WebSocketConfigurer {
 
     private final SignalHandler signalHandler;
-    private final WebSocketConfig webSocketConfig;
+//    private final WebSocketConfig webSocketConfig;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -25,8 +24,8 @@ public class WebRtcConfig implements WebSocketConfigurer {
                 .setAllowedOrigins("*");
     }
 
-    @Bean
-    public MusicGameService musicGameService() throws IOException {
-        return webSocketConfig.musicGameService();
-    }
+//    @Bean
+//    public MusicGameService musicGameService() throws IOException {
+//        return webSocketConfig.musicGameService();
+//    }
 }
