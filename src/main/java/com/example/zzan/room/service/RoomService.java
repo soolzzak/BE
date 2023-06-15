@@ -178,12 +178,6 @@ public class RoomService {
             throw new ApiException(ROOM_ALREADY_FULL);
         }
 
-        if(room.getIsPrivate()) {
-           if(!room.getRoomPassword().equals(password)) {
-               throw new ApiException(INVALID_PASSWORD);
-           }
-        }
-
         List<BlockList> userBlockListing = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
         for (BlockList blockList : userBlockListing) {
             if (room.getHostUser().equals(blockList.getBlockListedUser())) {
@@ -202,9 +196,15 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDto enterRoom(Long roomId, User user) {
+    public RoomResponseDto enterRoom(Long roomId, User user, String password) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
+        if(room.getIsPrivate()) {
+            if(!room.getRoomPassword().equals(password)) {
+                throw new ApiException(INVALID_PASSWORD);
+            }
+        }
 
         room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
