@@ -3,7 +3,9 @@ package com.example.zzan.user;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.user.dto.UserLoginDto;
+import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
+import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.user.service.UserService;
 
@@ -19,7 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -35,16 +42,32 @@ class LoginTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Mock
     HttpServletResponse response;
 
     private User user;
 
     @BeforeEach
-    void login() {
+    void login() throws ParseException {
         user = new User();
         user.setEmail("test@gmail.com");
-        user.setPassword("encodedPassword"); // Replace with the actual encoded password
+
+        String password = "Password";
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+
+        user.username("홍길동");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date birthday = dateFormat.parse("1900-01-01");
+        user.setBirthday(birthday);
+
+        user.setAlcohol(16);
+        user.setGender(Gender.MALE);
+        user.setRole(UserRole.USER);
         userRepository.save(user);
     }
 
@@ -54,7 +77,8 @@ class LoginTest {
         @Test
         @DisplayName("CASE: 로그인 성공")
         void loginTest() {
-            UserLoginDto loginDto = new UserLoginDto("test@gmail.com", "password");
+
+            UserLoginDto loginDto = new UserLoginDto("test@gmail.com", "Password");
             ResponseEntity<?> responseEntity = userService.login(loginDto, response);
 
             Assertions.assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);
