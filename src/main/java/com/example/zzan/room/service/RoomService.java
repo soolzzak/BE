@@ -202,7 +202,7 @@ public class RoomService {
 
         if(room.getIsPrivate()) {
             if(!room.getRoomPassword().equals(roomPassword)) {
-                throw new ApiException(INVALID_PASSWORD);
+                throw new ApiException(PASSWORD_NOT_MATCH);
             }
         }
 
