@@ -89,6 +89,15 @@ public class UserService {
     }
 
     @Transactional
+    public ResponseDto checkUsername (String username){
+
+        if (hasBadWord(username)) {
+            throw new ApiException(NOT_ALLOWED_USERNAME);
+        }
+        return ResponseDto.setSuccess("This nickname is available");
+    }
+
+    @Transactional
     public ResponseEntity<?> changePassword(PasswordRequestDto passwordRequestDto) {
         User user = userRepository.findByEmail(passwordRequestDto.getEmail());
         if (user == null) {

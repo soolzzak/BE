@@ -80,8 +80,8 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public RoomResponseDto enterRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password) {
-        return roomService.enterRoom(roomId, userDetails.getUser(), password);
+    public RoomResponseDto enterRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String roomPassword) {
+        return roomService.enterRoom(roomId, userDetails.getUser(), roomPassword);
     }
 
     @DeleteMapping("/room/{roomId}/leave")
