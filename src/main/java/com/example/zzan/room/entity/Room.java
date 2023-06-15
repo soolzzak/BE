@@ -38,6 +38,7 @@ public class Room extends Timestamped {
 
     private Boolean isPrivate;
 
+    @Column(nullable = true)
     private String roomPassword;
 
     @ManyToOne
