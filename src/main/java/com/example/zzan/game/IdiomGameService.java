@@ -56,7 +56,6 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     String partialWord = generatePartialWord();
-                    log.info(partialWord + "가 도대체 뭐야아아아아아아아아ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ");
                 }
             }
         };
