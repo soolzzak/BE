@@ -82,7 +82,6 @@ class LoginTest {
             ResponseEntity<?> responseEntity = userService.login(loginDto, response);
 
             Assertions.assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);
-            // Add more assertions as needed
         }
 
         @Nested
@@ -110,4 +109,3 @@ class LoginTest {
         }
     }
 }
-
