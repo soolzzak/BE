@@ -11,9 +11,7 @@ import com.example.zzan.user.service.KakaoService;
 import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

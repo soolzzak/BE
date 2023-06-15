@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
 
 
@@ -44,6 +44,6 @@ public class TokenController {
             );
             return ResponseEntity.ok().body(ResponseDto.setSuccess("Successfully reissued Access Token."));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseDto.setBadRequest("Refresh Token value has expired."));
+        throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
     }
 }
