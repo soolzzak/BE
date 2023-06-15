@@ -6,6 +6,7 @@ import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
+import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.service.RoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -74,8 +75,8 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}/check")
-    public ResponseDto checkRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.checkRoom(roomId,userDetails.getUser());
+    public ResponseDto checkRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String password){
+        return roomService.checkRoom(roomId, userDetails.getUser(), password);
     }
 
     @GetMapping("/room/{roomId}")
