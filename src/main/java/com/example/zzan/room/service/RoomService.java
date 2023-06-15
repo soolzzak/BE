@@ -196,12 +196,12 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDto enterRoom(Long roomId, User user, String password) {
+    public RoomResponseDto enterRoom(Long roomId, User user, String roomPassword) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
         if(room.getIsPrivate()) {
-            if(!room.getRoomPassword().equals(password)) {
+            if(!room.getRoomPassword().equals(roomPassword)) {
                 throw new ApiException(INVALID_PASSWORD);
             }
         }
