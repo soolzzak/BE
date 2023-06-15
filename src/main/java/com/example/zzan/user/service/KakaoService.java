@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -54,7 +55,6 @@ public class KakaoService {
         String ageRange = kakaoInfoDto.getAgeRange();
         String[] ages = ageRange.split("~");
         int lowerAge = Integer.parseInt(ages[0]);
-
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
@@ -79,14 +79,21 @@ public class KakaoService {
         }
 
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
-            () -> new ApiException(EMAIL_NOT_FOUND)
+                () -> new ApiException(EMAIL_NOT_FOUND)
         );
 
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
-        RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
-        refreshTokenRepository.save(newRefreshToken);
+        Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
+
+        if (existingRefreshToken.isPresent()) {
+            existingRefreshToken.get().setToken(refreshToken);
+            refreshTokenRepository.save(existingRefreshToken.get());
+        } else {
+            RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
+            refreshTokenRepository.save(newRefreshToken);
+        }
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", createToken);
@@ -95,10 +102,8 @@ public class KakaoService {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTokens = objectMapper.writeValueAsString(tokens);
 
-
         return jsonTokens;
     }
-
 
     private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
@@ -113,17 +118,14 @@ public class KakaoService {
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-            "https://kauth.kakao.com/oauth/token",
-            HttpMethod.POST, kakaoTokenRequest, String.class);
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST, kakaoTokenRequest, String.class);
 
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
-
     }
-
-
 
     private KakaoInfoDto getUserInfo(String token) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
