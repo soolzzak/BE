@@ -83,29 +83,29 @@ class LoginTest {
 
             Assertions.assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);
         }
+    }
 
-        @Nested
-        @DisplayName("CASE: 로그인 실패")
-        class loginFail {
-            @Test
-            @DisplayName("CASE: 잘못된 비밀번호로 로그인 실패")
-            void wrongPassword() {
-                UserLoginDto loginDto = new UserLoginDto("test@gmail.com", "wrongPassword");
+    @Nested
+    @DisplayName("TEST: 로그인 실패")
+    class loginFail {
+        @Test
+        @DisplayName("CASE: 잘못된 비밀번호로 로그인 실패")
+        void wrongPassword() {
+            UserLoginDto loginDto = new UserLoginDto("test@gmail.com", "wrongPassword");
 
-                Assertions.assertThatThrownBy(() -> {
-                    userService.login(loginDto, response);
-                }).isInstanceOf(ApiException.class);
-            }
+            Assertions.assertThatThrownBy(() -> {
+                userService.login(loginDto, response);
+            }).isInstanceOf(ApiException.class);
+        }
 
-            @Test
-            @DisplayName("CASE: 존재하지 않는 이메일로 로그인 실패")
-            void nonExistingEmail() {
-                UserLoginDto loginDto = new UserLoginDto("nonexisting@gmail.com", "password");
+        @Test
+        @DisplayName("CASE: 존재하지 않는 이메일로 로그인 실패")
+        void nonExistingEmail() {
+            UserLoginDto loginDto = new UserLoginDto("nonexisting@gmail.com", "password");
 
-                Assertions.assertThatThrownBy(() -> {
-                    userService.login(loginDto, response);
-                }).isInstanceOf(ApiException.class);
-            }
+            Assertions.assertThatThrownBy(() -> {
+                userService.login(loginDto, response);
+            }).isInstanceOf(ApiException.class);
         }
     }
 }

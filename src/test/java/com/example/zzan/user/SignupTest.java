@@ -74,19 +74,39 @@ class SignupTest {
             Assertions.assertThat(user1).isNotNull();
             Assertions.assertThat(user1.getEmail()).isEqualTo(userRequestDto1.getEmail());
         }
+    }
 
-        @Nested
-        @DisplayName("CASE: 회원가입 실패")
-        class signupFail {
-            @Test
-            @DisplayName("CASE: email 중복 회원가입 실패")
-            void duplicateEmail() {
-                UserRequestDto userRequestDto2 = new UserRequestDto("test@gmail.com", "asdf1234!", "tester", birthday, Gender.FEMALE, false, "");
+    @Nested
+    @DisplayName("TEST: 회원가입 실패")
+    class signupFail {
+        @Test
+        @DisplayName("CASE: email 중복 회원가입 실패")
+        void duplicateEmail() {
+            UserRequestDto userRequestDto2 = new UserRequestDto("test@gmail.com", "asdf1234!", "tester", birthday, Gender.FEMALE, false, "");
 
-                Assertions.assertThatThrownBy(() -> {
-                    userService.signup(userRequestDto2);
-                }, "EMAIL_DUPLICATION", ApiException.class);
-            }
+            Assertions.assertThatThrownBy(() -> {
+                userService.signup(userRequestDto2);
+            }, "EMAIL_DUPLICATION", ApiException.class);
+        }
+
+        @Test
+        @DisplayName("CASE: username 사용불가 단어 사용")
+        void badUsername() {
+            UserRequestDto userRequestDto2 = new UserRequestDto("test@gmail.com", "asdf1234!", "개새끼", birthday, Gender.FEMALE, false, "");
+
+            Assertions.assertThatThrownBy(() -> {
+                userService.signup(userRequestDto2);
+            }, "NOT_ALLOWED_USERNAME", ApiException.class);
+        }
+
+        @Test
+        @DisplayName("CASE: Too short password")
+        void shortPassword() {
+            UserRequestDto userRequestDto2 = new UserRequestDto("test1@gmail.com", "1", "tester", birthday, Gender.FEMALE, false, "");
+
+            Assertions.assertThatThrownBy(() -> {
+                userService.signup(userRequestDto2);
+            }, "INVALID_PASSWORD", ApiException.class);
         }
     }
 }

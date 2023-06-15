@@ -4,8 +4,10 @@ import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RoomRequestDto {
     private String title;
