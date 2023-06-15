@@ -170,7 +170,7 @@ public class RoomService {
     }
 
     @Transactional
-    public ResponseDto<RoomCheckResponseDto> checkRoom(Long roomId, User user, String password) {
+    public ResponseDto<RoomCheckResponseDto> checkRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
