@@ -10,11 +10,9 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
-
-import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_REPORT;
-import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -62,7 +60,7 @@ public class ReportService {
 
 			pointsToAdd = 0;
 		}else {
-			throw new ApiException();
+			throw new ApiException(REPORT_NOT_REASONABLE);
 		}
 
 		reportedUser.addReportPoints(pointsToAdd);
