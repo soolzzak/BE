@@ -37,6 +37,11 @@ public class UserController {
         return userService.signup(requestDto);
     }
 
+    @GetMapping("/signup")
+    public ResponseDto checkUsername(@RequestBody String username) {
+        return userService.checkUsername(username);
+    }
+
     @GetMapping("/login")
     public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
         String tokenJson = kakaoService.kakaoLogin(code, response);
@@ -49,7 +54,6 @@ public class UserController {
 
         return ResponseEntity.ok().body(ResponseDto.setSuccess("Token has been issued."));
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto requestDto, HttpServletResponse response) {
