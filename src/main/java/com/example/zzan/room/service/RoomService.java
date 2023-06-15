@@ -135,7 +135,6 @@ public class RoomService {
         if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
-            s3Uploader.removeNewFile(new File(room.getRoomImage()));
             roomImageUrl = s3Uploader.upload(roomImage, "mainImage");
         }
         room.setRoomImage(roomImageUrl);
