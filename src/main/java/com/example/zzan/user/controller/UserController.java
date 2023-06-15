@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public ResponseDto checkUsername(@RequestParam("username") String username) {
+    public ResponseDto checkUsername(@RequestBody String username) {
         return userService.checkUsername(username);
     }
 

@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -86,15 +85,8 @@ public class KakaoService {
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
-        Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
-
-        if (existingRefreshToken.isPresent()) {
-            existingRefreshToken.get().setToken(refreshToken);
-            refreshTokenRepository.save(existingRefreshToken.get());
-        } else {
-            RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
-            refreshTokenRepository.save(newRefreshToken);
-        }
+        RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
+        refreshTokenRepository.save(newRefreshToken);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", createToken);
