@@ -96,8 +96,6 @@ public class KakaoService {
             refreshTokenRepository.save(newRefreshToken);
         }
 
-
-
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", createToken);
         tokens.put("refreshToken", refreshToken);
