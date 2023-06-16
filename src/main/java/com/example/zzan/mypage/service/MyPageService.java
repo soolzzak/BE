@@ -74,7 +74,7 @@ public class MyPageService {
     }
 
     private boolean hasBadWord(String input) {
-        for (String badWord : BadWords.koreaWord1) {
+        for (String badWord : BadWords.koreaWord) {
             if (input.contains(badWord)) {
                 return true;
             }
