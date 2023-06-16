@@ -40,7 +40,7 @@
 
 🗝 ERD 
 ---------------------------------------
-![ERD](https://github.com/soolzzak/BE/assets/128972031/e701aab3-35c6-4a9d-b4cc-8085f116a64b)
+![혼술짝](https://github.com/Jello92/BE/assets/128972031/b8359a0b-faae-4c75-a1ba-6702b8ed4f82)
 
 
 
