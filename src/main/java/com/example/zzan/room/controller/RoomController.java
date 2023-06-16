@@ -79,9 +79,14 @@ public class RoomController {
         return roomService.checkRoom(roomId, userDetails.getUser());
     }
 
+    @GetMapping("/room/passwordCheck/{roomId}")
+    public ResponseDto<?> passwordCheck(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String roomPassword) {
+        return roomService.passwordCheck(roomId, userDetails.getUser(), roomPassword);
+    }
+
     @GetMapping("/room/{roomId}")
-    public RoomResponseDto enterRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String roomPassword) {
-        return roomService.enterRoom(roomId, userDetails.getUser(), roomPassword);
+    public RoomResponseDto enterRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return roomService.enterRoom(roomId, userDetails.getUser());
     }
 
     @DeleteMapping("/room/{roomId}/leave")
