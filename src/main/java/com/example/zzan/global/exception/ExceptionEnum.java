@@ -16,6 +16,7 @@ public enum ExceptionEnum {
     INVALID_ADMIN_INPUT(HttpStatus.BAD_REQUEST.value(), "Incorrect administrator password input."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "The passwords do not match."),
     EMAIL_DUPLICATION(HttpStatus.CONFLICT.value(), "The email address is already registered."),
+    USER_DUPLICATION(HttpStatus.CONFLICT.value(), "The username already exist."),
     NOT_ALLOWED(HttpStatus.UNAUTHORIZED.value(), "This action is only allowed for logged-in users."),
     INVALID_FILE(HttpStatus.BAD_REQUEST.value(), "The file format is incorrect."),
     INVALID_FILE_CONVERSION(HttpStatus.BAD_REQUEST.value(), "MultipartFile -> File Convert Fail."),
@@ -36,6 +37,7 @@ public enum ExceptionEnum {
     NOT_ALLOWED_SELF_FOLLOW(HttpStatus.BAD_REQUEST.value(), "You cannot follow yourself."),
     NOT_ALLOWED_SELF_REPORT(HttpStatus.BAD_REQUEST.value(), "You cannot report yourself."),
     NOT_ALLOWED_SELF_BLOCK(HttpStatus.BAD_REQUEST.value(), "You cannot block yourself."),
+    NOT_ALLOWED_SELF_MESSAGE(HttpStatus.BAD_REQUEST.value(),"You cannot message yourself."),
 
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The room does not exist."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The username does not exist."),
@@ -50,7 +52,11 @@ public enum ExceptionEnum {
     EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token."),
 
     SEARCH_FAILED(HttpStatus.NOT_FOUND.value(), "Invalid search format."),
-    ONLY_HOST_CAN_KICK(HttpStatus.FORBIDDEN.value(), "Only the host can kick users out.");
+    ONLY_HOST_CAN_KICK(HttpStatus.FORBIDDEN.value(), "Only the host can kick users out."),
+    MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "There is no message."),
+    INTERNAL_SERVER_ERROR(HttpStatus.BAD_REQUEST.value(), "Internal Server Problem."),
+    NO_MESSAGE(HttpStatus.BAD_REQUEST.value(), "There is no message to be sent.");
+
 
     private final int status;
     private final String message;
