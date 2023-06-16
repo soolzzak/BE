@@ -60,11 +60,9 @@ public class RoomService {
         if (hasBadWord(roomTitle)) {
             throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
-        if (!roomRequestDto.getIsPrivate()) {
-        } else {
-            String roomPassword = roomRequestDto.getRoomPassword();
-            if (roomPassword == null || roomPassword.isEmpty())
-                throw  new ApiException(REQUIRE_PASSWORD);
+
+        if (roomRequestDto.getIsPrivate() && (roomRequestDto.getRoomPassword() == null || roomRequestDto.getRoomPassword().isEmpty())) {
+            throw  new ApiException(REQUIRE_PASSWORD);
         }
 
         user.setRoomTitle(roomTitle);
@@ -131,20 +129,25 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
+
         if (!room.getHostUser().getId().equals(user.getId())) {
             throw new ApiException(UNAUTHORIZED_USER);
         }
+
         room.update(roomRequestDto);
+
         if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             roomImageUrl = s3Uploader.upload(roomImage, "mainImage");
         }
         room.setRoomImage(roomImageUrl);
+
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
             throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
+
         roomRepository.save(room);
         return ResponseDto.setSuccess("Successfully modified the room.", null);
     }

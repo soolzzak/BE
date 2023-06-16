@@ -27,11 +27,7 @@ public class ReportService {
 
 		Optional<User> reportedUserOptional = userRepository.findById(userId);
 
-		if(!reportedUserOptional.isPresent()){
-			throw new ApiException(TARGET_USER_NOT_FOUND);
-		}
-
-		User reportedUser = reportedUserOptional.get();
+		User reportedUser = reportedUserOptional.orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
 
 		if(user.getId().equals(reportedUser.getId())){
 			throw new ApiException(NOT_ALLOWED_SELF_REPORT);
@@ -43,25 +39,27 @@ public class ReportService {
 		}
 
 		int pointsToAdd;
-		if (reportRequestDto.getReportKind().equals("광고/사기")) {
-			pointsToAdd = 1;
-		}else if(reportRequestDto.getReportKind().equals("금지된 표현")){
-
-			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("욕설")){
-
-			pointsToAdd = 2;
-		}else if(reportRequestDto.getReportKind().equals("음담패설")){
-
-			pointsToAdd = 3;
-		}else if(reportRequestDto.getReportKind().equals("노출")){
-
-			pointsToAdd = 5;
-		}else if(reportRequestDto.getReportKind().equals("기타")){
-
-			pointsToAdd = 0;
-		}else {
-			throw new ApiException(REPORT_NOT_REASONABLE);
+		switch (reportRequestDto.getReportKind()) {
+			case "광고/사기":
+				pointsToAdd = 1;
+				break;
+			case "금지된 표현":
+				pointsToAdd = 2;
+				break;
+			case "욕설":
+				pointsToAdd = 2;
+				break;
+			case "음담패설":
+				pointsToAdd = 3;
+				break;
+			case "노출":
+				pointsToAdd = 5;
+				break;
+			case "기타":
+				pointsToAdd = 0;
+				break;
+			default:
+				throw new ApiException(REPORT_NOT_REASONABLE);
 		}
 
 		reportedUser.addReportPoints(pointsToAdd);
