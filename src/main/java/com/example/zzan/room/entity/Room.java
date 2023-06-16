@@ -49,10 +49,10 @@ public class Room extends Timestamped {
     @Column(name = "HAS_GUEST")
     private boolean hasGuest;
 
-    private boolean roomDelete;
-
     @Column
     private int roomCapacity = 0;
+
+    private boolean roomDelete;
 
     public Room(RoomRequestDto roomRequestDto, User user) {
         this.title = roomRequestDto.getTitle();
