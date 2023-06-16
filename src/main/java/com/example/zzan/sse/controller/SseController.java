@@ -9,21 +9,19 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Tag(name = "SseController", description = "SSE 파트")
 @RequestMapping("/api/")
 @RestController
+@CrossOrigin
+@RequiredArgsConstructor
 public class SseController {
     private final SseService sseService;
 
-    public SseController(SseService sseService) {
-        this.sseService = sseService;
+    @GetMapping("/events/{username}")
+    public SseEmitter handleSse(@PathVariable String username) {
+        return this.sseService.register(username);
     }
 
-    @GetMapping("/events/{userId}")
-    public SseEmitter handleSse(@PathVariable Long userId) {
-        return this.sseService.register(userId);
-    }
-
-    @PostMapping("/room/{userId}")
-    public String handleRoomCreation(@PathVariable Long userId) {
-        this.sseService.notifyFollowers(userId);
-        return userId + "created a Room.";
+    @PostMapping("/room/{username}")
+    public String handleRoomCreation(@PathVariable String username) {
+        this.sseService.notifyFollowers(username);
+        return username + "created a Room.";
     }
 }

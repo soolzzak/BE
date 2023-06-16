@@ -1,6 +1,7 @@
 package com.example.zzan.sse.service;
 
 import com.example.zzan.follow.service.FollowService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -9,22 +10,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class SseService {
     private final FollowService followService;
 
-    private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseService(FollowService followService) {
-        this.followService = followService;
-    }
-
-    public SseEmitter register(Long userId) {
+    public SseEmitter register(String username) {
         SseEmitter emitter = new SseEmitter();
 
-        emitter.onCompletion(() -> this.emitters.remove(userId));
-        emitter.onError((e) -> this.emitters.remove(userId));
+        emitter.onCompletion(() -> this.emitters.remove(username));
+        emitter.onError((e) -> this.emitters.remove(username));
 
-        this.emitters.put(userId, emitter);
+        this.emitters.put(username, emitter);
 
         return emitter;
     }
