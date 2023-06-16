@@ -195,15 +195,22 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponseDto enterRoom(Long roomId, User user, String roomPassword) {
+    public ResponseDto<?> passwordCheck(Long roomId, User user, String roomPassword) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        if(room.getIsPrivate()) {
-            if(!room.getRoomPassword().equals(roomPassword)) {
+        if (room.getIsPrivate()) {
+            if (!room.getRoomPassword().equals(roomPassword)) {
                 throw new ApiException(PASSWORD_NOT_MATCH);
             }
         }
+        return ResponseDto.setSuccess("The password matches the room password");
+    }
+
+    @Transactional
+    public RoomResponseDto enterRoom(Long roomId, User user) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
         room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
