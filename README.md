@@ -40,7 +40,7 @@
 
 🗝 ERD 
 ---------------------------------------
-![혼술짝](https://github.com/Jello92/BE/assets/128972031/b8359a0b-faae-4c75-a1ba-6702b8ed4f82)
+![image](https://github.com/Jello92/BE/assets/128972031/8595f93e-c6a5-45e9-9a3f-4c5b392b2edb)
 
 
 
