@@ -37,6 +37,7 @@ public enum ExceptionEnum {
     NOT_ALLOWED_SELF_FOLLOW(HttpStatus.BAD_REQUEST.value(), "You cannot follow yourself."),
     NOT_ALLOWED_SELF_REPORT(HttpStatus.BAD_REQUEST.value(), "You cannot report yourself."),
     NOT_ALLOWED_SELF_BLOCK(HttpStatus.BAD_REQUEST.value(), "You cannot block yourself."),
+    NOT_ALLOWED_SELF_MESSAGE(HttpStatus.BAD_REQUEST.value(),"You cannot message yourself."),
 
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The room does not exist."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The username does not exist."),

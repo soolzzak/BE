@@ -56,6 +56,9 @@ public class MyPageService {
                 if (hasBadWord(username)) {
                     throw new ApiException(NOT_ALLOWED_USERNAME);
                 }
+                if (userRepository.findByUsername(username).isPresent()) {
+                    throw new ApiException(USER_DUPLICATION);
+                }
                 myPage.username(username);
             }
             if (storedFileName != null) {
