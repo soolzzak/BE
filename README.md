@@ -16,7 +16,7 @@
 | ------ | -- | ----|
 | Front-end | 배정현(L) | https://github.com/JungHBae|
 | Front-end | 최성빈 | https://github.com/sbchoi5451|
-| Front-end | 조선아 | https://github.com/elfinana| 
+| Front-end | 조선아 | https://github.com/princesssana| 
 | Back-end | 지현경(VL)|  https://github.com/Jello92|
 | Back-end | 김지현 | https://github.com/jihyeon117|
 | Back-end | 김상우 | https://github.com/kimsangwoo0505|
