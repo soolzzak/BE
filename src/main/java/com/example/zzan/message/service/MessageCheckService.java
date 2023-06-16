@@ -24,7 +24,7 @@ public class MessageCheckService {
     private final MessageRepository messageRepository;
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> checkReceivedMessage(User user) {
+    public ResponseDto<List<MessageCheckResponseDto>> checkReceivedMessage(User user) {
         List<MessageCheckResponseDto> messageList = new ArrayList<>();
 
         List<Messages> list = messageRepository.findAllByReceiveUser(user);
@@ -42,7 +42,7 @@ public class MessageCheckService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<?> checkSentMessage(User user) {
+    public ResponseDto<List<MessageCheckResponseDto>> checkSentMessage(User user) {
         List<MessageCheckResponseDto> messageList = new ArrayList<>();
 
         List<Messages> list = messageRepository.findAllBySendUser(user);
@@ -59,17 +59,17 @@ public class MessageCheckService {
         }
     }
 
-
     @Transactional(readOnly = true)
-    public ResponseDto<?> readMessage(User user, Long messageId) {
+    public ResponseDto<MessageCheckResponseDto> readMessage(User user, Long messageId) {
         Messages findMessage = messageRepository.findById(messageId).orElseThrow(
                 () -> new ApiException(MESSAGE_NOT_FOUND)
         );
 
-        log.info("dsf",findMessage.getReceiveUser());
         if (user.getId().equals(findMessage.getReceiveUser().getId())) {
             findMessage.markRead();
-            return ResponseDto.setSuccess("Successfully read message.", findMessage);
+            messageRepository.saveAndFlush(findMessage);
+            MessageCheckResponseDto responseDto = new MessageCheckResponseDto(findMessage);
+            return ResponseDto.setSuccess("Successfully read message.", responseDto);
         } else {
             throw new ApiException(INTERNAL_SERVER_ERROR);
         }
