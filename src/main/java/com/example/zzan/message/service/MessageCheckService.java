@@ -7,6 +7,8 @@ import com.example.zzan.message.entity.Messages;
 import com.example.zzan.message.repository.MessageRepository;
 import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.List;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageCheckService {
@@ -56,12 +59,15 @@ public class MessageCheckService {
         }
     }
 
+
     @Transactional(readOnly = true)
     public ResponseDto<?> readMessage(User user, Long messageId) {
         Messages findMessage = messageRepository.findById(messageId).orElseThrow(
                 () -> new ApiException(MESSAGE_NOT_FOUND)
         );
-        if (user.equals(findMessage.getReceiveUser())) {
+
+        log.info("dsf",findMessage.getReceiveUser());
+        if (user.getId().equals(findMessage.getReceiveUser().getId())) {
             findMessage.markRead();
             return ResponseDto.setSuccess("Successfully read message.", findMessage);
         } else {
