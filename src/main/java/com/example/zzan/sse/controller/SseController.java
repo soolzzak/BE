@@ -25,6 +25,6 @@ public class SseController {
     @PostMapping("/room/{userId}")
     public String handleRoomCreation(@PathVariable Long userId) {
         this.sseService.notifyFollowers(userId);
-        return "Room Created.";
+        return userId + "created a Room.";
     }
 }
