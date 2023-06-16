@@ -54,8 +54,15 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_LEAVE = "leave";
     private static final String MSG_TYPE_TOAST = "toast";
     private static final String MSG_TYPE_PING = "ping";
-
     private static final String MSG_TYPE_KICK = "kick";
+
+    private static final String MSG_TYPE_START = "startShare";
+
+    private static final String MSG_TYPE_STOP = "stopShare";
+
+
+
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -251,6 +258,43 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     break;
 
+
+                case MSG_TYPE_START:
+
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> clientsToStart = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : clientsToStart.entrySet()) {
+
+                        if (!client.getKey().equals(userId)) {
+
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    null,
+                                    null));
+                        }
+                    }
+                case MSG_TYPE_STOP:
+
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> clientsToStop = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : clientsToStop.entrySet()) {
+
+                        if (!client.getKey().equals(userId)) {
+
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    null,
+                                    null));
+                        }
+                    }
 
 
 
