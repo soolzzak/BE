@@ -150,11 +150,7 @@ public class JwtUtil {
         response.setHeader(ACCESS_KEY, accessToken);
     }
 
-
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
         response.setHeader(REFRESH_KEY, refreshToken);
     }
-
-
-
 }

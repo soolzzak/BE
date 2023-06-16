@@ -26,11 +26,7 @@ public class BlockListService {
 	public ResponseDto updateBlock(Long blockListedUserId, User user) {
 		Optional<User> blockListedUserOptional = userRepository.findById(blockListedUserId);
 
-		if (!blockListedUserOptional.isPresent()) {
-			throw new ApiException(TARGET_USER_NOT_FOUND);
-		}
-
-		User blockListedUser = blockListedUserOptional.get();
+		User blockListedUser = blockListedUserOptional.orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
 
 		if (user.getId().equals(blockListedUser.getId())) {
 			throw new ApiException(NOT_ALLOWED_SELF_BLOCK);

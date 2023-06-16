@@ -1,16 +1,14 @@
 package com.example.zzan.youtube.controller;
 
-import java.util.List;
-
+import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.youtube.dto.YoutubeListDto;
+import com.example.zzan.youtube.service.YoutubeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.zzan.global.dto.ResponseDto;
-import com.example.zzan.youtube.dto.YoutubeListDto;
-import com.example.zzan.youtube.service.YoutubeService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

@@ -31,7 +31,6 @@ public class UserController {
     private final KakaoService kakaoService;
     private final JwtUtil jwtUtil;
 
-
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserRequestDto requestDto) {
         return userService.signup(requestDto);

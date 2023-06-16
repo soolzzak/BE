@@ -29,10 +29,7 @@ public class UserHistory extends Timestamped {
 	@JoinColumn(name = "ROOMHISTORY_ID", nullable = false)
 	private Room room;
 
-
-
 	public void setHostUser(User hostUser) {
-
 		this.hostUser = hostUser;
 	}
 

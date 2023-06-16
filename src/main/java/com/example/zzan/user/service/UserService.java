@@ -45,55 +45,25 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
+        validateUsername(requestDto.getUsername());
+        validateEmail(requestDto.getEmail());
+        validatePassword(requestDto.getPassword());
+        validateBirthday(requestDto.getBirthday());
+        validateGender(requestDto.getGender());
+        validateAdminKey(requestDto.isAdmin(), requestDto.getAdminKey());
 
-        String username = requestDto.getUsername();
-
-        if (hasBadWord(username)) {
-            throw new ApiException(NOT_ALLOWED_USERNAME);
-        }
-
-        String userEmail = requestDto.getEmail();
-        Optional<User> found = userRepository.findUserByEmail(userEmail);
-        if (found.isPresent()) {
-            throw new ApiException(EMAIL_DUPLICATION);
-        }
-        if (userEmail == null || !userEmail.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")) {
-            throw new ApiException(INVALID_EMAIL);
-        }
-
-        String password = requestDto.getPassword();
-        if (password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")) {
-            throw new ApiException(INVALID_PASSWORD);
-        }
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        Date birthday = requestDto.getBirthday();
-        if (birthday == null) {
-            throw new ApiException(INVALID_BIRTHDAY);
-        }
-
-        Gender gender = requestDto.getGender();
-        if (!"Male".equalsIgnoreCase(String.valueOf(gender)) && !"Female".equalsIgnoreCase(String.valueOf(gender))) {
-            throw new ApiException(INVALID_GENDER);
-        }
-
-        UserRole role = requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER;
-        if (role == UserRole.ADMIN && !ADMIN_TOKEN.equals(requestDto.getAdminKey())) {
-            throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
-        }
-
-        User user = new User(userEmail, userPassword, username, role, s3Uploader.getRandomImage("profile"), gender);
-        user.setBirthday(birthday);
+        User user = new User(requestDto.getEmail(), userPassword, requestDto.getUsername(),
+                requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER, s3Uploader.getRandomImage("profile"), requestDto.getGender());
+        user.setBirthday(requestDto.getBirthday());
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("Signup registration has been completed.", null));
     }
 
     @Transactional
-    public ResponseDto checkUsername (String username){
-
-        if (hasBadWord(username)) {
-            throw new ApiException(NOT_ALLOWED_USERNAME);
-        }
+    public ResponseDto checkUsername(String username) {
+        validateUsername(username);
         return ResponseDto.setSuccess("This nickname is available");
     }
 
@@ -104,10 +74,7 @@ public class UserService {
             throw new ApiException(EMAIL_NOT_FOUND);
         }
 
-        String password = passwordRequestDto.getPassword();
-        if (password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")) {
-            throw new ApiException(INVALID_PASSWORD);
-        }
+        validatePassword(passwordRequestDto.getPassword());
 
         String userPassword = passwordEncoder.encode(passwordRequestDto.getPassword());
         user.setPassword(userPassword);
@@ -118,7 +85,6 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<?> login(UserLoginDto requestDto, HttpServletResponse response) {
-
         String userEmail = requestDto.getEmail();
         String userPassword = requestDto.getPassword();
 
@@ -148,7 +114,6 @@ public class UserService {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
-
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -162,21 +127,54 @@ public class UserService {
     @Transactional
     public ResponseEntity<?> logout(User user) {
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByUserId(user.getId())
-                .orElseThrow(() -> new ApiException(ACCESS_TOKEN_NOT_FOUND)
-                );
+                .orElseThrow(() -> new ApiException(ACCESS_TOKEN_NOT_FOUND));
 
         refreshTokenRepository.delete(refreshToken);
         ResponseDto responseDto = ResponseDto.setSuccess("Successfully logged out.", null);
         return new ResponseEntity(responseDto, HttpStatus.OK);
     }
 
-    private boolean hasBadWord(String input) {
-        for (String badWord : BadWords.koreaWord1) {
-            if (input.contains(badWord)) {
-                return true;
-            }
+    private void validateUsername(String username) {
+        if (hasBadWord(username)) {
+            throw new ApiException(NOT_ALLOWED_USERNAME);
         }
-        return false;
+    }
+
+    private void validateEmail(String email) {
+        Optional<User> found = userRepository.findUserByEmail(email);
+        if (found.isPresent()) {
+            throw new ApiException(EMAIL_DUPLICATION);
+        }
+        if (email == null || !email.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")) {
+            throw new ApiException(INVALID_EMAIL);
+        }
+    }
+
+    private void validatePassword(String password) {
+        if (password == null || password.length() < 8 || password.length() > 15 || !password.matches("^[a-zA-Z\\p{Punct}0-9]*$")) {
+            throw new ApiException(INVALID_PASSWORD);
+        }
+    }
+
+    private void validateBirthday(Date birthday) {
+        if (birthday == null) {
+            throw new ApiException(INVALID_BIRTHDAY);
+        }
+    }
+
+    private void validateGender(Gender gender) {
+        if (!"Male".equalsIgnoreCase(String.valueOf(gender)) && !"Female".equalsIgnoreCase(String.valueOf(gender))) {
+            throw new ApiException(INVALID_GENDER);
+        }
+    }
+
+    private void validateAdminKey(boolean isAdmin, String adminKey) {
+        if (isAdmin && !ADMIN_TOKEN.equals(adminKey)) {
+            throw new ApiException(ACCESS_TOKEN_NOT_FOUND);
+        }
+    }
+
+    private boolean hasBadWord(String input) {
+        return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
 }
-

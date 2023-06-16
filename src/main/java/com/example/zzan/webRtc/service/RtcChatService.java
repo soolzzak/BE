@@ -11,16 +11,13 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.Map;
 import java.util.Optional;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class RtcChatService {
 
     public Map<Long, WebSocketSession> getUser(RoomResponseDto roomResponseDto) {
-
         Optional<RoomResponseDto> roomDto = Optional.ofNullable(roomResponseDto);
-
         return roomDto.get().getUserList();
     }
 

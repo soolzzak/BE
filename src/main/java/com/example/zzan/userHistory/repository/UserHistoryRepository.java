@@ -1,6 +1,5 @@
 package com.example.zzan.userHistory.repository;
 
-import com.example.zzan.room.entity.Room;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.userHistory.entity.UserHistory;
 import org.springframework.data.domain.Pageable;

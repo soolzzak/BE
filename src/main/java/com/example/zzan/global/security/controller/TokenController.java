@@ -9,16 +9,15 @@ import com.example.zzan.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
+import static com.example.zzan.global.exception.ExceptionEnum.REFRESH_TOKEN_NOT_FOUND;
 import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
-
 
 @Slf4j
 @Tag(name = "TokenController", description = "토큰 파트")

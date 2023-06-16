@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -55,28 +57,22 @@ public class WebSecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration config = new CorsConfiguration();
-
-        config.addAllowedOrigin("https://api.honsoolzzak.com");
-        config.addAllowedOrigin("https://honsoolzzak.com");
-        config.addAllowedOrigin("http://api.honsoolzzak.com");
-        config.addAllowedOrigin("http://honsoolzzak.com");
-        config.addAllowedOrigin("https://api.honsoolzzak.com/api/main");
-        config.addAllowedOrigin("http://mynice.s3-website.ap-northeast-2.amazonaws.com");
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("http://localhost:8080");
-        config.addAllowedOrigin("http://localhost:80");
-
-        config.addExposedHeader(JwtUtil.ACCESS_KEY);
-        config.addExposedHeader(JwtUtil.REFRESH_KEY);
-
-        config.addAllowedMethod("*");
-
-        config.addAllowedHeader("*");
-
+        config.setAllowedOrigins(Arrays.asList(
+                "https://api.honsoolzzak.com",
+                "https://honsoolzzak.com",
+                "http://api.honsoolzzak.com",
+                "http://honsoolzzak.com",
+                "https://api.honsoolzzak.com/api/main",
+                "http://mynice.s3-website.ap-northeast-2.amazonaws.com",
+                "http://localhost:3000",
+                "http://localhost:8080",
+                "http://localhost:80"
+        ));
+        config.setExposedHeaders(Arrays.asList(JwtUtil.ACCESS_KEY, JwtUtil.REFRESH_KEY));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
-
         config.validateAllowCredentials();
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -6,7 +6,6 @@ import com.example.zzan.room.dto.RoomRequestDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
-import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.service.RoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
