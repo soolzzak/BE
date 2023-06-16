@@ -1,9 +1,16 @@
 package com.example.zzan.webRtc.rtc;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
+import com.example.zzan.room.entity.RoomHistory;
 import com.example.zzan.room.repository.RoomRepository;
+import com.example.zzan.room.service.RoomService;
+import com.example.zzan.user.entity.User;
+import com.example.zzan.user.repository.UserRepository;
+import com.example.zzan.userHistory.entity.UserHistory;
 import com.example.zzan.webRtc.dto.SessionListMap;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
@@ -21,9 +28,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
-
-
 @Component
 @RequiredArgsConstructor
 public class SignalHandler extends TextWebSocketHandler {
@@ -32,6 +36,11 @@ public class SignalHandler extends TextWebSocketHandler {
     private final RoomRepository roomRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final RoomService roomService;
+
+    private final UserRepository userRepository;
+
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
 
     private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
@@ -45,6 +54,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_LEAVE = "leave";
     private static final String MSG_TYPE_TOAST = "toast";
     private static final String MSG_TYPE_PING = "ping";
+
+    private static final String MSG_TYPE_KICK = "kick";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -198,11 +209,8 @@ public class SignalHandler extends TextWebSocketHandler {
 
                 case MSG_TYPE_PING :
                     room = rooms.get(message.getData());
-
                     Long hostId = room.getHostId();
-
                     Map<Long, WebSocketSession> pingUser = rtcChatService.getUser(room);
-
                     WebSocketSession hostSession = pingUser.get(hostId);
 
                     sendMessage(hostSession,
@@ -213,6 +221,39 @@ public class SignalHandler extends TextWebSocketHandler {
                             null,
                             null));
                     break;
+
+
+
+                case MSG_TYPE_KICK :
+                    room = rooms.get(message.getData());
+                    Map<Long, WebSocketSession> clientsInRoom = rtcChatService.getUser(room);
+                    Long hostIdInRoom = room.getHostId();
+
+                      if(userId.equals(hostIdInRoom)) {
+
+                          for (Map.Entry<Long, WebSocketSession> client : clientsInRoom.entrySet()) {
+
+                              if (client.getKey().equals(hostIdInRoom)) {
+
+                                  for (Map.Entry<Long, WebSocketSession> Guestclient : clientsInRoom.entrySet()) {
+                                      if (!Guestclient.getKey().equals(hostIdInRoom)) {
+                                          Long guestId = Guestclient.getKey();
+                                          User guestUser = userRepository.findById(guestId).get();
+                                          roomService.leaveRoom(roomId, guestUser);
+                                      }
+                                  }
+                              }
+                          }
+
+                      }else {
+                          throw new ApiException(ONLY_HOST_CAN_KICK);
+                      }
+
+                    break;
+
+
+
+
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
