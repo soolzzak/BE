@@ -214,6 +214,13 @@ public class SignalHandler extends TextWebSocketHandler {
                                     if (!Guestclient.getKey().equals(hostIdInRoom)) {
                                         Long guestId = Guestclient.getKey();
                                         User guestUser = userRepository.findById(guestId).get();
+                                        sendMessage(Guestclient.getValue(),
+                                            new WebSocketMessage(
+                                                userId,
+                                                message.getType(),
+                                                roomId,
+                                                null,
+                                                null));
                                         roomService.leaveRoom(roomId, guestUser);
 
                                         WebSocketSession guestSession = Guestclient.getValue();
