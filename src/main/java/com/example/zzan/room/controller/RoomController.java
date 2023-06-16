@@ -42,9 +42,8 @@ public class RoomController {
     }
 
     @GetMapping("/rooms")
-    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC)  Pageable pageable,
             @RequestParam("category") Category category,
-            Pageable pageable,
             @RequestParam(required = false) GenderSetting genderSetting,
             @RequestParam(required = false) Boolean roomCapacityCheck) {
 
