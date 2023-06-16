@@ -74,7 +74,7 @@ public class S3Uploader {
 		String originalFileName = file.getOriginalFilename();
 		String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg") && !ext.equalsIgnoreCase(".jpeg")) {
+		if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg") && !ext.equalsIgnoreCase(".jpeg") && !ext.equalsIgnoreCase(".gif")) {
 			throw new ApiException(INVALID_FILE);
 		}
 
