@@ -28,9 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -68,6 +68,20 @@ public class MyPageService {
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
     }
 
+    public User findUser(String email) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        return optionalUser.orElse(null);
+    }
+
+    private boolean hasBadWord(String input) {
+        for (String badWord : BadWords.koreaWord1) {
+            if (input.contains(badWord)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Transactional
     public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
         Pageable topTwenty = PageRequest.of(0, 20);
@@ -76,61 +90,63 @@ public class MyPageService {
         List<Follow> follows = followRepository.findAllByFollowerUserOrderByCreatedAtDesc(user);
         List<BlockList> blockLists = blockListRepository.findAllByBlockListingUserOrderByCreatedAtDesc(user);
 
-        List<UserHistoryDto> userHistoryDtos = userHistories.stream().filter(userHistory -> userHistory.getGuestUser() != null).map(userHistory -> {
-                    String metUser;
-                    String metUserImage;
-                    Long metUserId;
-                    if (userHistory.getHostUser().getId().equals(user.getId())) {
-                        metUserId = userHistory.getGuestUser().getId();
-                        metUser = userHistory.getGuestUser().getUsername();
-                        metUserImage = userHistory.getGuestUser().getUserImage();
-                    } else {
-                        metUserId = userHistory.getHostUser().getId();
-                        metUser = userHistory.getHostUser().getUsername();
-                        metUserImage = userHistory.getHostUser().getUserImage();
-                    }
-                    LocalDateTime metCreatedAt = userHistory.getCreatedAt();
-                    return new UserHistoryDto(metUserId, metUser, metUserImage, metCreatedAt);
-                })
-                .collect(Collectors.toList());
-
-        List<FollowResponseDto> followResponseDtos = follows.stream().map(follow -> {
-                    Long followingUserId = follow.getFollowingUser().getId();
-                    String followingUser = follow.getFollowingUser().getUsername();
-                    String followingUserImage = follow.getFollowingUser().getUserImage();
-                    LocalDateTime followCreatedAt = follow.getCreatedAt();
-                    return new FollowResponseDto(followingUserId, followingUser, followingUserImage, followCreatedAt);
-                })
-                .collect(Collectors.toList());
-
-        List<BlockListDto> blockListDtos = blockLists.stream().map(blockList -> {
-                    Long blacklistedUserId = blockList.getBlockListedUser().getId();
-                    String blacklistedUser = blockList.getBlockListedUser().getUsername();
-                    String blackUserImage = blockList.getBlockListedUser().getUserImage();
-                    LocalDateTime BlacklistCreatedAt = blockList.getCreatedAt();
-                    return new BlockListDto(blacklistedUserId, blacklistedUser, blackUserImage, BlacklistCreatedAt);
-                })
-                .collect(Collectors.toList());
-
+        List<UserHistoryDto> userHistoryDtos = new ArrayList<>();
+        List<FollowResponseDto> followResponseDtos = new ArrayList<>();
+        List<BlockListDto> blockListDtos = new ArrayList<>();
         User myPage = findUser(user.getEmail());
 
+        for (UserHistory userHistory : userHistories) {
+            if (userHistory.getGuestUser() != null) {
+                String metUser = "";
+                String metUserImage = "";
+                Long metUserId = null;
+                if (userHistory.getHostUser().getId().equals(user.getId())) {
+                    metUserId = userHistory.getGuestUser().getId();
+                    metUser = userHistory.getGuestUser().getUsername();
+                    metUserImage = userHistory.getGuestUser().getUserImage();
+                } else if (!userHistory.getHostUser().getId().equals(user.getId())) {
+                    metUserId = userHistory.getHostUser().getId();
+                    metUser = userHistory.getHostUser().getUsername();
+                    metUserImage = userHistory.getHostUser().getUserImage();
+                }
+                LocalDateTime metCreatedAt = userHistory.getCreatedAt();
+
+                UserHistoryDto userHistoryDto = new UserHistoryDto(metUserId, metUser, metUserImage, metCreatedAt);
+                userHistoryDtos.add(userHistoryDto);
+            }
+        }
+
+        for (Follow follow : follows) {
+            Long followingUserId = follow.getFollowingUser().getId();
+            String followingUser = follow.getFollowingUser().getUsername();
+            String followingUserImage = follow.getFollowingUser().getUserImage();
+            LocalDateTime followCreatedAt = follow.getCreatedAt();
+
+            FollowResponseDto followResponseDto = new FollowResponseDto(followingUserId, followingUser, followingUserImage, followCreatedAt);
+            followResponseDtos.add(followResponseDto);
+        }
+
+        for (BlockList blockList : blockLists) {
+            Long blacklistedUserId = blockList.getBlockListedUser().getId();
+            String blacklistedUser = blockList.getBlockListedUser().getUsername();
+            String blackUserImage = blockList.getBlockListedUser().getUserImage();
+            LocalDateTime BlacklistCreatedAt = blockList.getCreatedAt();
+
+            BlockListDto blockListDto = new BlockListDto(blacklistedUserId, blacklistedUser, blackUserImage, BlacklistCreatedAt);
+            blockListDtos.add(blockListDto);
+        }
         return ResponseDto.setSuccess("Successfully checked the record.", new MyPageResponseDto(myPage, myPage.getAlcohol(), userHistoryDtos, followResponseDtos, blockListDtos));
     }
 
     public ResponseDto<RelatedUserResponseDto> UserInfoFromId(Long targetId, User user) {
-        User targetUser = userRepository.findById(targetId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-
+        Optional<User> optionalUser = userRepository.findById(targetId);
+        if (!optionalUser.isPresent()) {
+            throw new ApiException(USER_NOT_FOUND);
+        }
+        User targetUser = optionalUser.get();
         boolean isFollowing = followRepository.findByFollowingUserAndFollowerUser(targetUser, user).isPresent();
         boolean isBlocked = blockListRepository.findByBlockListedUserAndBlockListingUser(targetUser, user).isPresent();
 
         return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
-    }
-
-    public User findUser(String email) {
-        return userRepository.findUserByEmail(email).orElse(null);
-    }
-
-    private boolean hasBadWord(String input) {
-        return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
 }
