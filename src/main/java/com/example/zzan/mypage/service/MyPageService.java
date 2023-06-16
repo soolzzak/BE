@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -65,20 +66,6 @@ public class MyPageService {
             throw new ApiException(ROOM_NOT_FOUND);
         }
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
-    }
-
-    public User findUser(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
-        return optionalUser.orElse(null);
-    }
-
-    private boolean hasBadWord(String input) {
-        for (String badWord : BadWords.koreaWord1) {
-            if (input.contains(badWord)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Transactional
