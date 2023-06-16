@@ -214,7 +214,25 @@ public class SignalHandler extends TextWebSocketHandler {
                                     if (!Guestclient.getKey().equals(hostIdInRoom)) {
                                         Long guestId = Guestclient.getKey();
                                         User guestUser = userRepository.findById(guestId).get();
+                                        sendMessage(Guestclient.getValue(),
+                                            new WebSocketMessage(
+                                                userId,
+                                                message.getType(),
+                                                roomId,
+                                                null,
+                                                null));
                                         roomService.leaveRoom(roomId, guestUser);
+
+                                        WebSocketSession guestSession = Guestclient.getValue();
+                                        if (guestSession.isOpen()) { // 웹소켓 세션이 열려있는지 확인
+                                            try {
+                                                guestSession.close();
+                                            } catch (IOException e) {
+                                                // 로그에 오류를 기록하거나 적절한 조치를 취하십시오.
+                                                e.printStackTrace();
+                                            }
+                                        }
+
                                     }
                                 }
                             }
