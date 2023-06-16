@@ -1,5 +1,7 @@
 package com.example.zzan.webRtc.rtc;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
@@ -25,9 +27,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
-
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
-
 
 @Component
 @RequiredArgsConstructor
@@ -230,20 +229,25 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> clientsInRoom = rtcChatService.getUser(room);
                     Long hostIdInRoom = room.getHostId();
 
-                    for (Map.Entry<Long, WebSocketSession> client : clientsInRoom.entrySet()) {
+                      if(userId.equals(hostIdInRoom)) {
 
-                        if (client.getKey().equals(hostIdInRoom)) {
-                            
-                            for (Map.Entry<Long, WebSocketSession> Guestclient : clientsInRoom.entrySet()) {
-                                if (!client.getKey().equals(hostIdInRoom)) {
-                                    Long guestId = Guestclient.getKey();
-                                    User guestUser = userRepository.findById(guestId).get();
-                                    roomService.leaveRoom(roomId,guestUser);
-                                }
-                            }
+                          for (Map.Entry<Long, WebSocketSession> client : clientsInRoom.entrySet()) {
 
-                        }
-                    }
+                              if (client.getKey().equals(hostIdInRoom)) {
+
+                                  for (Map.Entry<Long, WebSocketSession> Guestclient : clientsInRoom.entrySet()) {
+                                      if (!Guestclient.getKey().equals(hostIdInRoom)) {
+                                          Long guestId = Guestclient.getKey();
+                                          User guestUser = userRepository.findById(guestId).get();
+                                          roomService.leaveRoom(roomId, guestUser);
+                                      }
+                                  }
+                              }
+                          }
+
+                      }else {
+                          throw new ApiException(ONLY_HOST_CAN_KICK);
+                      }
 
                     break;
 
