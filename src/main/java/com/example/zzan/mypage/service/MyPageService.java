@@ -28,9 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -148,5 +147,13 @@ public class MyPageService {
         boolean isBlocked = blockListRepository.findByBlockListedUserAndBlockListingUser(targetUser, user).isPresent();
 
         return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
+    }
+
+    public User findUser(String email) {
+        return userRepository.findUserByEmail(email).orElse(null);
+    }
+
+    private boolean hasBadWord(String input) {
+        return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
 }

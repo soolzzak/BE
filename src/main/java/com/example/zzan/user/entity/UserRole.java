@@ -4,7 +4,6 @@ public enum UserRole {
     USER(Authority.USER),
     ADMIN(Authority.ADMIN);
 
-
     private final String authority;
 
     UserRole(String authority) {

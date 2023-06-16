@@ -24,7 +24,6 @@ import com.example.zzan.webRtc.dto.UserListMap;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -58,6 +55,7 @@ public class RoomService {
         String roomImageUrl = null;
         Room room = new Room(roomRequestDto, user);
         room.setRoomCapacity(0);
+
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
             throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
@@ -68,16 +66,19 @@ public class RoomService {
             if (roomPassword == null || roomPassword.isEmpty())
                 throw  new ApiException(REQUIRE_PASSWORD);
         }
+
         user.setRoomTitle(roomTitle);
         userRepository.save(user);
         RoomHistory roomHistory = new RoomHistory();
         roomHistory.setRoom(room);
+
         if (roomImage == null) {
             roomImageUrl = s3Uploader.getRandomImage("Random");
         } else {
             roomImageUrl = s3Uploader.upload(roomImage, "images");
         }
         room.setRoomImage(roomImageUrl);
+
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
@@ -162,12 +163,7 @@ public class RoomService {
     }
 
     private boolean hasBadWord(String input) {
-        for (String badWord : BadWords.koreaWord1) {
-            if (input.contains(badWord)) {
-                return true;
-            }
-        }
-        return false;
+        return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
 
     @Transactional

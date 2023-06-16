@@ -26,6 +26,7 @@ import static com.example.zzan.global.exception.ExceptionEnum.FAILED_SEND_MAIL;
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
+
     @Value("${spring.mail.username}")
     private String id;
 

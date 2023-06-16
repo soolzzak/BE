@@ -50,10 +50,7 @@ public enum ExceptionEnum {
     EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT token."),
 
     SEARCH_FAILED(HttpStatus.NOT_FOUND.value(), "Invalid search format."),
-
     ONLY_HOST_CAN_KICK(HttpStatus.FORBIDDEN.value(), "Only the host can kick users out.");
-
-
 
     private final int status;
     private final String message;

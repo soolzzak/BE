@@ -30,11 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 @Slf4j
@@ -112,7 +108,6 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoApiKey);
         body.add("redirect_uri", "https://honsoolzzak.com/api/login");
-        // body.add("redirect_uri", "http://localhost:3000/api/login");
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);

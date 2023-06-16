@@ -89,20 +89,6 @@ public class User {
         this.kakaoId = kakaoInfoDto.getKakaoId().toString();
     }
 
-    // public User(KakaoInfoDto kakaoInfoDto, String email, String password, String username, UserRole role, String userImage, Gender gender, Date birthday) {
-    //     this.kakaoId =kakaoInfoDto.getKakaoId().toString();
-    //     this.email = email;
-    //     this.password = password;
-    //     this.username = username;
-    //     this.role = role;
-    //     this.userImage = userImage;
-    //     this.gender = gender;
-    //     this.birthday = birthday;
-    //     this.alcohol = 16;
-    //     this.alcoholUp = false;
-    //     this.alcoholDown = false;
-    // }
-
     public User(KakaoInfoDto kakaoInfoDto,String password,UserRole role,String userImage,Date birthday) {
         this.kakaoId =kakaoInfoDto.getKakaoId().toString();
         this.email = kakaoInfoDto.getEmail();
@@ -116,10 +102,6 @@ public class User {
         this.alcoholUp = false;
         this.alcoholDown = false;
     }
-
-
-
-
 
     public User(String username, String userImage) {
         this.username = username;

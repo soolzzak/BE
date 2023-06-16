@@ -10,9 +10,10 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import java.util.Optional;
+
+import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 @RequiredArgsConstructor
 @Service

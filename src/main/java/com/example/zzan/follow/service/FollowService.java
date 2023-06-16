@@ -52,9 +52,6 @@ public class FollowService {
 
     public List<User> getFollowers(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        return followRepository.findByFollowingUser(user)
-                .stream()
-                .map(Follow::getFollowerUser)
-                .collect(Collectors.toList());
+        return followRepository.findByFollowingUser(user).stream().map(Follow::getFollowerUser).collect(Collectors.toList());
     }
 }

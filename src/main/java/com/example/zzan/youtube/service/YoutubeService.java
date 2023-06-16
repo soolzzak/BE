@@ -1,6 +1,13 @@
 package com.example.zzan.youtube.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import com.example.zzan.global.dto.ResponseDto;
+import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.youtube.dto.YoutubeListDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,17 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.example.zzan.global.dto.ResponseDto;
-import com.example.zzan.global.exception.ApiException;
-import com.example.zzan.youtube.dto.YoutubeListDto;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
+import static com.example.zzan.global.exception.ExceptionEnum.SEARCH_FAILED;
 
 @Service
 @Slf4j
