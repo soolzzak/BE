@@ -14,21 +14,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SseService {
-    private final FollowService followService;
+    private  FollowService followService;
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public void notifyFollowers(Room room, String username) {
         String message = room.getHostUser().getUsername() + "님이 방을 만드셨습니다.";
-        log.info(message + "들어와라!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        log.info(message + " - Sending SSE notification to followers.");
+
         this.followService.getFollowers(username).forEach(followerUsername -> {
             SseEmitter emitter = emitters.get(followerUsername);
             if (emitter != null) {
                 try {
                     emitter.send(SseEmitter.event().name("roomCreated").data(message));
-                    log.info(message + "최종으로 제발 들어와라!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 } catch (IOException e) {
+                    log.error("Error sending SSE event to follower: {}", followerUsername, e);
                     emitter.completeWithError(e);
                 }
             }
