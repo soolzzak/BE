@@ -4,7 +4,7 @@ import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.webRtc.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,15 +28,16 @@ public class IdiomGameService {
     private boolean gameRunning;
     private Timer gameTimer;
     private String currentIdiom;
-    @Lazy
-    private final SignalHandler signalHandler;
-
+    //    @Lazy
+//    private final SignalHandler signalHandler;
+    private final ApplicationContext context;
 //    public IdiomGameService() {
 //        this.idioms = loadIdiomsFromFile();
 //    }
 
     public void startGame(WebSocketSession session) {
         if (!gameRunning) {
+//            SignalHandler signalHandler = context.getBean(SignalHandler.class);
             gameRunning = true;
             gameTimer = new Timer();
 
@@ -61,11 +62,10 @@ public class IdiomGameService {
             @Override
             public void run() {
                 if (gameRunning) {
+                    SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
                     GameResponseDto gameResponseDto = new GameResponseDto(partialWord);
-                    if (signalHandler != null) {
-                        signalHandler.gameSendMessage(session, gameResponseDto);
-                    }
+                    signalHandler.gameSendMessage(session, gameResponseDto);
                 }
             }
         };
@@ -77,11 +77,10 @@ public class IdiomGameService {
             @Override
             public void run() {
                 if (gameRunning) {
+                    SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
                     GameResponseDto gameResponseDto = new GameResponseDto(fullWord);
-                    if (signalHandler != null) {
-                        signalHandler.gameSendMessage(session, gameResponseDto);
-                    }
+                    signalHandler.gameSendMessage(session, gameResponseDto);
                 }
             }
         };
