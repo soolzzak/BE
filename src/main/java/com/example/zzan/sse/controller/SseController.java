@@ -1,6 +1,7 @@
 package com.example.zzan.sse.controller;
 
 import com.example.zzan.sse.service.SseService;
+import com.example.zzan.user.entity.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ public class SseController {
     private final SseService sseService;
 
     @GetMapping(value = "/events/{username}", consumes = MediaType.ALL_VALUE)
-    public SseEmitter subscribe(@PathVariable String username, HttpServletRequest request) {
+    public SseEmitter subscribe(@PathVariable User username, HttpServletRequest request) {
         String accessToken = getAccessTokenFromCookie(request);
         return this.sseService.register(username);
     }
