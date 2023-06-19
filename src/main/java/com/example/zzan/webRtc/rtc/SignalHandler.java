@@ -281,14 +281,11 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         if (client.getKey().equals(userId)) {
-                            idiomGameService.startGame();
                             gameSendMessage(client.getValue(),
                                     new GameResponseDto(
-                                            userId,
-                                            "게임 시작!",
-                                            roomId,
-                                            null,
-                                            null));
+                                            "게임 시작!"
+                                            ));
+                            idiomGameService.startGame(client.getValue());
                         }
                     }
                     break;
@@ -310,7 +307,7 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-    private void gameSendMessage(WebSocketSession session, GameResponseDto gameResponseDto) {
+    public void gameSendMessage(WebSocketSession session, GameResponseDto gameResponseDto) {
         try {
             String json = objectMapper.writeValueAsString(gameResponseDto);
             session.sendMessage(new TextMessage(json));
