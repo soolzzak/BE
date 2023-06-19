@@ -282,11 +282,11 @@ public class SignalHandler extends TextWebSocketHandler {
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         logger.info("게임 시작 전");
                         if (client.getKey().equals(userId)) {
-                            sendMessage(client.getValue(),
-                                    new WebSocketMessage(
+                            gameSendMessage(client.getValue(),
+                                    new GameResponseDto(
                                             userId,
+                                            message.getType(),
                                             "게임 시작!",
-                                            roomId,
                                             null,
                                             null));
                             idiomGameService.startGame(client.getValue());
@@ -303,7 +303,7 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-    private void sendMessage(WebSocketSession session, WebSocketMessage message) {
+    public void sendMessage(WebSocketSession session, WebSocketMessage message) {
         try {
             String json = objectMapper.writeValueAsString(message);
             session.sendMessage(new TextMessage(json));
