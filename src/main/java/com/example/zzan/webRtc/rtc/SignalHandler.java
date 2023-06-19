@@ -282,12 +282,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         logger.info("게임 시작 전");
                         if (client.getKey().equals(userId)) {
-                            gameSendMessage(client.getValue(),
-                                    new GameResponseDto(
-                                            "게임 시작!"
-                                            ));
-                            logger.info("게임 시작!");
+                            sendMessage(client.getValue(),
+                                    new WebSocketMessage(
+                                            userId,
+                                            "게임 시작!",
+                                            roomId,
+                                            null,
+                                            null));
                             idiomGameService.startGame(client.getValue());
+                            logger.info("게임 시작!");
                         }
                     }
                     break;

@@ -93,6 +93,7 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     stopGame();
+                    log.info("게임 끝!");
                 }
             }
         };
