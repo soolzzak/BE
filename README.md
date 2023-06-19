@@ -16,7 +16,7 @@
 | ------ | -- | ----|
 | Front-end | 배정현(L) | https://github.com/JungHBae|
 | Front-end | 최성빈 | https://github.com/sbchoi5451|
-| Front-end | 조선아 | https://github.com/elfinana| 
+| Front-end | 조선아 | https://github.com/princesssana| 
 | Back-end | 지현경(VL)|  https://github.com/Jello92|
 | Back-end | 김지현 | https://github.com/jihyeon117|
 | Back-end | 김상우 | https://github.com/kimsangwoo0505|
@@ -40,7 +40,7 @@
 
 🗝 ERD 
 ---------------------------------------
-![혼술짝](https://github.com/Jello92/BE/assets/128972031/b8359a0b-faae-4c75-a1ba-6702b8ed4f82)
+![image](https://github.com/Jello92/BE/assets/128972031/8595f93e-c6a5-45e9-9a3f-4c5b392b2edb)
 
 
 
