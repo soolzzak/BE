@@ -28,16 +28,16 @@ public class IdiomGameService {
     private boolean gameRunning;
     private Timer gameTimer;
     private String currentIdiom;
-    //    @Lazy
-//    private final SignalHandler signalHandler;
     private final ApplicationContext context;
-//    public IdiomGameService() {
-//        this.idioms = loadIdiomsFromFile();
-//    }
+
+    //    @PostConstruct
+    public IdiomGameService(ApplicationContext context) {
+        this.context = context;
+        this.idioms = loadIdiomsFromFile();
+    }
 
     public void startGame(WebSocketSession session) {
         if (!gameRunning) {
-//            SignalHandler signalHandler = context.getBean(SignalHandler.class);
             gameRunning = true;
             gameTimer = new Timer();
 
