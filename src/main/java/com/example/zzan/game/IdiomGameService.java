@@ -41,14 +41,17 @@ public class IdiomGameService {
 
             schedulePartialWord(session);
             scheduleFullWordReveal(session);
-            stopGame();
+            stopGame(session);
 //            scheduleNextGame(session);
         }
     }
 
-    public void stopGame() {
+    public void stopGame(WebSocketSession session) {
         if (gameRunning) {
             gameRunning = false;
+            SignalHandler signalHandler = context.getBean(SignalHandler.class);
+            GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "게임 끝!", null, null);
+            signalHandler.gameSendMessage(session, gameResponseDto);
 //            if (gameTimer != null) {
 //                gameTimer.cancel();
 //                gameTimer = null;
