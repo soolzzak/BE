@@ -21,9 +21,9 @@ import java.util.*;
 @Getter
 public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
-    private static final int INITIAL_DELAY_MS = 5000;       // 2000
-    private static final int PARTIAL_WORD_DELAY_MS = 5000;      // 3000
-    private static final int FULL_WORD_DELAY_MS = 5000;     // 6000
+    private static final int INITIAL_DELAY_MS = 3000;       // 2000
+    private static final int PARTIAL_WORD_DELAY_MS = 6000;      // 3000
+    private static final int FULL_WORD_DELAY_MS = 9000;     // 6000
     private final List<String> idioms;
     private boolean gameRunning;
     private Timer gameTimer;
