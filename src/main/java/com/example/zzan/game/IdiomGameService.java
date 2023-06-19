@@ -101,7 +101,7 @@ public class IdiomGameService {
                 }
             }
         };
-        gameTimer.schedule(task, INITIAL_DELAY_MS);
+        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
     }
 
     public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
@@ -113,7 +113,7 @@ public class IdiomGameService {
                 }
             }
         };
-        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
+        gameTimer.schedule(task, FULL_WORD_DELAY_MS);
     }
 
 //    public String generatePartialWord() {
