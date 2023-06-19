@@ -63,6 +63,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
 
+    private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -213,7 +215,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_PAUSEYOUTUBE,MSG_TYPE_STOPYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -231,6 +233,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         }
                     }
                     break;
+
 
                 case MSG_TYPE_PING :
                     room = rooms.get(message.getData());
@@ -324,14 +327,31 @@ public class SignalHandler extends TextWebSocketHandler {
                                     message.getType(),
                                     roomId,
                                     time,
-                                    youtubeUrl,
+                                    null,
                                     null,
                                     null));
                         }
                     }
                     break;
 
+                case MSG_TYPE_YOUTUBE:
+                    room = rooms.get(message.getData());
 
+                    Map<Long, WebSocketSession> usersWatchingYoutube = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : usersWatchingYoutube.entrySet()) {
+                        if (!client.getKey().equals(userId)) {
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    youtubeUrl,
+                                    null,
+                                    null));
+                        }
+                    }
+                    break;
 
 
                 default:
