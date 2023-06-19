@@ -139,7 +139,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     Room existingRoom = roomRepository.findById(room.getRoomId())
                         .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-                    if (existingRoom.getRoomCapacity() <= 2) {
+                    if (existingRoom.getRoomCapacity() < 2) {
                         rtcChatService.addUser(room, userId, session);
                         existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
 
@@ -159,7 +159,11 @@ public class SignalHandler extends TextWebSocketHandler {
                         }
 
                     }else {
-                        throw new ApiException(ROOM_ALREADY_FULL);
+                        // throw new ApiException(ROOM_ALREADY_FULL);
+
+                        Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+                        session.close();
+                        // WebSocketSession guestSession = joinClients.get();
                     }
 
                     break;
