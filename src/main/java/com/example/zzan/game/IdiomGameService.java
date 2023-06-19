@@ -55,7 +55,7 @@ public class IdiomGameService {
 
             schedulePartialWord(gamePlayers);
             scheduleFullWordReveal(gamePlayers);
-            stopGame(gamePlayers);
+            scheduleNextGame(gamePlayers);
         }
     }
 
@@ -115,7 +115,7 @@ public class IdiomGameService {
         };
         gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
     }
-//
+
 //    public String generatePartialWord() {
 //        if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
 //            return getRandomIdiom().substring(0, 2);
@@ -131,11 +131,17 @@ public class IdiomGameService {
         return currentIdiom;
     }
 
+//    public String getRandomIdiom() {
+//        Random random = new Random();
+//        int randomIndex = random.nextInt(idioms.size());
+//        currentIdiom = idioms.get(randomIndex);
+//        return currentIdiom;
+//    }
+
     public String getRandomIdiom() {
         Random random = new Random();
         int randomIndex = random.nextInt(idioms.size());
-        currentIdiom = idioms.get(randomIndex);
-        return currentIdiom;
+        return idioms.get(randomIndex);
     }
 
     public List<String> loadIdiomsFromFile() {
