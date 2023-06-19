@@ -108,7 +108,7 @@ public class SignalHandler extends TextWebSocketHandler {
         //         // WebSocketSession guestSession = joinClients.get();
         //     }
 
-        sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null, null, null));
+        sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null,0, null, null));
     }
 
     @Override
@@ -118,6 +118,7 @@ public class SignalHandler extends TextWebSocketHandler {
             logger.info("[ws] Message of {} type from {} received", message.getType(), message.getFrom());
             Long userId = message.getFrom();
             Long roomId = message.getData();
+            Double time = message.getTime();
 
             logger.info("Message {}", message.toString());
 
@@ -147,6 +148,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 userId,
                                                 message.getType(),
                                                 roomId,
+                                            0,
                                                 candidate,
                                                 sdp));
                             }
@@ -175,6 +177,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                         userId,
                                         message.getType(),
                                         roomId,
+                                        0,
                                         null,
                                         null));
                             }
@@ -208,7 +211,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_STARTYOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -219,6 +222,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                             userId,
                                             message.getType(),
                                             roomId,
+                                            0,
                                             null,
                                             null));
                         }
@@ -235,7 +239,8 @@ public class SignalHandler extends TextWebSocketHandler {
                             new WebSocketMessage(
                                     userId,
                                     message.getType(),
-                                    roomId,
+                                     roomId,
+                                    0,
                                     null,
                                     null));
                     break;
@@ -257,6 +262,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 userId,
                                                 message.getType(),
                                                 roomId,
+                                                0,
                                                 null,
                                                 null));
                                         roomService.leaveRoom(roomId, guestUser);
@@ -300,18 +306,19 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_YOUTUBE:
+                case MSG_TYPE_STARTYOUTUBE:
 
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> youtubeViewers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : youtubeViewers.entrySet()) {
                         if (!client.getKey().equals(userId)) {
-                            sendMessageToYoutube(client.getValue(),
-                                new YoutubeMessageDto(
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
                                     userId,
                                     message.getType(),
                                     roomId,
+                                    time,
                                     null,
                                     null));
                         }

@@ -79,6 +79,7 @@ public class RoomService {
 
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
+        sseService.notifyFollowers( room, room.getUsername());
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
