@@ -63,6 +63,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
 
+    private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -213,7 +215,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE,MSG_TYPE_STOPYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
