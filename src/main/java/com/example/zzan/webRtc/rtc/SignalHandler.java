@@ -2,6 +2,7 @@ package com.example.zzan.webRtc.rtc;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
+import com.example.zzan.game.IdiomGameService;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,7 +27,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.Map;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class SignalHandler extends TextWebSocketHandler {
 
@@ -55,6 +56,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_KICK = "kick";
     private static final String MSG_TYPE_START = "startShare";
     private static final String MSG_TYPE_STOP = "stopShare";
+    private static final String MSG_TYPE_GAME = "game";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -251,6 +253,11 @@ public class SignalHandler extends TextWebSocketHandler {
                     }else {
                         throw new ApiException(ONLY_HOST_CAN_KICK);
                     }
+                    break;
+
+                case MSG_TYPE_GAME:
+                    IdiomGameService gameService = new IdiomGameService();
+                    gameService.startGame();
                     break;
 
                 default:
