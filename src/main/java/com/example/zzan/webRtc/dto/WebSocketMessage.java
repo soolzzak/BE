@@ -12,6 +12,7 @@ public class WebSocketMessage {
     private String type;
     private Long data;
     private double time;
+    private String youtubeUrl;
     private Object candidate;
     private Object sdp;
 }
