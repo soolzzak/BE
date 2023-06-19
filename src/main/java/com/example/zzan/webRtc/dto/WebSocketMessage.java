@@ -11,6 +11,7 @@ public class WebSocketMessage {
     private Long from;
     private String type;
     private Long data;
+    private double time;
     private Object candidate;
     private Object sdp;
 }
