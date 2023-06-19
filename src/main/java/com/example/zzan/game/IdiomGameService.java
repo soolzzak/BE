@@ -33,10 +33,9 @@ public class IdiomGameService {
        if (!gameRunning) {
            gameRunning = true;
            gameTimer = new Timer();
-
-           schedulePartialWord();
-           scheduleFullWordReveal();
-           scheduleNextGame();
+//           schedulePartialWord();
+//           scheduleFullWordReveal();
+//           scheduleNextGame();
        }
    }
 
