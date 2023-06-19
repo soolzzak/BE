@@ -32,8 +32,8 @@ public class SseService {
     }
 
     public void notifyFollowers(String username) {
-        this.followService.getFollowers(username).forEach(followerId -> {
-            SseEmitter emitter = emitters.get(username);
+        this.followService.getFollowers(username).forEach(followerUsername -> {
+            SseEmitter emitter = emitters.get(followerUsername);
             if (emitter != null) {
                 try {
                     emitter.send(SseEmitter.event().name("roomCreated").data(username + "님이 방을 만드셨습니다."));
