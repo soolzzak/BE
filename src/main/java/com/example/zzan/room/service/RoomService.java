@@ -79,7 +79,7 @@ public class RoomService {
 
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
-        sseService.notifyFollowers( room, room.getUsername());
+        sseService.notifyFollowers( room, room.getHostUser().getUsername());
         log.info(room.getHostUser().getUsername() + "이 들어와야하는데에에에에!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());

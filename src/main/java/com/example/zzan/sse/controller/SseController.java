@@ -18,8 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequiredArgsConstructor
 public class SseController {
-    public static Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
     private final SseService sseService;
+
+    private final Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     @CrossOrigin
     @GetMapping(value = "/events/{username}", consumes = MediaType.ALL_VALUE)
