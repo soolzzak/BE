@@ -156,7 +156,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     if (existingRoom.getRoomCapacity() < 2) {
                         rtcChatService.addUser(room, userId, session);
-                        existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
+                        // existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
 
                         rooms.put(roomId, room);
                         roomRepository.saveAndFlush(existingRoom);
