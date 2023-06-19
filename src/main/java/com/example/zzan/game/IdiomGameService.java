@@ -39,10 +39,10 @@ public class IdiomGameService {
         if (!gameRunning) {
             gameRunning = true;
             gameTimer = new Timer();
+            currentIdiom = getRandomIdiom();
 
             schedulePartialWord(gamePlayers);
             scheduleFullWordReveal(gamePlayers);
-//            stopGame(gamePlayers);
             scheduleNextGame(gamePlayers);
         }
     }
@@ -55,7 +55,6 @@ public class IdiomGameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-
         }
     }
 
@@ -65,7 +64,7 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                    String partialWord = generatePartialWord();
+                    String partialWord = generatePartialWord(currentIdiom);
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", partialWord, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
@@ -90,7 +89,7 @@ public class IdiomGameService {
                 }
             }
         };
-        gameTimer.schedule(task, FULL_WORD_DELAY_MS);
+        gameTimer.schedule(task, INITIAL_DELAY_MS + 3000);
     }
 
     public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
@@ -105,11 +104,11 @@ public class IdiomGameService {
         gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
     }
 
-    public String generatePartialWord() {
-        if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
-            return getRandomIdiom().substring(0, 2);
+    public String generatePartialWord(String idiom) {
+        if (idiom != null && idiom.length() >= 2) {
+            return idiom.substring(0, 2);
         }
-        return getRandomIdiom();
+        return idiom;
     }
 
     public String getRandomIdiom() {
