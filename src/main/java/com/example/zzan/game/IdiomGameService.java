@@ -101,7 +101,7 @@ public class IdiomGameService {
                 }
             }
         };
-        gameTimer.schedule(task, FULL_WORD_DELAY_MS);
+        gameTimer.schedule(task, INITIAL_DELAY_MS);
     }
 
     public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
@@ -122,7 +122,6 @@ public class IdiomGameService {
 //        }
 //        return getRandomIdiom();
 //    }
-
 
     public String generatePartialWord() {
         if (currentIdiom != null && currentIdiom.length() >= 2) {
