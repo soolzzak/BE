@@ -2,6 +2,7 @@ package com.example.zzan.game;
 
 import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.webRtc.rtc.SignalHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -16,21 +17,21 @@ import java.util.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
     private static final int INITIAL_DELAY_MS = 2000;
     private static final int PARTIAL_WORD_DELAY_MS = 3000;
     private static final int FULL_WORD_DELAY_MS = 6000;
-    private WebSocketSession currentSession;
     private final List<String> idioms;
     private boolean gameRunning;
     private Timer gameTimer;
     private String currentIdiom;
-    private static SignalHandler signalHandler;
+    private final SignalHandler signalHandler;
 
-    public IdiomGameService() {
-        this.idioms = loadIdiomsFromFile();
-    }
+//    public IdiomGameService() {
+//        this.idioms = loadIdiomsFromFile();
+//    }
 
     public void startGame(WebSocketSession session) {
         if (!gameRunning) {
@@ -60,7 +61,9 @@ public class IdiomGameService {
                 if (gameRunning) {
                     String partialWord = generatePartialWord();
                     GameResponseDto gameResponseDto = new GameResponseDto(partialWord);
-                    signalHandler.gameSendMessage(session, gameResponseDto);
+                    if (signalHandler != null) {
+                        signalHandler.gameSendMessage(session, gameResponseDto);
+                    }
                 }
             }
         };
@@ -74,7 +77,9 @@ public class IdiomGameService {
                 if (gameRunning) {
                     String fullWord = currentIdiom;
                     GameResponseDto gameResponseDto = new GameResponseDto(fullWord);
-                    signalHandler.gameSendMessage(session, gameResponseDto);
+                    if (signalHandler != null) {
+                        signalHandler.gameSendMessage(session, gameResponseDto);
+                    }
                 }
             }
         };
