@@ -292,7 +292,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         logger.info("게임 시작 전");
-                        if (client.getKey().equals(userId)) {
+                        if (!client.getKey().equals(userId)) {
                             gameSendMessage(client.getValue(),
                                     new GameResponseDto(
                                             userId,
