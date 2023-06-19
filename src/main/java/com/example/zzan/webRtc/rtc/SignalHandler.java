@@ -320,7 +320,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> youtubeViewers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : youtubeViewers.entrySet()) {
-//                        if (!client.getKey().equals(userId)) {
+                        if (!client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
@@ -349,7 +349,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                     youtubeUrl,
                                     null,
                                     null));
-//                        }
+                        }
                     }
                     break;
 
