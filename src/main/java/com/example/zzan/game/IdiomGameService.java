@@ -35,15 +35,27 @@ public class IdiomGameService {
         this.idioms = loadIdiomsFromFile();
     }
 
+//    public void startGame(Map<Long, WebSocketSession> gamePlayers) {
+//        if (!gameRunning) {
+//            gameRunning = true;
+//            gameTimer = new Timer();
+//
+//            schedulePartialWord(gamePlayers);
+//            scheduleFullWordReveal(gamePlayers);
+////            stopGame(gamePlayers);
+//            scheduleNextGame(gamePlayers);
+//        }
+//    }
+
     public void startGame(Map<Long, WebSocketSession> gamePlayers) {
         if (!gameRunning) {
             gameRunning = true;
             gameTimer = new Timer();
+            currentIdiom = getRandomIdiom();
 
             schedulePartialWord(gamePlayers);
             scheduleFullWordReveal(gamePlayers);
             stopGame(gamePlayers);
-//            scheduleNextGame(gamePlayers);
         }
     }
 
@@ -92,23 +104,31 @@ public class IdiomGameService {
         gameTimer.schedule(task, FULL_WORD_DELAY_MS);
     }
 
-//    public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
-//        TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (gameRunning) {
-//                    stopGame(gamePlayers);
-//                }
-//            }
-//        };
-//        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
+    public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (gameRunning) {
+                    stopGame(gamePlayers);
+                }
+            }
+        };
+        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
+    }
+//
+//    public String generatePartialWord() {
+//        if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
+//            return getRandomIdiom().substring(0, 2);
+//        }
+//        return getRandomIdiom();
 //    }
 
+
     public String generatePartialWord() {
-        if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
-            return getRandomIdiom().substring(0, 2);
+        if (currentIdiom != null && currentIdiom.length() >= 2) {
+            return currentIdiom.substring(0, 2);
         }
-        return getRandomIdiom();
+        return currentIdiom;
     }
 
     public String getRandomIdiom() {
