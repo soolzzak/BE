@@ -19,9 +19,9 @@ import java.util.*;
 @Slf4j
 public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
-    private static final int INITIAL_DELAY_MS = 2000;
-    private static final int PARTIAL_WORD_DELAY_MS = 3000;
-    private static final int FULL_WORD_DELAY_MS = 6000;
+    private static final int INITIAL_DELAY_MS = 1000;       // 2000
+    private static final int PARTIAL_WORD_DELAY_MS = 1000;      // 3000
+    private static final int FULL_WORD_DELAY_MS = 1000;     // 6000
     private final List<String> idioms;
     private boolean gameRunning;
     private Timer gameTimer;
@@ -63,7 +63,7 @@ public class IdiomGameService {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
                     log.info(partialWord);
-                    GameResponseDto gameResponseDto = new GameResponseDto(partialWord);
+                    GameResponseDto gameResponseDto = new GameResponseDto(null, null, partialWord, null, null);
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
             }
@@ -79,7 +79,7 @@ public class IdiomGameService {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
                     log.info(fullWord);
-                    GameResponseDto gameResponseDto = new GameResponseDto(fullWord);
+                    GameResponseDto gameResponseDto = new GameResponseDto(null, null, fullWord, null, null);
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
             }
@@ -93,6 +93,7 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     stopGame();
+                    log.info("게임 끝!");
                 }
             }
         };
