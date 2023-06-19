@@ -35,6 +35,18 @@ public class IdiomGameService {
         this.idioms = loadIdiomsFromFile();
     }
 
+//    public void startGame(Map<Long, WebSocketSession> gamePlayers) {
+//        if (!gameRunning) {
+//            gameRunning = true;
+//            gameTimer = new Timer();
+//
+//            schedulePartialWord(gamePlayers);
+//            scheduleFullWordReveal(gamePlayers);
+////            stopGame(gamePlayers);
+//            scheduleNextGame(gamePlayers);
+//        }
+//    }
+
     public void startGame(Map<Long, WebSocketSession> gamePlayers) {
         if (!gameRunning) {
             gameRunning = true;
@@ -64,7 +76,7 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                    String partialWord = generatePartialWord(currentIdiom);
+                    String partialWord = generatePartialWord();
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", partialWord, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
@@ -89,7 +101,7 @@ public class IdiomGameService {
                 }
             }
         };
-        gameTimer.schedule(task, INITIAL_DELAY_MS + 3000);
+        gameTimer.schedule(task, INITIAL_DELAY_MS);
     }
 
     public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
@@ -104,18 +116,31 @@ public class IdiomGameService {
         gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
     }
 
-    public String generatePartialWord(String idiom) {
-        if (idiom != null && idiom.length() >= 2) {
-            return idiom.substring(0, 2);
+//    public String generatePartialWord() {
+//        if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
+//            return getRandomIdiom().substring(0, 2);
+//        }
+//        return getRandomIdiom();
+//    }
+
+    public String generatePartialWord() {
+        if (currentIdiom != null && currentIdiom.length() >= 2) {
+            return currentIdiom.substring(0, 2);
         }
-        return idiom;
+        return currentIdiom;
     }
+
+//    public String getRandomIdiom() {
+//        Random random = new Random();
+//        int randomIndex = random.nextInt(idioms.size());
+//        currentIdiom = idioms.get(randomIndex);
+//        return currentIdiom;
+//    }
 
     public String getRandomIdiom() {
         Random random = new Random();
         int randomIndex = random.nextInt(idioms.size());
-        currentIdiom = idioms.get(randomIndex);
-        return currentIdiom;
+        return idioms.get(randomIndex);
     }
 
     public List<String> loadIdiomsFromFile() {
