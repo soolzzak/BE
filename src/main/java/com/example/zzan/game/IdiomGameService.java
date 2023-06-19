@@ -62,6 +62,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
+                    log.info(partialWord);
                     GameResponseDto gameResponseDto = new GameResponseDto(partialWord);
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -77,6 +78,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
+                    log.info(fullWord);
                     GameResponseDto gameResponseDto = new GameResponseDto(fullWord);
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
