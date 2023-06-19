@@ -4,6 +4,7 @@ import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.webRtc.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,7 @@ public class IdiomGameService {
     private boolean gameRunning;
     private Timer gameTimer;
     private String currentIdiom;
+    @Lazy
     private final SignalHandler signalHandler;
 
 //    public IdiomGameService() {
