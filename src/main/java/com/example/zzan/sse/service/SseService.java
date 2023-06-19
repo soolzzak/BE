@@ -18,7 +18,7 @@ public class SseService {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public void notifyFollowers(Room room, String username) {
-        String message = room.getUsername() + "님이 방을 만드셨습니다.";
+        String message = room.getHostUser().getUsername() + "님이 방을 만드셨습니다.";
         this.followService.getFollowers(username).forEach(followerUsername -> {
             SseEmitter emitter = emitters.get(followerUsername);
             if (emitter != null) {
