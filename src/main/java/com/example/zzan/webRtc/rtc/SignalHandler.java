@@ -298,6 +298,10 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
 
+                    WebSocketSession hostPlayerSession = gamePlayers.get(userId);
+                    idiomGameService.startGame(hostPlayerSession);
+                    logger.info("게임 시작!");
+
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         logger.info("게임 시작 전");
 //                        if (!client.getKey().equals(userId)) {
@@ -310,9 +314,6 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null));
 //                        }
                     }
-                    WebSocketSession hostPlayerSession = gamePlayers.get(userId);
-                    idiomGameService.startGame(hostPlayerSession);
-                    logger.info("게임 시작!");
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:
