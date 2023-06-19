@@ -66,7 +66,6 @@ public class MessageCheckService {
                 () -> new ApiException(MESSAGE_NOT_FOUND)
         );
 
-        log.info("dsf",findMessage.getReceiveUser());
         if (user.getId().equals(findMessage.getReceiveUser().getId())) {
             findMessage.markRead();
             return ResponseDto.setSuccess("Successfully read message.", findMessage);

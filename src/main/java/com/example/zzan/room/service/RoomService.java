@@ -213,7 +213,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-        room.setRoomCapacity(room.getRoomCapacity() + 1);
+        // room.setRoomCapacity(room.getRoomCapacity() + 1);
         roomRepository.save(room);
         if (room.getTitle() != null) {
             user.setRoomTitle(room.getTitle());
