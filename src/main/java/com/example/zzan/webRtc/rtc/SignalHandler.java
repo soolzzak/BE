@@ -360,6 +360,4 @@ public class SignalHandler extends TextWebSocketHandler {
             logger.info("An error occured: {}", e.getMessage());
         }
     }
-
-
 }
