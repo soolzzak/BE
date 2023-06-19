@@ -12,13 +12,32 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Slf4j
 @Service
 public class SseService {
-    private  FollowService followService;
+    private FollowService followService;
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
+    @Autowired
+    public SseService(FollowService followService) {
+        this.followService = followService;
+    }
+
     public void notifyFollowers(Room room, String username) {
+        if (followService == null) {
+            log.error("FollowService is null. Make sure it is properly initialized and injected.");
+            return;
+        }
+
         String message = room.getHostUser().getUsername() + "님이 방을 만드셨습니다.";
         log.info(message + " - Sending SSE notification to followers.");
 
