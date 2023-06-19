@@ -43,9 +43,12 @@ public class SseService {
 
         this.followService.getFollowers(username).forEach(followerUsername -> {
             SseEmitter emitter = emitters.get(followerUsername);
+            log.info(followerUsername + "check if this is coming in please!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
             if (emitter != null) {
                 try {
                     emitter.send(SseEmitter.event().name("roomCreated").data(message));
+                    log.info("roomCreated" + message + "메세지가 보내지나!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 } catch (IOException e) {
                     log.error("Error sending SSE event to follower: {}", followerUsername, e);
                     emitter.completeWithError(e);
