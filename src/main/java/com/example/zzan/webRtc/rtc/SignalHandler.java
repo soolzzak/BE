@@ -298,20 +298,17 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
 
-                    String gameStartMessage = "게임 시작!";
-                    String idiom = idiomGameService.getCurrentIdiom();
-
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         gameSendMessage(client.getValue(),
                                 new GameResponseDto(
                                         userId,
                                         message.getType(),
-                                        gameStartMessage,
-                                        idiom,
+                                        "게임 시작!",
+                                        null,
                                         null));
                     }
-                    WebSocketSession hostPlayerSession = gamePlayers.get(userId);
-                    idiomGameService.startGame(hostPlayerSession);
+                    idiomGameService.startGame(gamePlayers);
+
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:

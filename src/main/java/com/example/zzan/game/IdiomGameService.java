@@ -36,32 +36,33 @@ public class IdiomGameService {
         this.idioms = loadIdiomsFromFile();
     }
 
-    public void startGame(WebSocketSession session) {
+    public void startGame(Map<Long, WebSocketSession> gamePlayers) {
         if (!gameRunning) {
             gameRunning = true;
 //            gameTimer = new Timer();
 
-            schedulePartialWord(session);
-            scheduleFullWordReveal(session);
-            stopGame(session);
+            schedulePartialWord(gamePlayers);
+            scheduleFullWordReveal(gamePlayers);
+            stopGame(gamePlayers);
 //            scheduleNextGame(session);
         }
     }
 
-    public void stopGame(WebSocketSession session) {
+    public void stopGame(Map<Long, WebSocketSession> gamePlayers) {
         if (gameRunning) {
             gameRunning = false;
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "게임 끝!", null, null);
-            signalHandler.gameSendMessage(session, gameResponseDto);
-//            if (gameTimer != null) {
-//                gameTimer.cancel();
-//                gameTimer = null;
-//            }
+//            signalHandler.gameSendMessage(session, gameResponseDto);
+
+            for (WebSocketSession session : gamePlayers.values()) {
+                signalHandler.gameSendMessage(session, gameResponseDto);
+            }
+
         }
     }
 
-    public void schedulePartialWord(WebSocketSession session) {
+    public void schedulePartialWord(Map<Long, WebSocketSession> gamePlayers) {
 //        TimerTask task = new TimerTask() {
 //            @Override
 //            public void run() {
@@ -69,14 +70,16 @@ public class IdiomGameService {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", partialWord, null, null);
-                    signalHandler.gameSendMessage(session, gameResponseDto);
+                    for (WebSocketSession session : gamePlayers.values()) {
+                        signalHandler.gameSendMessage(session, gameResponseDto);
+                    }
                 }
 //            }
 //        };
 //        gameTimer.schedule(task, INITIAL_DELAY_MS);
     }
 
-    public void scheduleFullWordReveal(WebSocketSession session) {
+    public void scheduleFullWordReveal(Map<Long, WebSocketSession> gamePlayers) {
 //        TimerTask task = new TimerTask() {
 //            @Override
 //            public void run() {
@@ -84,7 +87,9 @@ public class IdiomGameService {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", fullWord, null, null);
-                    signalHandler.gameSendMessage(session, gameResponseDto);
+                    for (WebSocketSession session : gamePlayers.values()) {
+                        signalHandler.gameSendMessage(session, gameResponseDto);
+                    }
                 }
 //            }
 //        };
