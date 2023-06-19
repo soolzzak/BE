@@ -22,17 +22,18 @@ public class SseService {
 
     public void notifyFollowers(Room room, String username) {
         List<User> followers = followService.getFollowers(username);
-        log.info(username + " 무엇일까요??????????????????????????????????????????????????");
 
         for (User follower : followers) {
             SseEmitter emitter = emitters.get(follower.getUsername());
-            log.info(emitter +"   emitter 가 찍히는지 보고싶구나ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ");
+            if (emitter == null) {
+                emitter = new SseEmitter();
+                emitters.put(follower.getUsername(), emitter);
+            }
             if (emitter != null) {
                 try {
-                    String message = room.getHostUser().getUsername() + "님이 방을 만드셨습니다.";
-                    log.info(message + " message가 보여지는 구간ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ");
+                    String message = room.getHostUser().getUsername() + "님이" + room.getId() + "번방을 만드셨습니다.";
+                    log.info(message);
                     emitter.send(SseEmitter.event().name("roomCreated").data(message));
-                    log.info("마지막으로" + emitter + "emiter가 보여지는 구간ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ");
                 } catch (IOException e) {
                     emitter.completeWithError(e);
                 }
@@ -42,11 +43,9 @@ public class SseService {
 
     public void registerEmitter(String username, SseEmitter emitter) {
         emitters.put(username, emitter);
-        log.info("SSE emitter registered for user: {}", username);
     }
 
     public void removeEmitter(String username) {
         emitters.remove(username);
-        log.info("SSE emitter removed for user: {}", username);
     }
 }
