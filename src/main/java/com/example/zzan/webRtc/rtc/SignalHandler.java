@@ -3,6 +3,7 @@ package com.example.zzan.webRtc.rtc;
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
 import com.example.zzan.game.IdiomGameService;
+import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
@@ -37,6 +38,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final RoomService roomService;
+    private final IdiomGameService idiomGameService;
 
     private final UserRepository userRepository;
 
@@ -274,8 +276,18 @@ public class SignalHandler extends TextWebSocketHandler {
                     break;
 
                 case MSG_TYPE_GAME:
-                    IdiomGameService gameService = new IdiomGameService();
-                    gameService.startGame();
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
+                        if (client.getKey().equals(userId)) {
+                            gameSendMessage(client.getValue(),
+                                    new GameResponseDto(
+                                            "게임 시작!"
+                                            ));
+                            idiomGameService.startGame(client.getValue());
+                        }
+                    }
                     break;
 
                 default:
@@ -289,6 +301,15 @@ public class SignalHandler extends TextWebSocketHandler {
     private void sendMessage(WebSocketSession session, WebSocketMessage message) {
         try {
             String json = objectMapper.writeValueAsString(message);
+            session.sendMessage(new TextMessage(json));
+        } catch (IOException e) {
+            logger.info("An error occured: {}", e.getMessage());
+        }
+    }
+
+    public void gameSendMessage(WebSocketSession session, GameResponseDto gameResponseDto) {
+        try {
+            String json = objectMapper.writeValueAsString(gameResponseDto);
             session.sendMessage(new TextMessage(json));
         } catch (IOException e) {
             logger.info("An error occured: {}", e.getMessage());
