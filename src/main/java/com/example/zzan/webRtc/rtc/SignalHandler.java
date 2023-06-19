@@ -14,6 +14,7 @@ import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.webRtc.dto.SessionListMap;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
+import com.example.zzan.webRtc.dto.YoutubeMessageDto;
 import com.example.zzan.webRtc.service.RtcChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,10 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_START = "startShare";
     private static final String MSG_TYPE_STOP = "stopShare";
     private static final String MSG_TYPE_GAME = "game";
+    private static final String MSG_TYPE_YOUTUBE = "youtube";
+    private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
+    private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -203,7 +208,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_STARTYOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -292,6 +297,25 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
+                case MSG_TYPE_YOUTUBE:
+
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> youtubeViewers = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : youtubeViewers.entrySet()) {
+                        if (!client.getKey().equals(userId)) {
+                            sendMessageToYoutube(client.getValue(),
+                                new YoutubeMessageDto(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    null,
+                                    null));
+                        }
+                    }
+                    break;
+
+
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
             }
@@ -317,4 +341,15 @@ public class SignalHandler extends TextWebSocketHandler {
             logger.info("An error occured: {}", e.getMessage());
         }
     }
+
+    private void sendMessageToYoutube(WebSocketSession session, YoutubeMessageDto youtubeMessageDto) {
+        try {
+            String json = objectMapper.writeValueAsString(youtubeMessageDto);
+            session.sendMessage(new TextMessage(json));
+        } catch (IOException e) {
+            logger.info("An error occured: {}", e.getMessage());
+        }
+    }
+
+
 }
