@@ -42,8 +42,8 @@ public class SseService {
         log.info(message + " - Sending SSE notification to followers.");
 
         this.followService.getFollowers(username).forEach(followerUsername -> {
-            SseEmitter emitter = emitters.get(followerUsername);
-            log.info(followerUsername + "check if this is coming in please!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            SseEmitter emitter = emitters.get(followerUsername.getUsername());
+            log.info(followerUsername.getUsername() + "check if this is coming in please!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             if (emitter != null) {
                 try {
