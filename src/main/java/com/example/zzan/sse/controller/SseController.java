@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -16,8 +17,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseController {
     private final SseService sseService;
 
-    @GetMapping("/events/{username}")
-    public SseEmitter handleSse(@PathVariable String username, HttpServletRequest request) {
+    @GetMapping(value = "/events/{username}", consumes = MediaType.ALL_VALUE)
+    public SseEmitter subscribe(@PathVariable String username, HttpServletRequest request) {
         String accessToken = getAccessTokenFromCookie(request);
         return this.sseService.register(username);
     }
