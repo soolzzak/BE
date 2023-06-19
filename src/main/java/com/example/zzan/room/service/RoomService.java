@@ -83,6 +83,7 @@ public class RoomService {
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
+        sseService.notifyFollowers(room, user.getUsername());
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
 
