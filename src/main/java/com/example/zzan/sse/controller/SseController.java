@@ -26,7 +26,7 @@ public class SseController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("access_token")) {
+                if (cookie.getName().equals("accessKey")) {
                     return cookie.getValue();
                 }
             }
