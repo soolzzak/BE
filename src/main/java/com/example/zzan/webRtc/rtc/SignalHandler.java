@@ -1,5 +1,7 @@
 package com.example.zzan.webRtc.rtc;
 
+import static com.example.zzan.global.exception.ExceptionEnum.*;
+
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
@@ -23,9 +25,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
-
-import static com.example.zzan.global.exception.ExceptionEnum.ONLY_HOST_CAN_KICK;
-import static com.example.zzan.global.exception.ExceptionEnum.ROOM_NOT_FOUND;
 
 @Component
 @RequiredArgsConstructor
@@ -84,6 +83,9 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         Long sessionUserId = sessions.get(session);
+        
+
+
         sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null, null, null));
     }
 
@@ -134,23 +136,31 @@ public class SignalHandler extends TextWebSocketHandler {
                     logger.info("[ws] {} has joined Room: #{}", userId, message.getData());
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
+                    Room existingRoom = roomRepository.findById(room.getRoomId())
+                        .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-                    rtcChatService.addUser(room, userId, session);
+                    if (existingRoom.getRoomCapacity() < 2) {
+                        rtcChatService.addUser(room, userId, session);
+                        existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
+                        rooms.put(roomId, room);
 
-                    rooms.put(roomId, room);
-
-                    Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-                    for (Map.Entry<Long, WebSocketSession> client : joinClients.entrySet()) {
-                        if (client.getKey().equals(userId)) {
-                            sendMessage(client.getValue(),
+                        Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+                        for (Map.Entry<Long, WebSocketSession> client : joinClients.entrySet()) {
+                            if (client.getKey().equals(userId)) {
+                                sendMessage(client.getValue(),
                                     new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            null,
-                                            null));
+                                        userId,
+                                        message.getType(),
+                                        roomId,
+                                        null,
+                                        null));
+                            }
                         }
+
+                    }else {
+                        throw new ApiException(ROOM_ALREADY_FULL);
                     }
+
                     break;
 
                 case MSG_TYPE_LEAVE:
@@ -170,7 +180,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -242,36 +252,6 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_START:
-                    room = rooms.get(message.getData());
-
-                    Map<Long, WebSocketSession> clientsToStart = rtcChatService.getUser(room);
-                    for (Map.Entry<Long, WebSocketSession> client : clientsToStart.entrySet()) {
-                        if (!client.getKey().equals(userId)) {
-                            sendMessage(client.getValue(),
-                                    new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            null,
-                                            null));
-                        }
-                    }
-                case MSG_TYPE_STOP:
-                    room = rooms.get(message.getData());
-
-                    Map<Long, WebSocketSession> clientsToStop = rtcChatService.getUser(room);
-                    for (Map.Entry<Long, WebSocketSession> client : clientsToStop.entrySet()) {
-                        if (!client.getKey().equals(userId)) {
-                            sendMessage(client.getValue(),
-                                    new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            null,
-                                            null));
-                        }
-                    }
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
             }
