@@ -8,9 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
-	Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
+    Page<Room> findAllByTitleContainingAndRoomDeleteIsFalse(String title, Pageable pageable);
 	Page<Room> findAllByRoomDeleteIsFalse(Pageable pageable);
     Page<Room> findByCategoryAndGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(Category category, Pageable pageable, GenderSetting genderSetting, int i);
 	Page<Room> findByCategoryAndGenderSettingAndRoomDeleteIsFalse(Category category, Pageable pageable, GenderSetting genderSetting);
