@@ -308,8 +308,10 @@ public class SignalHandler extends TextWebSocketHandler {
                                             "게임 시작!",
                                             null,
                                             null));
-                            idiomGameService.startGame(client.getValue());
-                            logger.info("게임 시작!");
+                            if (client.getKey().equals(userId)) {
+                                idiomGameService.startGame(client.getValue());
+                                logger.info("게임 시작!");
+                            }
 //                        }
                     }
                     break;
