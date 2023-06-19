@@ -208,7 +208,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_STARTYOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -297,7 +297,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_YOUTUBE:
+                case MSG_TYPE_STARTYOUTUBE:
 
                     room = rooms.get(message.getData());
 
