@@ -1,6 +1,7 @@
 package com.example.zzan.sse.service;
 
 import com.example.zzan.follow.service.FollowService;
+import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -13,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseService {
     private final FollowService followService;
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<User, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter register(String username) {
+    public SseEmitter register(User username) {
         SseEmitter emitter = new SseEmitter();
 
         emitter.onCompletion(() -> {
