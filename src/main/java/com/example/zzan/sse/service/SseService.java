@@ -31,7 +31,7 @@ public class SseService {
             }
             if (emitter != null) {
                 try {
-                    String message = room.getHostUser().getUsername() + "님이 방을 만드셨습니다.";
+                    String message = room.getHostUser().getUsername() + "님이" + room.getId() + "방을 만드셨습니다.";
                     emitter.send(SseEmitter.event().name("roomCreated").data(message));
                 } catch (IOException e) {
                     emitter.completeWithError(e);
