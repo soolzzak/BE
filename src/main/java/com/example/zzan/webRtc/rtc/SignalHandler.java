@@ -14,7 +14,6 @@ import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.webRtc.dto.SessionListMap;
 import com.example.zzan.webRtc.dto.UserListMap;
 import com.example.zzan.webRtc.dto.WebSocketMessage;
-import com.example.zzan.webRtc.dto.YoutubeMessageDto;
 import com.example.zzan.webRtc.service.RtcChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +63,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
 
+    private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -108,7 +109,7 @@ public class SignalHandler extends TextWebSocketHandler {
         //         // WebSocketSession guestSession = joinClients.get();
         //     }
 
-        sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null,0, null, null));
+        sendMessage(session, new WebSocketMessage(sessionUserId,MSG_TYPE_INFO, null,0,null, null, null));
     }
 
     @Override
@@ -119,6 +120,7 @@ public class SignalHandler extends TextWebSocketHandler {
             Long userId = message.getFrom();
             Long roomId = message.getData();
             Double time = message.getTime();
+            String youtubeUrl = message.getYoutubeUrl();
 
             logger.info("Message {}", message.toString());
 
@@ -149,6 +151,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 message.getType(),
                                                 roomId,
                                             0,
+                                            null,
                                                 candidate,
                                                 sdp));
                             }
@@ -178,6 +181,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                         message.getType(),
                                         roomId,
                                         0,
+                                        null,
                                         null,
                                         null));
                             }
@@ -211,7 +215,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_YOUTUBE,MSG_TYPE_PAUSEYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP,MSG_TYPE_PAUSEYOUTUBE,MSG_TYPE_STOPYOUTUBE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -224,10 +228,12 @@ public class SignalHandler extends TextWebSocketHandler {
                                             roomId,
                                             0,
                                             null,
+                                            null,
                                             null));
                         }
                     }
                     break;
+
 
                 case MSG_TYPE_PING :
                     room = rooms.get(message.getData());
@@ -241,6 +247,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                     message.getType(),
                                      roomId,
                                     0,
+                                    null,
                                     null,
                                     null));
                     break;
@@ -263,6 +270,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 message.getType(),
                                                 roomId,
                                                 0,
+                                                null,
                                                 null,
                                                 null));
                                         roomService.leaveRoom(roomId, guestUser);
@@ -320,6 +328,26 @@ public class SignalHandler extends TextWebSocketHandler {
                                     roomId,
                                     time,
                                     null,
+                                    null,
+                                    null));
+                        }
+                    }
+                    break;
+
+                case MSG_TYPE_YOUTUBE:
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> usersWatchingYoutube = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : usersWatchingYoutube.entrySet()) {
+                        if (!client.getKey().equals(userId)) {
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    youtubeUrl,
+                                    null,
                                     null));
 //                        }
                     }
@@ -352,12 +380,5 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-    private void sendMessageToYoutube(WebSocketSession session, YoutubeMessageDto youtubeMessageDto) {
-        try {
-            String json = objectMapper.writeValueAsString(youtubeMessageDto);
-            session.sendMessage(new TextMessage(json));
-        } catch (IOException e) {
-            logger.info("An error occured: {}", e.getMessage());
-        }
-    }
+
 }
