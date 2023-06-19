@@ -27,6 +27,7 @@ public class SseService {
             if (emitter != null) {
                 try {
                     emitter.send(SseEmitter.event().name("roomCreated").data(message));
+                    log.info(message + "최종으로 제발 들어와라!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 } catch (IOException e) {
                     emitter.completeWithError(e);
                 }
