@@ -1,16 +1,20 @@
 package com.example.zzan.game.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+
 @NoArgsConstructor
+@Data
+@AllArgsConstructor
 public class GameResponseDto {
+    private Long from;
+    private String type;
     private String idiom;
+    private Object candidate;
+    private Object sdp;
 
-    public GameResponseDto(String idiom){
-        this.idiom = idiom;
-    }
+
+//    public GameResponseDto(String idiom){
+//        this.idiom = idiom;
+//    }
 }
