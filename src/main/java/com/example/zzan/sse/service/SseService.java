@@ -14,20 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseService {
     private final FollowService followService;
-    private final Map<User, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter register(User username) {
+    public SseEmitter register(Long userId) {
         SseEmitter emitter = new SseEmitter();
 
         emitter.onCompletion(() -> {
-            this.emitters.remove(username);
+            this.emitters.remove(userId);
         });
 
         emitter.onError((e) -> {
-            this.emitters.remove(username);
+            this.emitters.remove(userId);
         });
 
-        this.emitters.put(username, emitter);
+        this.emitters.put(userId, emitter);
 
         return emitter;
     }

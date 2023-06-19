@@ -18,10 +18,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseController {
     private final SseService sseService;
 
-    @GetMapping(value = "/events/{username}", consumes = MediaType.ALL_VALUE)
-    public SseEmitter subscribe(@PathVariable User username, HttpServletRequest request) {
+    @GetMapping(value = "/events/{userId}", consumes = MediaType.ALL_VALUE)
+    public SseEmitter subscribe(@PathVariable Long userId, HttpServletRequest request) {
         String accessToken = getAccessTokenFromCookie(request);
-        return this.sseService.register(username);
+        return this.sseService.register(userId);
     }
 
     private String getAccessTokenFromCookie(HttpServletRequest request) {
