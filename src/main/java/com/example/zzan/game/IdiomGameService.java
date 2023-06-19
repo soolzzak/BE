@@ -2,6 +2,7 @@ package com.example.zzan.game;
 
 import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.webRtc.rtc.SignalHandler;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +18,7 @@ import java.util.*;
 
 @Service
 @Slf4j
+@Getter
 public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
     private static final int INITIAL_DELAY_MS = 1000;       // 2000
@@ -66,10 +68,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
-                    log.info(partialWord);
-                    
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", partialWord, null, null);
-
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
 //            }
@@ -84,7 +83,6 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
-                    log.info(fullWord);
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "game", fullWord, null, null);
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
