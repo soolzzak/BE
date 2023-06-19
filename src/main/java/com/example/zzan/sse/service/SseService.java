@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,9 +32,15 @@ public class SseService {
             }
             if (emitter != null) {
                 try {
-                    String message = room.getHostUser().getUsername() + "님이" + room.getId() + "번방을 만드셨습니다.";
-                    log.info(message);
-                    emitter.send(SseEmitter.event().name("roomCreated").data(message));
+                    String message = room.getHostUser().getUsername();
+                    String roomId = room.getId().toString();
+
+                    Map<String, String> eventData = new HashMap<>();
+                    eventData.put("message", message);
+                    eventData.put("roomId", roomId);
+
+                    emitter.send(SseEmitter.event().name("roomCreated").data(eventData));
+                    log.info(eventData.toString());
                 } catch (IOException e) {
                     emitter.completeWithError(e);
                 }
