@@ -1,8 +1,6 @@
 package com.example.zzan.sse.controller;
 
-import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.sse.service.SseService;
-import com.example.zzan.user.entity.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,39 +19,35 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseController {
     public static Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
-
+    private final SseService sseService;
 
     @CrossOrigin
     @GetMapping(value = "/events/{username}", consumes = MediaType.ALL_VALUE)
     public SseEmitter subscribe(@PathVariable String username, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String accessKey = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("accessKey")) {
+                    accessKey = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
-        String nickname = getAccessTokenFromCookie(request);
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
+        sseService.registerEmitter(username, sseEmitter);
 
-        try{
+        try {
             sseEmitter.send(SseEmitter.event().name("connect"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        sseEmitters.put(username,sseEmitter);
-
-        sseEmitter.onCompletion(()->sseEmitters.remove(nickname));
-        sseEmitter.onTimeout(()->sseEmitters.remove(nickname));
-        sseEmitter.onError((e)-> sseEmitters.remove(nickname));
+        sseEmitter.onCompletion(() -> sseService.removeEmitter(username));
+        sseEmitter.onTimeout(() -> sseService.removeEmitter(username));
+        sseEmitter.onError((e) -> sseService.removeEmitter(username));
 
         return sseEmitter;
-    }
-
-    private String getAccessTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("accessKey")) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
     }
 }
