@@ -42,8 +42,8 @@ public class IdiomGameService {
 
             schedulePartialWord(gamePlayers);
             scheduleFullWordReveal(gamePlayers);
-//            stopGame(gamePlayers);
-            scheduleNextGame(gamePlayers);
+            stopGame(gamePlayers);
+//            scheduleNextGame(gamePlayers);
         }
     }
 
@@ -55,7 +55,6 @@ public class IdiomGameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-
         }
     }
 
@@ -93,17 +92,17 @@ public class IdiomGameService {
         gameTimer.schedule(task, FULL_WORD_DELAY_MS);
     }
 
-    public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                if (gameRunning) {
-                    stopGame(gamePlayers);
-                }
-            }
-        };
-        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
-    }
+//    public void scheduleNextGame(Map<Long, WebSocketSession> gamePlayers) {
+//        TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (gameRunning) {
+//                    stopGame(gamePlayers);
+//                }
+//            }
+//        };
+//        gameTimer.schedule(task, PARTIAL_WORD_DELAY_MS);
+//    }
 
     public String generatePartialWord() {
         if (getRandomIdiom() != null && getRandomIdiom().length() >= 2) {
