@@ -79,9 +79,11 @@ public class RoomService {
 
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
+        sseService.notifyFollowers( room, room.getUsername());
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
+        sseService.notifyFollowers(room, room.getHostUser().getUsername());
         return ResponseDto.setSuccess("방을 생성하였습니다.", new RoomResponseDto(room));
     }
 
