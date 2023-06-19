@@ -360,25 +360,5 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-<<<<<<< HEAD
-    // private void sendMessageToYoutube(WebSocketSession session, YoutubeMessageDto youtubeMessageDto) {
-    //     try {
-    //         String json = objectMapper.writeValueAsString(youtubeMessageDto);
-    //         session.sendMessage(new TextMessage(json));
-    //     } catch (IOException e) {
-    //         logger.info("An error occured: {}", e.getMessage());
-    //     }
-    // }
 
-
-=======
-    private void sendMessageToYoutube(WebSocketSession session, YoutubeMessageDto youtubeMessageDto) {
-        try {
-            String json = objectMapper.writeValueAsString(youtubeMessageDto);
-            session.sendMessage(new TextMessage(json));
-        } catch (IOException e) {
-            logger.info("An error occured: {}", e.getMessage());
-        }
-    }
->>>>>>> 3a5f977d33d22974f0de84c4455f0cfe11545033
 }
