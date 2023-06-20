@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository <Messages, Long> {
-    List<Messages> findAllByReceiveUser(User receiveUser);
-    List<Messages> findAllBySendUser(User sendUser);
+    List<Messages> findAllBySendUserOrderByCreatedAtDesc (User user);
+    List<Messages> findAllByReceiveUserOrderByCreatedAtDesc(User user);
 }
