@@ -40,15 +40,14 @@ public class IdiomGameService {
         if (!gameRunning) {
             gameRunning = true;
             gamePaused = false;
-            currentIdiom = getRandomIdiom();
-
-            int num = 50;
 
             TimerTask gameTask = new TimerTask() {
                 int count = 1;
 
                 @Override
                 public void run() {
+                    currentIdiom = getRandomIdiom();
+
                     countNumber6(gamePlayers);
                     countNumber5(gamePlayers);
                     countNumber4(gamePlayers);
@@ -61,7 +60,7 @@ public class IdiomGameService {
 
                     count++;
 
-                    if (count >= num) {
+                    if (count >= 50) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
@@ -77,10 +76,10 @@ public class IdiomGameService {
             gameRunning = true;
             gamePaused = false;
 
-            int num = 50 - idioms.size();
+            int num = gameTimer.purge();
 
             TimerTask gameTask = new TimerTask() {
-                int count = 1;
+                int count = num;
 
                 @Override
                 public void run() {
@@ -96,7 +95,7 @@ public class IdiomGameService {
 
                     count++;
 
-                    if (count >= num) {
+                    if (count >= 50) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
