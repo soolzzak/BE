@@ -29,7 +29,6 @@ public class IdiomGameService {
     private boolean gamePaused;
     private Timer gameTimer;
     private String currentIdiom;
-    private List<String> filteredIdioms;
     private final ApplicationContext context;
 
     public IdiomGameService(ApplicationContext context) {
@@ -41,8 +40,7 @@ public class IdiomGameService {
         if (!gameRunning) {
             gameRunning = true;
             gamePaused = false;
-            filteredIdioms = new ArrayList<>(idioms);
-            currentIdiom = getRandomIdiom(new HashSet<>());
+            currentIdiom = getRandomIdiom();
 
             int num = 50;
 
@@ -57,10 +55,8 @@ public class IdiomGameService {
                 countNumber2(gamePlayers);
                 countNumber1(gamePlayers);
                 scheduleFullWordReveal(gamePlayers);
-
-                scheduleNextGame(gamePlayers);
             }
-            stopGame(gamePlayers);
+            scheduleNextGame(gamePlayers);
         }
     }
 
@@ -69,10 +65,7 @@ public class IdiomGameService {
             gameRunning = true;
             gamePaused = false;
 
-            Set<String> precedingWords = new HashSet<>();
-            precedingWords.add(currentIdiom);
-
-            int num = 50 - precedingWords.size();
+            int num = 50 - idioms.size();
 
             for (int i = 0; i < num; i++) {
                 gameTimer = new Timer();
@@ -85,10 +78,8 @@ public class IdiomGameService {
                 countNumber2(gamePlayers);
                 countNumber1(gamePlayers);
                 scheduleFullWordReveal(gamePlayers);
-
-                scheduleNextGame(gamePlayers);
             }
-            stopGame(gamePlayers);
+            scheduleNextGame(gamePlayers);
         }
     }
 
@@ -100,7 +91,7 @@ public class IdiomGameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-            filteredIdioms.clear();
+            idioms.clear();
         }
     }
 
@@ -162,10 +153,8 @@ public class IdiomGameService {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "다음 문제", null, null);
-                for (WebSocketSession session : gamePlayers.values()) {
-                    signalHandler.gameSendMessage(session, gameResponseDto);
+                if (gameRunning) {
+                    stopGame(gamePlayers);
                 }
             }
         };
@@ -179,32 +168,10 @@ public class IdiomGameService {
         return currentIdiom;
     }
 
-    public String getRandomIdiom(Set<String> precedingWords) {
+    public String getRandomIdiom() {
         Random random = new Random();
-        List<String> filteredIdioms = new ArrayList<>();
-
-        for (String idiom : idioms) {
-            boolean isPrecedingWord = false;
-            for (String precedingWord : precedingWords) {
-                if (idiom.startsWith(precedingWord)) {
-                    isPrecedingWord = true;
-                    break;
-                }
-            }
-            if (!isPrecedingWord) {
-                filteredIdioms.add(idiom);
-            }
-        }
-
-        if (filteredIdioms.isEmpty()) {
-            List<String> originalIdioms = new ArrayList<>(idioms);
-            originalIdioms.removeAll(filteredIdioms);
-            int randomIndex = random.nextInt(originalIdioms.size());
-            return originalIdioms.get(randomIndex);
-        }
-
-        int randomIndex = random.nextInt(filteredIdioms.size());
-        return filteredIdioms.get(randomIndex);
+        int randomIndex = random.nextInt(idioms.size());
+        return idioms.get(randomIndex);
     }
 
     public List<String> loadIdiomsFromFile() {
