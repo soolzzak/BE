@@ -71,7 +71,7 @@ public class IdiomGameService {
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
+            gameTimer.schedule(gameTask, 0, FULL_WORD_DELAY_MS);
         }
     }
 
@@ -108,7 +108,7 @@ public class IdiomGameService {
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
+            gameTimer.schedule(gameTask, 0, FULL_WORD_DELAY_MS);
         }
     }
 
