@@ -52,13 +52,15 @@ public class IdiomGameService {
                 public void run() {
                     currentIdiom = getRandomIdiom();
 
-                    countNumber6(gamePlayers);
-                    countNumber5(gamePlayers);
-                    countNumber4(gamePlayers);
+                    countNumberThree(gamePlayers);
+                    countNumberTwo(gamePlayers);
+                    countNumberOne(gamePlayers);
+
                     schedulePartialWord(gamePlayers);
 
-                    countNumber2(gamePlayers);
-                    countNumber1(gamePlayers);
+                    countNumberTwoWithWord(gamePlayers);
+                    countNumberOneWithWord(gamePlayers);
+
                     scheduleFullWordReveal(gamePlayers);
 
                     count++;
@@ -88,13 +90,15 @@ public class IdiomGameService {
                 public void run() {
                     currentIdiom = getRandomIdiom();
 
-                    countNumber6(gamePlayers);
-                    countNumber5(gamePlayers);
-                    countNumber4(gamePlayers);
+                    countNumberThree(gamePlayers);
+                    countNumberTwo(gamePlayers);
+                    countNumberOne(gamePlayers);
+
                     schedulePartialWord(gamePlayers);
 
-                    countNumber2(gamePlayers);
-                    countNumber1(gamePlayers);
+                    countNumberTwoWithWord(gamePlayers);
+                    countNumberOneWithWord(gamePlayers);
+
                     scheduleFullWordReveal(gamePlayers);
 
                     count++;
@@ -234,7 +238,7 @@ public class IdiomGameService {
         return idioms;
     }
 
-    public void countNumber6(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumberThree(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -248,7 +252,7 @@ public class IdiomGameService {
         gameTimer.schedule(task, 1000);
     }
 
-    public void countNumber5(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumberTwo(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -262,7 +266,7 @@ public class IdiomGameService {
         gameTimer.schedule(task, 2000);
     }
 
-    public void countNumber4(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumberOne(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -276,21 +280,7 @@ public class IdiomGameService {
         gameTimer.schedule(task, 3000);
     }
 
-//    public void countNumber3(Map<Long, WebSocketSession> gamePlayers) {
-//        TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                SignalHandler signalHandler = context.getBean(SignalHandler.class);
-//                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 3, null, null);
-//                for (WebSocketSession session : gamePlayers.values()) {
-//                    signalHandler.gameSendMessage(session, gameResponseDto);
-//                }
-//            }
-//        };
-//        gameTimer.schedule(task, 5000);
-//    }
-
-    public void countNumber2(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumberTwoWithWord(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -305,7 +295,7 @@ public class IdiomGameService {
         gameTimer.schedule(task, 5000);
     }
 
-    public void countNumber1(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumberOneWithWord(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
