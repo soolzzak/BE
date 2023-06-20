@@ -44,19 +44,30 @@ public class IdiomGameService {
 
             int num = 50;
 
-            for (int i = 0; i < num; i++) {
-                gameTimer = new Timer();
-                countNumber6(gamePlayers);
-                countNumber5(gamePlayers);
-                countNumber4(gamePlayers);
-                schedulePartialWord(gamePlayers);
+            TimerTask gameTask = new TimerTask() {
+                int count = 1;
 
-                countNumber3(gamePlayers);
-                countNumber2(gamePlayers);
-                countNumber1(gamePlayers);
-                scheduleFullWordReveal(gamePlayers);
-            }
-            scheduleNextGame(gamePlayers);
+                @Override
+                public void run() {
+                    countNumber6(gamePlayers);
+                    countNumber5(gamePlayers);
+                    countNumber4(gamePlayers);
+                    schedulePartialWord(gamePlayers);
+
+                    countNumber3(gamePlayers);
+                    countNumber2(gamePlayers);
+                    countNumber1(gamePlayers);
+                    scheduleFullWordReveal(gamePlayers);
+
+                    count++;
+
+                    if (count >= num) {
+                        scheduleNextGame(gamePlayers);
+                    }
+                }
+            };
+            gameTimer = new Timer();
+            gameTimer.schedule(gameTask, 1000);
         }
     }
 
@@ -67,19 +78,30 @@ public class IdiomGameService {
 
             int num = 50 - idioms.size();
 
-            for (int i = 0; i < num; i++) {
-                gameTimer = new Timer();
-                countNumber6(gamePlayers);
-                countNumber5(gamePlayers);
-                countNumber4(gamePlayers);
-                schedulePartialWord(gamePlayers);
+            TimerTask gameTask = new TimerTask() {
+                int count = 1;
 
-                countNumber3(gamePlayers);
-                countNumber2(gamePlayers);
-                countNumber1(gamePlayers);
-                scheduleFullWordReveal(gamePlayers);
-            }
-            scheduleNextGame(gamePlayers);
+                @Override
+                public void run() {
+                    countNumber6(gamePlayers);
+                    countNumber5(gamePlayers);
+                    countNumber4(gamePlayers);
+                    schedulePartialWord(gamePlayers);
+
+                    countNumber3(gamePlayers);
+                    countNumber2(gamePlayers);
+                    countNumber1(gamePlayers);
+                    scheduleFullWordReveal(gamePlayers);
+
+                    count++;
+
+                    if (count >= num) {
+                        scheduleNextGame(gamePlayers);
+                    }
+                }
+            };
+            gameTimer = new Timer();
+            gameTimer.schedule(gameTask, 1000);
         }
     }
 
