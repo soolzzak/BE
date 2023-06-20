@@ -11,6 +11,7 @@ public enum ExceptionEnum {
     INVALID_GENDER(HttpStatus.BAD_REQUEST.value(), "Please specify your gender."),
     NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(),"The username contains forbidden words. Please choose a different username."),
     NOT_ALLOWED_ROOMTITLE(HttpStatus.BAD_REQUEST.value(), "The room title contains forbidden words. Please use different room title."),
+    NOT_ALLOWED_INTRODUCTION(HttpStatus.BAD_REQUEST.value(), "The introduction contains forbidden words, Please rewrite introduction"),
     REQUIRE_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Please set password to create a private room."),
     INVALID_LOGIN(HttpStatus.BAD_REQUEST.value(), "The username or password is incorrect."),
     INVALID_ADMIN_INPUT(HttpStatus.BAD_REQUEST.value(), "Incorrect administrator password input."),

@@ -58,13 +58,13 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_KICK = "kick";
     private static final String MSG_TYPE_START = "startShare";
     private static final String MSG_TYPE_STOP = "stopShare";
-    private static final String MSG_TYPE_STARTGAME = "game";
+    private static final String MSG_TYPE_STARTGAME = "startGame";
+    private static final String MSG_TYPE_PAUSEGAME = "pauseGame";
+    private static final String MSG_TYPE_STOPGAME = "stopGame";
     private static final String MSG_TYPE_YOUTUBE = "youtube";
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
-
     private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
-
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -307,6 +307,20 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null));
                     }
                     idiomGameService.startGame(gamePlayers);
+                    break;
+
+                case MSG_TYPE_PAUSEGAME:
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> gamePlayers2 = rtcChatService.getUser(room);
+                    idiomGameService.pauseGame(gamePlayers2);
+                    break;
+
+                case MSG_TYPE_STOPGAME:
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> gamePlayers3 = rtcChatService.getUser(room);
+                    idiomGameService.finishGame(gamePlayers3);
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:
