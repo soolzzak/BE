@@ -22,8 +22,8 @@ import java.util.*;
 public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
     private static final int INITIAL_DELAY_MS = 4000;
-    private static final int PARTIAL_WORD_DELAY_MS = 8000;
-    private static final int FULL_WORD_DELAY_MS = 9000;
+    private static final int PARTIAL_WORD_DELAY_MS = 7000;
+    private static final int FULL_WORD_DELAY_MS = 8000;
     private final List<String> idioms;
     private boolean gameRunning;
     private boolean gamePaused;
@@ -57,7 +57,6 @@ public class IdiomGameService {
                     countNumber4(gamePlayers);
                     schedulePartialWord(gamePlayers);
 
-                    countNumber3(gamePlayers);
                     countNumber2(gamePlayers);
                     countNumber1(gamePlayers);
                     scheduleFullWordReveal(gamePlayers);
@@ -94,7 +93,6 @@ public class IdiomGameService {
                     countNumber4(gamePlayers);
                     schedulePartialWord(gamePlayers);
 
-                    countNumber3(gamePlayers);
                     countNumber2(gamePlayers);
                     countNumber1(gamePlayers);
                     scheduleFullWordReveal(gamePlayers);
@@ -165,7 +163,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
-                    GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, null, null);
+                    GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, 3, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
                     }
@@ -278,12 +276,27 @@ public class IdiomGameService {
         gameTimer.schedule(task, 3000);
     }
 
-    public void countNumber3(Map<Long, WebSocketSession> gamePlayers) {
+//    public void countNumber3(Map<Long, WebSocketSession> gamePlayers) {
+//        TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                SignalHandler signalHandler = context.getBean(SignalHandler.class);
+//                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 3, null, null);
+//                for (WebSocketSession session : gamePlayers.values()) {
+//                    signalHandler.gameSendMessage(session, gameResponseDto);
+//                }
+//            }
+//        };
+//        gameTimer.schedule(task, 5000);
+//    }
+
+    public void countNumber2(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 3, null, null);
+                String partialWord = generatePartialWord();
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, 2, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -292,31 +305,18 @@ public class IdiomGameService {
         gameTimer.schedule(task, 5000);
     }
 
-    public void countNumber2(Map<Long, WebSocketSession> gamePlayers) {
+    public void countNumber1(Map<Long, WebSocketSession> gamePlayers) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 2, null, null);
+                String partialWord = generatePartialWord();
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, 1, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
             }
         };
         gameTimer.schedule(task, 6000);
-    }
-
-    public void countNumber1(Map<Long, WebSocketSession> gamePlayers) {
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 1, null, null);
-                for (WebSocketSession session : gamePlayers.values()) {
-                    signalHandler.gameSendMessage(session, gameResponseDto);
-                }
-            }
-        };
-        gameTimer.schedule(task, 7000);
     }
 }
