@@ -295,9 +295,8 @@ public class SignalHandler extends TextWebSocketHandler {
 
                 case MSG_TYPE_STARTGAME:
                     room = rooms.get(message.getData());
-
-                    Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
-                    for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
+                    Map<Long, WebSocketSession> startGamePlayers = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : startGamePlayers.entrySet()) {
                         gameSendMessage(client.getValue(),
                                 new GameResponseDto(
                                         userId,
@@ -306,21 +305,19 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null,
                                         null));
                     }
-                    idiomGameService.startGame(gamePlayers);
+                    idiomGameService.startGame(startGamePlayers);
                     break;
 
                 case MSG_TYPE_PAUSEGAME:
                     room = rooms.get(message.getData());
-
-                    Map<Long, WebSocketSession> gamePlayers2 = rtcChatService.getUser(room);
-                    idiomGameService.pauseGame(gamePlayers2);
+                    Map<Long, WebSocketSession> pauseGamePlayers = rtcChatService.getUser(room);
+                    idiomGameService.pauseGame(pauseGamePlayers);
                     break;
 
                 case MSG_TYPE_STOPGAME:
                     room = rooms.get(message.getData());
-
-                    Map<Long, WebSocketSession> gamePlayers3 = rtcChatService.getUser(room);
-                    idiomGameService.finishGame(gamePlayers3);
+                    Map<Long, WebSocketSession> stopGamePlayers = rtcChatService.getUser(room);
+                    idiomGameService.finishGame(stopGamePlayers);
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:
