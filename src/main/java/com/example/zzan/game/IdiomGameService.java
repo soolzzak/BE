@@ -40,11 +40,7 @@ public class IdiomGameService {
         if (!gameRunning) {
             gameRunning = true;
             gamePaused = false;
-
-            if (gameTimer != null) {
-                gameTimer.cancel();
-                gameTimer.purge();
-            }
+            gameTimer = new Timer();
 
             TimerTask gameTask = new TimerTask() {
                 int count = 1;
@@ -71,7 +67,6 @@ public class IdiomGameService {
                     }
                 }
             };
-            gameTimer = new Timer();
             gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
@@ -108,7 +103,6 @@ public class IdiomGameService {
                     }
                 }
             };
-            gameTimer = new Timer();
             gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
@@ -121,7 +115,6 @@ public class IdiomGameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-            idioms.clear();
         }
     }
 
@@ -133,7 +126,6 @@ public class IdiomGameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-            idioms.clear();
         }
     }
 
