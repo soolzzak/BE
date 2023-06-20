@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
@@ -27,7 +29,7 @@ public class MessageCheckService {
     public ResponseDto<List<MessageCheckResponseDto>> checkReceivedMessage(User user) {
         List<MessageCheckResponseDto> messageList = new ArrayList<>();
 
-        List<Messages> list = messageRepository.findAllByReceiveUser(user);
+        List<Messages> list = messageRepository.findAllByReceiveUserOrderByCreatedAtDesc(user);
 
         for (Messages messages : list) {
             MessageCheckResponseDto messageCheckResponseDto = new MessageCheckResponseDto(messages);
@@ -45,7 +47,7 @@ public class MessageCheckService {
     public ResponseDto<List<MessageCheckResponseDto>> checkSentMessage(User user) {
         List<MessageCheckResponseDto> messageList = new ArrayList<>();
 
-        List<Messages> list = messageRepository.findAllBySendUser(user);
+        List<Messages> list = messageRepository.findAllBySendUserOrderByCreatedAtDesc(user);
 
         for (Messages messages : list) {
             MessageCheckResponseDto message = new MessageCheckResponseDto(messages);

@@ -48,6 +48,22 @@ public class SseService {
         }
     }
 
+    public void sendSseMessage(String username, String message) {
+        SseEmitter emitter = emitters.get(username);
+        if (emitter == null) {
+            emitter = new SseEmitter();
+            emitters.put(username,emitter);
+        }
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().data(message));
+                log.info("SSE message sent to user: {}", username);
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }
+    }
+
     public void registerEmitter(String username, SseEmitter emitter) {
         emitters.put(username, emitter);
     }
