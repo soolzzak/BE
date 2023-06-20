@@ -2,9 +2,11 @@ package com.example.zzan.webRtc.rtc;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
-import com.example.zzan.game.IdiomGameService;
+import com.example.zzan.game.service.IdiomGameService;
 import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.global.exception.ApiException;
+import com.example.zzan.icebreaker.dto.IceBreakerDto;
+import com.example.zzan.icebreaker.service.IceBreakerService;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.room.repository.RoomRepository;
@@ -36,14 +38,11 @@ public class SignalHandler extends TextWebSocketHandler {
     private final RoomRepository roomRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final RoomService roomService;
     private final IdiomGameService idiomGameService;
-
+    private final IceBreakerService iceBreakerService;
     private final UserRepository userRepository;
-
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
-
     private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
     private Map<WebSocketSession, Long> sessions2 = SessionListMap.getInstance().getSessionMapToRoom();
 
@@ -65,6 +64,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
     private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
+    private static final String MSG_TYPE_ICEBREAKER = "iceBreaker";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -93,22 +93,6 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         Long sessionUserId = sessions.get(session);
-        // Long sessionRoomId = sessions2.get(session);
-        //
-        // RoomResponseDto room = UserListMap.getInstance().getUserMap().get(sessionRoomId);
-        // Room existingRoom = roomRepository.findById(room.getRoomId())
-        //     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
-        // if (existingRoom.getRoomCapacity() < 3) {
-        //     existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
-        //     roomRepository.saveAndFlush(existingRoom);
-        // } else {
-        //         // throw new ApiException(ROOM_ALREADY_FULL);
-        //
-        //         // Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-        //         session.close();
-        //         // WebSocketSession guestSession = joinClients.get();
-        //     }
-
         sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null, null));
     }
 
@@ -168,7 +152,6 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     if (existingRoom.getRoomCapacity() < 2) {
                         rtcChatService.addUser(room, userId, session);
-                        // existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
 
                         rooms.put(roomId, room);
                         roomRepository.saveAndFlush(existingRoom);
@@ -188,11 +171,8 @@ public class SignalHandler extends TextWebSocketHandler {
                         }
 
                     } else {
-                        // throw new ApiException(ROOM_ALREADY_FULL);
-
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
                         session.close();
-                        // WebSocketSession guestSession = joinClients.get();
                     }
 
                     break;
@@ -232,7 +212,6 @@ public class SignalHandler extends TextWebSocketHandler {
                         }
                     }
                     break;
-
 
                 case MSG_TYPE_PING:
                     room = rooms.get(message.getData());
@@ -275,11 +254,10 @@ public class SignalHandler extends TextWebSocketHandler {
                                         roomService.leaveRoom(roomId, guestUser);
 
                                         WebSocketSession guestSession = Guestclient.getValue();
-                                        if (guestSession.isOpen()) { // 웹소켓 세션이 열려있는지 확인
+                                        if (guestSession.isOpen()) {
                                             try {
                                                 guestSession.close();
                                             } catch (IOException e) {
-                                                // 로그에 오류를 기록하거나 적절한 조치를 취하십시오.
                                                 e.printStackTrace();
                                             }
                                         }

@@ -21,7 +21,6 @@ public class YoutubeController {
 		@RequestParam("page") int page,
 		@RequestParam("size") int size,
 		@RequestParam("youtubeSearch") String youtubeSearch){
-
 		return youtubeService.callVideoList(page,size,youtubeSearch);
 	}
 }
