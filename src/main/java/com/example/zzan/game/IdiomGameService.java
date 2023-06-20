@@ -75,6 +75,7 @@ public class IdiomGameService {
         if (gamePaused) {
             gameRunning = true;
             gamePaused = false;
+            gameTimer = new Timer();
 
             int num = gameTimer.purge();
 
