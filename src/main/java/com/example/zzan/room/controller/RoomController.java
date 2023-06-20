@@ -30,7 +30,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class RoomController {
     private final RoomService roomService;
-
+//
     @GetMapping("/main")
     public ResponseDto<Page<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam(required = false) GenderSetting genderSetting,
