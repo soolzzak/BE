@@ -58,7 +58,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_KICK = "kick";
     private static final String MSG_TYPE_START = "startShare";
     private static final String MSG_TYPE_STOP = "stopShare";
-    private static final String MSG_TYPE_GAME = "game";
+    private static final String MSG_TYPE_STARTGAME = "game";
     private static final String MSG_TYPE_YOUTUBE = "youtube";
     private static final String MSG_TYPE_STARTYOUTUBE = "startYoutube";
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
@@ -293,11 +293,10 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_GAME:
+                case MSG_TYPE_STARTGAME:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> gamePlayers = rtcChatService.getUser(room);
-
                     for (Map.Entry<Long, WebSocketSession> client : gamePlayers.entrySet()) {
                         gameSendMessage(client.getValue(),
                                 new GameResponseDto(
@@ -308,7 +307,6 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null));
                     }
                     idiomGameService.startGame(gamePlayers);
-
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:
