@@ -5,16 +5,27 @@ import lombok.*;
 
 @NoArgsConstructor
 @Data
-@AllArgsConstructor
 public class GameResponseDto {
     private Long from;
     private String type;
     private String idiom;
+    private int count;
     private Object candidate;
     private Object sdp;
 
+    public GameResponseDto(Long from, String type, String idiom, Object candidate, Object sdp) {
+        this.from = from;
+        this.type = type;
+        this.idiom = idiom;
+        this.candidate = candidate;
+        this.sdp = sdp;
+    }
 
-//    public GameResponseDto(String idiom){
-//        this.idiom = idiom;
-//    }
+    public GameResponseDto(Long from, String type, int count, Object candidate, Object sdp) {
+        this.from = from;
+        this.type = type;
+        this.count = count;
+        this.candidate = candidate;
+        this.sdp = sdp;
+    }
 }
