@@ -83,6 +83,8 @@ public class IdiomGameService {
 
                 @Override
                 public void run() {
+                    currentIdiom = getRandomIdiom();
+
                     countNumber6(gamePlayers);
                     countNumber5(gamePlayers);
                     countNumber4(gamePlayers);
@@ -111,6 +113,18 @@ public class IdiomGameService {
             gameRunning = false;
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "게임 끝!", null, null);
+            for (WebSocketSession session : gamePlayers.values()) {
+                signalHandler.gameSendMessage(session, gameResponseDto);
+            }
+            idioms.clear();
+        }
+    }
+
+    public void finishGame(Map<Long, WebSocketSession> gamePlayers) {
+        if (gameRunning) {
+            gameRunning = false;
+            SignalHandler signalHandler = context.getBean(SignalHandler.class);
+            GameResponseDto gameResponseDto = new GameResponseDto(null, "stopGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
