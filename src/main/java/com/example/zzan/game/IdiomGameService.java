@@ -23,7 +23,7 @@ public class IdiomGameService {
     private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
     private static final int INITIAL_DELAY_MS = 4000;
     private static final int PARTIAL_WORD_DELAY_MS = 8000;
-    private static final int FULL_WORD_DELAY_MS = 10000;
+    private static final int FULL_WORD_DELAY_MS = 9000;
     private final List<String> idioms;
     private boolean gameRunning;
     private boolean gamePaused;
