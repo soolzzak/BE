@@ -93,6 +93,23 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         Long sessionUserId = sessions.get(session);
+
+        // Long sessionRoomId = sessions2.get(session);
+        //
+        // RoomResponseDto room = UserListMap.getInstance().getUserMap().get(sessionRoomId);
+        // Room existingRoom = roomRepository.findById(room.getRoomId())
+        //     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+        // if (existingRoom.getRoomCapacity() < 3) {
+        //     existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
+        //     roomRepository.saveAndFlush(existingRoom);
+        // } else {
+        //         // throw new ApiException(ROOM_ALREADY_FULL);
+        //
+        //         // Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+        //         session.close();
+        //         // WebSocketSession guestSession = joinClients.get();
+        //     }
+
         sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null, null));
     }
 
