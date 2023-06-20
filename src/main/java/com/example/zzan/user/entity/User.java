@@ -68,13 +68,12 @@ public class User {
     @Column(name = "ROOM_TITLE")
     private String roomTitle;
 
-<<<<<<< HEAD
+
     @Column(nullable = false)
     private boolean deleteAccount = false;
-=======
+
     @Column(name="INTRODUCTION")
     private String introduction;
->>>>>>> f216f5272a14a3180672aa4b2a98877975ea4a42
 
     @PrePersist
     public void setDefaultValues() {
