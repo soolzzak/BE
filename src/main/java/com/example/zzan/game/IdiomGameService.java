@@ -41,6 +41,11 @@ public class IdiomGameService {
             gameRunning = true;
             gamePaused = false;
 
+            if (gameTimer != null) {
+                gameTimer.cancel();
+                gameTimer.purge();
+            }
+
             TimerTask gameTask = new TimerTask() {
                 int count = 1;
 
