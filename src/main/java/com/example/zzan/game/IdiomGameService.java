@@ -62,12 +62,13 @@ public class IdiomGameService {
                     count++;
 
                     if (count >= num) {
+                        cancel();
                         scheduleNextGame(gamePlayers);
                     }
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 1000);
+            gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
 
@@ -96,12 +97,13 @@ public class IdiomGameService {
                     count++;
 
                     if (count >= num) {
+                        cancel();
                         scheduleNextGame(gamePlayers);
                     }
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 1000);
+            gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
 
