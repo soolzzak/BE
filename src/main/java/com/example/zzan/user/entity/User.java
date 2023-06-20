@@ -68,6 +68,10 @@ public class User {
     @Column(name = "ROOM_TITLE")
     private String roomTitle;
 
+
+    @Column(nullable = false)
+    private boolean deleteAccount = false;
+
     @Column(name="INTRODUCTION")
     private String introduction;
 
@@ -123,4 +127,5 @@ public class User {
     public void addReportPoints(int points) {
         this.reportPoints += points;
     }
+
 }

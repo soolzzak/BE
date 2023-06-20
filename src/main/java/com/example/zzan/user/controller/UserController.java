@@ -4,6 +4,8 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.security.dto.TokenDto;
+import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.user.dto.DeleteAccountRequestDto;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -68,4 +70,15 @@ public class UserController {
     public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.logout(userDetails.getUser());
     }
+
+    @PostMapping("/deleteAccount")
+    public ResponseDto deleteAccount(@Valid @RequestBody DeleteAccountRequestDto deleteAccountRequestDto,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.deleteAccount(deleteAccountRequestDto,userDetails.getUser());
+    }
+
+    @GetMapping("/kakaoDeleteAccount")
+    public ResponseDto<RoomResponseDto> kakaoDeleteAccount(@RequestParam("code") String code,HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoDeleteAccount(code,response);
+    }
+
 }
