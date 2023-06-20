@@ -59,7 +59,25 @@ public class IdiomGameService {
         if (gameRunning) {
             gameRunning = false;
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
-            GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "게임 끝!", null, null);
+            GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "게임 끝!", null, null);
+            for (WebSocketSession session : gamePlayers.values()) {
+                signalHandler.gameSendMessage(session, gameResponseDto);
+            }
+        }
+    }
+
+    public void pauseGame(Map<Long, WebSocketSession> gamePlayers) {
+        if (gameRunning) {
+            gameRunning = false;
+            SignalHandler signalHandler = context.getBean(SignalHandler.class);
+            GameResponseDto gameResponseDto = new GameResponseDto(null, "pauseGame", "게임 멈춤!", null, null);
+            for (WebSocketSession session : gamePlayers.values()) {
+                signalHandler.gameSendMessage(session, gameResponseDto);
+            }
+        } else {
+            gameRunning = true;
+            SignalHandler signalHandler = context.getBean(SignalHandler.class);
+            GameResponseDto gameResponseDto = new GameResponseDto(null, "pauseGame", "게임 재시작!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
@@ -73,7 +91,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String partialWord = generatePartialWord();
-                    GameResponseDto gameResponseDto = new GameResponseDto(null, "game", partialWord, null, null);
+                    GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
                     }
@@ -90,7 +108,7 @@ public class IdiomGameService {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
                     String fullWord = currentIdiom;
-                    GameResponseDto gameResponseDto = new GameResponseDto(null, "game", fullWord, null, null);
+                    GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", fullWord, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
                     }
@@ -149,7 +167,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "3", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 3, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -163,7 +181,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "2", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 2, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -177,7 +195,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "1", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 1, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -191,7 +209,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "3", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 3, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -205,7 +223,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "2", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 2, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -219,7 +237,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "1", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", 1, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
