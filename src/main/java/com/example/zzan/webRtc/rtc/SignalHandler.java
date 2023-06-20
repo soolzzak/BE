@@ -316,12 +316,12 @@ public class SignalHandler extends TextWebSocketHandler {
                     idiomGameService.pauseGame(gamePlayers2);
                     break;
 
-//                case MSG_TYPE_STOPGAME:
-//                    room = rooms.get(message.getData());
-//
-//                    Map<Long, WebSocketSession> gamePlayers3 = rtcChatService.getUser(room);
-//                    idiomGameService.stopGame(gamePlayers3);
-//                    break;
+                case MSG_TYPE_STOPGAME:
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> gamePlayers3 = rtcChatService.getUser(room);
+                    idiomGameService.finishGame(gamePlayers3);
+                    break;
 
                 case MSG_TYPE_STARTYOUTUBE:
 
