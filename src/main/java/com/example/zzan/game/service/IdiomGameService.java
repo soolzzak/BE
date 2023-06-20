@@ -1,4 +1,4 @@
-package com.example.zzan.game;
+package com.example.zzan.game.service;
 
 import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.webRtc.rtc.SignalHandler;
