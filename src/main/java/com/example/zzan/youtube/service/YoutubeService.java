@@ -32,7 +32,6 @@ public class YoutubeService {
 	private String mykey;
 
 	public ResponseDto<List<YoutubeListDto>> callVideoList(int page, int size,String videoName) {
-		 // SummonerDTO result;
 		List<YoutubeListDto> result= new ArrayList<>();
 		String encodedVideoName;
 
@@ -45,9 +44,7 @@ public class YoutubeService {
 				.build();
 
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
 			JsonNode rootNode = objectMapper.readTree(response.body());
-
 			JsonNode itemsNode = rootNode.get("items");
 
 			if (itemsNode.isArray()) {
@@ -58,13 +55,9 @@ public class YoutubeService {
 					result.add(dto);
 				}
 			}
-
-			log.info("방을 생성하였습니다.",result);
 		} catch (IOException |InterruptedException|URISyntaxException e) {
 			throw new ApiException(SEARCH_FAILED);
 		}
-
-
 		return ResponseDto.setSuccess("방을 생성하였습니다.", result);
 	}
 }
