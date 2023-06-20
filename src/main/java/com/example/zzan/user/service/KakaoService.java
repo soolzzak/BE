@@ -1,5 +1,6 @@
 package com.example.zzan.user.service;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.entity.RefreshToken;
@@ -152,4 +153,27 @@ public class KakaoService {
         kakaoInfoDto.setBirthday(birthday);
         return kakaoInfoDto;
     }
+
+    public ResponseDto kakaoDeleteAccount(String code,HttpServletResponse response) throws JsonProcessingException {
+        String accessToken = getToken(code);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
+
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> responseEntity = rt.exchange(
+            "https://kapi.kakao.com/v1/user/unlink",
+            HttpMethod.POST, requestEntity, String.class);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return ResponseDto.setSuccess("Your account has been successfully deleted");
+        } else {
+            throw new ApiException(KAKAO_UNLINK_FAILED);
+        }
+
+    }
+
+
 }
