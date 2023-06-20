@@ -5,20 +5,23 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.message.dto.MessageSendRequestDto;
 import com.example.zzan.message.entity.Messages;
 import com.example.zzan.message.repository.MessageRepository;
+import com.example.zzan.sse.service.SseService;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageSendService {
 
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
-//    private final SseService sseService;
+    private final SseService sseService;
 
     public ResponseDto<?> sendMessage(User user, MessageSendRequestDto messageSendRequestDto) {
 
@@ -36,7 +39,7 @@ public class MessageSendService {
         }
 
         saveMessage(user, messageReceiver, messageContent);
-//        notificationSendService.sendMessageReceivedNotification(member, messageReceiver);
+        sseService.sendSseMessage(messageReceiver.getUsername(), user.getUsername() );
 
         return ResponseDto.setSuccess("Message successfully sent.");
     }
