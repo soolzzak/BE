@@ -40,7 +40,10 @@ public class IdiomGameService {
         if (!gameRunning) {
             gameRunning = true;
             gamePaused = false;
-            gameTimer = new Timer();
+
+            if (gameTimer != null) {
+                gameTimer.cancel();
+            }
 
             TimerTask gameTask = new TimerTask() {
                 int count = 1;
@@ -67,6 +70,7 @@ public class IdiomGameService {
                     }
                 }
             };
+            gameTimer = new Timer();
             gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
@@ -75,7 +79,6 @@ public class IdiomGameService {
         if (gamePaused) {
             gameRunning = true;
             gamePaused = false;
-            gameTimer = new Timer();
 
             int num = gameTimer.purge();
 
@@ -104,6 +107,7 @@ public class IdiomGameService {
                     }
                 }
             };
+            gameTimer = new Timer();
             gameTimer.schedule(gameTask, 1000, FULL_WORD_DELAY_MS + 1000);
         }
     }
@@ -111,6 +115,8 @@ public class IdiomGameService {
     public void stopGame(Map<Long, WebSocketSession> gamePlayers) {
         if (gameRunning) {
             gameRunning = false;
+            gamePaused = false;
+            gameTimer.cancel();
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
@@ -122,6 +128,8 @@ public class IdiomGameService {
     public void finishGame(Map<Long, WebSocketSession> gamePlayers) {
         if (gameRunning) {
             gameRunning = false;
+            gamePaused = false;
+            gameTimer.cancel();
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "stopGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
