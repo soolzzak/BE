@@ -17,6 +17,7 @@ public class MyPageResponseDto {
 	private String username;
 	private String email;
 	private String kakaoId;
+	private String introduction;
 	private int alcohol;
 	private List<UserHistoryDto> metUser;
 	private List<FollowResponseDto> followingUser;
@@ -26,6 +27,7 @@ public class MyPageResponseDto {
 		this.userImage = myPage.getUserImage();
 		this.username = myPage.getUsername();
 		this.email = myPage.getEmail();
+		this.introduction = myPage.getIntroduction();
 		this.alcohol = alcohol;
 		this.kakaoId = myPage.getKakaoId();
 		this.metUser = metUser;

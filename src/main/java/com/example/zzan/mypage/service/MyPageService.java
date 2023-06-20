@@ -14,6 +14,7 @@ import com.example.zzan.global.util.S3Uploader;
 import com.example.zzan.mypage.dto.MyPageResponseDto;
 import com.example.zzan.mypage.dto.MypageChangeDto;
 import com.example.zzan.mypage.dto.RelatedUserResponseDto;
+import com.example.zzan.mypage.dto.UserSearchDto;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
 import com.example.zzan.userHistory.dto.UserHistoryDto;
@@ -45,7 +46,7 @@ public class MyPageService {
     private final BlockListRepository blockListRepository;
 
     @Transactional
-    public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email) throws IOException {
+    public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email, String introduction) throws IOException {
         String storedFileName = null;
         if (userImage != null && !userImage.isEmpty()) {
             storedFileName = s3Uploader.upload(userImage, "mainImage");
@@ -65,24 +66,18 @@ public class MyPageService {
                 myPage.UserImgurl(storedFileName);
             }
             userRepository.save(myPage);
+            if (introduction != null && !introduction.trim().isEmpty()) {
+                if (hasBadWord(introduction)) {
+                    throw new ApiException(NOT_ALLOWED_INTRODUCTION);
+                }
+                myPage.setIntroduction(introduction);
+            }
+
+            userRepository.save(myPage);
         } else {
             throw new ApiException(ROOM_NOT_FOUND);
         }
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
-    }
-
-    public User findUser(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
-        return optionalUser.orElse(null);
-    }
-
-    private boolean hasBadWord(String input) {
-        for (String badWord : BadWords.koreaWord) {
-            if (input.contains(badWord)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Transactional
@@ -151,5 +146,33 @@ public class MyPageService {
         boolean isBlocked = blockListRepository.findByBlockListedUserAndBlockListingUser(targetUser, user).isPresent();
 
         return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
+    }
+
+    public ResponseDto<List<UserSearchDto>> searchUserByUsername(String username, User currentUser) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCase(username);
+        List<UserSearchDto> searchResults = new ArrayList<>();
+
+        for (User user : users) {
+            boolean followedByCurrentUser = followRepository.findByFollowingUserAndFollowerUser(user, currentUser).isPresent();
+            boolean blockedByCurrentUser = blockListRepository.findByBlockListedUserAndBlockListingUser(user, currentUser).isPresent();
+
+            UserSearchDto userSearchDto = new UserSearchDto(user, followedByCurrentUser, blockedByCurrentUser);
+            searchResults.add(userSearchDto);
+        }
+        return ResponseDto.setSuccess("User search results.", searchResults);
+    }
+
+    public User findUser(String email) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        return optionalUser.orElse(null);
+    }
+
+    private boolean hasBadWord(String input) {
+        for (String badWord : BadWords.koreaWord) {
+            if (input.contains(badWord)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
