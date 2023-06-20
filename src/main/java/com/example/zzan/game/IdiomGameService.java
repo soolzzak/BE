@@ -183,7 +183,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "3", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 3, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -197,7 +197,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "2", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 2, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -211,7 +211,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "1", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 1, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -225,7 +225,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "3", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 3, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -239,7 +239,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "2", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 2, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
@@ -253,7 +253,7 @@ public class IdiomGameService {
             @Override
             public void run() {
                 SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                GameResponseDto gameResponseDto = new GameResponseDto(null, "game", "1", null, null);
+                GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", 1, null, null);
                 for (WebSocketSession session : gamePlayers.values()) {
                     signalHandler.gameSendMessage(session, gameResponseDto);
                 }
