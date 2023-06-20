@@ -2,7 +2,6 @@ package com.example.zzan.game.dto;
 
 import lombok.*;
 
-
 @NoArgsConstructor
 @Data
 public class GameResponseDto {
