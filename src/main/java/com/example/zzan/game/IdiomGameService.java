@@ -39,8 +39,29 @@ public class IdiomGameService {
     public void startGame(Map<Long, WebSocketSession> gamePlayers) {
         if (!gameRunning) {
             gameRunning = true;
+            gamePaused = false;
             gameTimer = new Timer();
             currentIdiom = getRandomIdiom();
+
+            countNumber6(gamePlayers);
+            countNumber5(gamePlayers);
+            countNumber4(gamePlayers);
+            schedulePartialWord(gamePlayers);
+
+            countNumber3(gamePlayers);
+            countNumber2(gamePlayers);
+            countNumber1(gamePlayers);
+            scheduleFullWordReveal(gamePlayers);
+
+            scheduleNextGame(gamePlayers);
+        }
+    }
+
+    public void resumeGame(Map<Long, WebSocketSession> gamePlayers) {
+        if (gamePaused) {
+            gameRunning = true;
+            gamePaused = false;
+            gameTimer = new Timer();
 
             countNumber6(gamePlayers);
             countNumber5(gamePlayers);
@@ -78,25 +99,12 @@ public class IdiomGameService {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
         } else if (gameRunning && gamePaused) {
-            gamePaused = false;
-
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "pauseGame", "게임 재시작!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-
-            countNumber6(gamePlayers);
-            countNumber5(gamePlayers);
-            countNumber4(gamePlayers);
-            schedulePartialWord(gamePlayers);
-
-            countNumber3(gamePlayers);
-            countNumber2(gamePlayers);
-            countNumber1(gamePlayers);
-            scheduleFullWordReveal(gamePlayers);
-
-            scheduleNextGame(gamePlayers);
+            resumeGame(gamePlayers);
         }
     }
 
