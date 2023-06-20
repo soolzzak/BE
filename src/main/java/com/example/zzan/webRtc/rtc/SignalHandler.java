@@ -337,6 +337,11 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
+                case MSG_TYPE_ICEBREAKER:
+                    room = rooms.get(message.getData());
+                    Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
+                    iceBreakerService.displayQuestion(iceBreaker);
+                    break;
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
@@ -364,5 +369,12 @@ public class SignalHandler extends TextWebSocketHandler {
         }
     }
 
-
+    public void iceBreakSendMessage(WebSocketSession session, IceBreakerDto iceBreakerDto) {
+        try {
+            String json = objectMapper.writeValueAsString(iceBreakerDto);
+            session.sendMessage(new TextMessage(json));
+        } catch (IOException e) {
+            logger.info("An error occured: {}", e.getMessage());
+        }
+    }
 }
