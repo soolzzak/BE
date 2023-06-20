@@ -68,6 +68,9 @@ public class User {
     @Column(name = "ROOM_TITLE")
     private String roomTitle;
 
+    @Column(name="INTRODUCTION")
+    private String introduction;
+
     @PrePersist
     public void setDefaultValues() {
         if (alcohol == 0) {
@@ -103,9 +106,10 @@ public class User {
         this.alcoholDown = false;
     }
 
-    public User(String username, String userImage) {
+    public User(String username, String userImage, String introduction) {
         this.username = username;
         this.userImage = userImage;
+        this.introduction = introduction;
     }
 
     public void UserImgurl(String userImage) {
