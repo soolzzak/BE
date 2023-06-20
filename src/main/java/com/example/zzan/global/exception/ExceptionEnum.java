@@ -24,6 +24,8 @@ public enum ExceptionEnum {
     INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
     NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),
     REPORT_NOT_REASONABLE(HttpStatus.BAD_REQUEST.value(), "The reason for reporting is not appropriate."),
+    KAKAO_UNLINK_FAILED(HttpStatus.BAD_REQUEST.value(), "Failed to unlink Kakao account"),
+
 
     TARGET_USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The specified user cannot be found."),
     ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"You are already following this user."),
@@ -55,7 +57,8 @@ public enum ExceptionEnum {
     ONLY_HOST_CAN_KICK(HttpStatus.FORBIDDEN.value(), "Only the host can kick users out."),
     MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "There is no message."),
     INTERNAL_SERVER_ERROR(HttpStatus.BAD_REQUEST.value(), "Internal Server Problem."),
-    NO_MESSAGE(HttpStatus.BAD_REQUEST.value(), "There is no message to be sent.");
+    NO_MESSAGE(HttpStatus.BAD_REQUEST.value(), "There is no message to be sent."),
+    USER_HAS_LEFT(HttpStatus.BAD_REQUEST.value(),"The user has already left the service.");
 
 
     private final int status;

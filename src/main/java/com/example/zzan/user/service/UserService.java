@@ -8,6 +8,8 @@ import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
+import com.example.zzan.room.dto.RoomResponseDto;
+import com.example.zzan.user.dto.DeleteAccountRequestDto;
 import com.example.zzan.user.dto.PasswordRequestDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
@@ -54,9 +56,23 @@ public class UserService {
 
         String userPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        User user = new User(requestDto.getEmail(), userPassword, requestDto.getUsername(),
+        Optional<User> foundUser = userRepository.findUserByEmail(requestDto.getEmail());
+        User user;
+        if (foundUser.isPresent() && foundUser.get().isDeleteAccount()) {
+            user = foundUser.get();
+            user.setUsername(requestDto.getUsername());
+            user.setRole(requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER);
+            user.setUserImage(s3Uploader.getRandomImage("profile"));
+            user.setGender(requestDto.getGender());
+            user.setBirthday(requestDto.getBirthday());
+            user.setPassword(userPassword);
+            user.setDeleteAccount(false);
+        } else {
+            user = new User(requestDto.getEmail(), userPassword, requestDto.getUsername(),
                 requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER, s3Uploader.getRandomImage("profile"), requestDto.getGender());
-        user.setBirthday(requestDto.getBirthday());
+            user.setBirthday(requestDto.getBirthday());
+        }
+
         userRepository.save(user);
         return ResponseEntity.ok(ResponseDto.setSuccess("Signup registration has been completed.", null));
     }
@@ -92,6 +108,10 @@ public class UserService {
             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                     () -> new ApiException(EMAIL_NOT_FOUND)
             );
+
+            if (user.isDeleteAccount()) {
+                throw new ApiException(USER_HAS_LEFT);
+            }
 
             if (!passwordEncoder.matches(userPassword, user.getPassword())) {
                 throw new ApiException(PASSWORD_NOT_MATCH);
@@ -138,14 +158,14 @@ public class UserService {
         if (hasBadWord(username)) {
             throw new ApiException(NOT_ALLOWED_USERNAME);
         }
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(username).isPresent()&&!userRepository.findByUsername(username).get().isDeleteAccount() ) {
             throw new ApiException(USER_DUPLICATION);
         }
     }
 
     private void validateEmail(String email) {
         Optional<User> found = userRepository.findUserByEmail(email);
-        if (found.isPresent()) {
+        if (found.isPresent()&& !found.get().isDeleteAccount()) {
             throw new ApiException(EMAIL_DUPLICATION);
         }
         if (email == null || !email.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")) {
@@ -180,4 +200,17 @@ public class UserService {
     private boolean hasBadWord(String input) {
         return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
+
+    public ResponseDto deleteAccount(DeleteAccountRequestDto deleteAccountRequestDto,User user) {
+
+        if(!passwordEncoder.matches(deleteAccountRequestDto.getPassword(), user.getPassword())){
+            throw new ApiException(INVALID_ADMIN_INPUT);
+        }else {
+            user.setDeleteAccount(true);
+            userRepository.save(user);
+        }
+
+        return ResponseDto.setSuccess("Your account has been successfully deleted");
+    }
+
 }
