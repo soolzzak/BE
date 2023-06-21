@@ -77,12 +77,21 @@ public class SignalHandler extends TextWebSocketHandler {
         Long sessionUserId = sessions.get(session);
         Long sessionRoomId = sessions2.get(session);
 
-        if (rooms.get(sessionRoomId) != null) {
+        if (sessionUserId == null || sessionRoomId == null) {
+            return;
+        }
+
+        // if (rooms.get(sessionRoomId) != null) {
             RoomResponseDto roomDto = rooms.get(sessionRoomId);
+
+        if (roomDto == null) {
+            return;
+        }
 
             Room realroom = roomRepository.findById(roomDto.getRoomId())
                     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
             Long hostId = roomDto.getHostId();
+
 
             if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
@@ -120,17 +129,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             null));
                 }
             }
-
-            // if (hostId != null) {
-            //     if (roomDto.getHostId().equals(sessionUserId)) {
-            //         realroom.roomDelete(true);
-            //         roomRepository.saveAndFlush(realroom);
-            //     } else if (!roomDto.getHostId().equals(sessionUserId)) {
-            //         realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
-            //         roomRepository.saveAndFlush(realroom);
-            //     }
-            // }
-        }
+        // }
     }
 
     @Override
