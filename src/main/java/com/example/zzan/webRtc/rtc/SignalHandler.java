@@ -2,7 +2,7 @@ package com.example.zzan.webRtc.rtc;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
-import com.example.zzan.game.service.IdiomGameService;
+import com.example.zzan.game.service.GameService;
 import com.example.zzan.game.dto.GameResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.icebreaker.dto.IceBreakerDto;
@@ -39,7 +39,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RoomService roomService;
-    private final IdiomGameService idiomGameService;
+    private final GameService gameService;
     private final IceBreakerService iceBreakerService;
     private final UserRepository userRepository;
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
@@ -300,19 +300,19 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null,
                                         null));
                     }
-                    idiomGameService.startGame(startGamePlayers);
+                    gameService.startGame(startGamePlayers);
                     break;
 
                 case MSG_TYPE_PAUSEGAME:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> pauseGamePlayers = rtcChatService.getUser(room);
-                    idiomGameService.pauseGame(pauseGamePlayers);
+                    gameService.pauseGame(pauseGamePlayers);
                     break;
 
                 case MSG_TYPE_STOPGAME:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> stopGamePlayers = rtcChatService.getUser(room);
-                    idiomGameService.finishGame(stopGamePlayers);
+                    gameService.finishGame(stopGamePlayers);
                     break;
 
                 case MSG_TYPE_STARTYOUTUBE:

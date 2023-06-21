@@ -7,24 +7,24 @@ import lombok.*;
 public class GameResponseDto {
     private Long from;
     private String type;
-    private String idiom;
+    private String word;
     private int count;
     private Object candidate;
     private Object sdp;
 
-    public GameResponseDto(Long from, String type, String idiom, int count, Object candidate, Object sdp) {
+    public GameResponseDto(Long from, String type, String word, int count, Object candidate, Object sdp) {
         this.from = from;
         this.type = type;
-        this.idiom = idiom;
+        this.word = word;
         this.count = count;
         this.candidate = candidate;
         this.sdp = sdp;
     }
 
-    public GameResponseDto(Long from, String type, String idiom, Object candidate, Object sdp) {
+    public GameResponseDto(Long from, String type, String word, Object candidate, Object sdp) {
         this.from = from;
         this.type = type;
-        this.idiom = idiom;
+        this.word = word;
         this.candidate = candidate;
         this.sdp = sdp;
     }
