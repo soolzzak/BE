@@ -69,8 +69,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
     private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
     private static final String MSG_TYPE_ICEBREAKER = "iceBreaker";
-    private static final String MSG_TYPE_SENDPICTURE = "sendpicture";
-    private static final String MSG_TYPE_CONFIRMPICTURE = "confirmpicture";
+    private static final String MSG_TYPE_SENDPICTURE = "sendPicture";
+    private static final String MSG_TYPE_CONFIRMPICTURE = "confirmPicture";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -195,10 +195,11 @@ public class SignalHandler extends TextWebSocketHandler {
                             }
                         }
 
-                    } else {
-                        Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-                        session.close();
                     }
+                    // else {
+                    //     Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+                    //     session.close();
+                    // }
 
                     break;
 
