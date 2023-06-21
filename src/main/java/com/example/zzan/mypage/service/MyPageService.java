@@ -59,7 +59,7 @@ public class MyPageService {
             if (fileExtension.equalsIgnoreCase("jpeg") || fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("png")) {
                 storedFileName = s3Uploader.compressAndUpload(originalImageFile, "mainImage", 250, 250);
             } else {
-                storedFileName = s3Uploader.upload(originalImageFile, "mainImage");
+                storedFileName = s3Uploader.upload(originalImageFile, "mainBanner");
             }
         }
 

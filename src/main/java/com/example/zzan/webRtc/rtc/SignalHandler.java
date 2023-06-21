@@ -80,6 +80,22 @@ public class SignalHandler extends TextWebSocketHandler {
                     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
             Long hostId = roomDto.getHostId();
 
+            Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
+            for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
+                if (!client.getKey().equals(sessionUserId)) {
+                    sendMessage(client.getValue(),
+                        new WebSocketMessage(
+                            sessionUserId,
+                            MSG_TYPE_JOIN,
+                            null,
+                            0,
+                            null,
+                            "상대가 방을 나갔습니다",
+                            null,
+                            null));
+                }
+            }
+
             if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
                     realroom.roomDelete(true);
@@ -290,7 +306,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                                 roomId,
                                                                 0,
                                                                 null,
-                                                                null,
+                                                                "강퇴 되었습니다",
                                                                 null,
                                                                 null));
                                             } catch (IOException e) {
