@@ -110,7 +110,7 @@ public class SignalHandler extends TextWebSocketHandler {
         //         // WebSocketSession guestSession = joinClients.get();
         //     }
 
-        sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null, null));
+        sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null,null, null));
     }
 
     @Override
@@ -153,6 +153,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 roomId,
                                                 0,
                                                 null,
+                                            null,
                                                 candidate,
                                                 sdp));
                             }
@@ -181,6 +182,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 message.getType(),
                                                 roomId,
                                                 0,
+                                                null,
                                                 null,
                                                 null,
                                                 null));
@@ -225,6 +227,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                             0,
                                             null,
                                             null,
+                                            null,
                                             null));
                         }
                     }
@@ -244,6 +247,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                     0,
                                     null,
                                     null,
+                                    null,
                                     null));
                     break;
 
@@ -259,21 +263,32 @@ public class SignalHandler extends TextWebSocketHandler {
                                     if (!Guestclient.getKey().equals(hostIdInRoom)) {
                                         Long guestId = Guestclient.getKey();
                                         User guestUser = userRepository.findById(guestId).get();
-                                        sendMessage(Guestclient.getValue(),
-                                                new WebSocketMessage(
+                                        // sendMessage(Guestclient.getValue(),
+                                        //         new WebSocketMessage(
+                                        //                 userId,
+                                        //                 message.getType(),
+                                        //                 roomId,
+                                        //                 0,
+                                        //                 null,
+                                        //                 null,
+                                        //             null,
+                                        //                 null));
+                                        
+                                        roomService.leaveRoom(roomId, guestUser);
+                                        WebSocketSession guestSession = Guestclient.getValue();
+                                        if (guestSession.isOpen()) {
+                                            try {
+                                                guestSession.close();
+                                                sendMessage(Guestclient.getValue(),
+                                                    new WebSocketMessage(
                                                         userId,
                                                         message.getType(),
                                                         roomId,
                                                         0,
                                                         null,
                                                         null,
+                                                        null,
                                                         null));
-                                        roomService.leaveRoom(roomId, guestUser);
-
-                                        WebSocketSession guestSession = Guestclient.getValue();
-                                        if (guestSession.isOpen()) {
-                                            try {
-                                                guestSession.close();
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
@@ -329,6 +344,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                             roomId,
                                             time,
                                             null,
+                                        null,
                                             null,
                                             null));
                         }
@@ -348,6 +364,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                             roomId,
                                             0,
                                             youtubeUrl,
+                                        null,
                                             null,
                                             null));
                         }
