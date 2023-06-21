@@ -307,6 +307,9 @@ public class SignalHandler extends TextWebSocketHandler {
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> startGamePlayers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : startGamePlayers.entrySet()) {
+                        gameService.startCountNumberThree(startGamePlayers);
+                        gameService.startCountNumberTwo(startGamePlayers);
+                        gameService.startCountNumberOne(startGamePlayers);
                         gameSendMessage(client.getValue(),
                                 new GameResponseDto(
                                         userId,
