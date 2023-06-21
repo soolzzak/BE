@@ -9,6 +9,7 @@ public class GameResponseDto {
     private String type;
     private String word;
     private int count;
+    private int startCount;
     private Object candidate;
     private Object sdp;
 
@@ -21,18 +22,18 @@ public class GameResponseDto {
         this.sdp = sdp;
     }
 
-    public GameResponseDto(Long from, String type, String word, Object candidate, Object sdp) {
+    public GameResponseDto(Long from, String type, int startCount, Object candidate, Object sdp) {
         this.from = from;
         this.type = type;
-        this.word = word;
+        this.startCount = startCount;
         this.candidate = candidate;
         this.sdp = sdp;
     }
 
-    public GameResponseDto(Long from, String type, int count, Object candidate, Object sdp) {
+    public GameResponseDto(Long from, String type, String word, Object candidate, Object sdp) {
         this.from = from;
         this.type = type;
-        this.count = count;
+        this.word = word;
         this.candidate = candidate;
         this.sdp = sdp;
     }
