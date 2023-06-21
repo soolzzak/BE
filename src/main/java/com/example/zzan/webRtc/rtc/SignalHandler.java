@@ -84,6 +84,16 @@ public class SignalHandler extends TextWebSocketHandler {
                     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
             Long hostId = roomDto.getHostId();
 
+            if (hostId != null) {
+                if (roomDto.getHostId().equals(sessionUserId)) {
+                    realroom.roomDelete(true);
+                    roomRepository.saveAndFlush(realroom);
+                } else if (!roomDto.getHostId().equals(sessionUserId)) {
+                    realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
+                    roomRepository.saveAndFlush(realroom);
+                }
+            }
+
             Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
                 if (!client.getKey().equals(sessionUserId)&&client.getKey().equals(hostId)) {
@@ -109,18 +119,17 @@ public class SignalHandler extends TextWebSocketHandler {
                             null,
                             null));
                 }
-
             }
 
-            if (hostId != null) {
-                if (roomDto.getHostId().equals(sessionUserId)) {
-                    realroom.roomDelete(true);
-                    roomRepository.saveAndFlush(realroom);
-                } else if (!roomDto.getHostId().equals(sessionUserId)) {
-                    realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
-                    roomRepository.saveAndFlush(realroom);
-                }
-            }
+            // if (hostId != null) {
+            //     if (roomDto.getHostId().equals(sessionUserId)) {
+            //         realroom.roomDelete(true);
+            //         roomRepository.saveAndFlush(realroom);
+            //     } else if (!roomDto.getHostId().equals(sessionUserId)) {
+            //         realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
+            //         roomRepository.saveAndFlush(realroom);
+            //     }
+            // }
         }
     }
 
