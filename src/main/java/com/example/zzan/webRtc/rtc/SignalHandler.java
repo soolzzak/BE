@@ -29,9 +29,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +40,6 @@ public class SignalHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RoomService roomService;
     private final GameService gameService;
-    private Timer gameTimer;
     private final IceBreakerService iceBreakerService;
     private final UserRepository userRepository;
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
