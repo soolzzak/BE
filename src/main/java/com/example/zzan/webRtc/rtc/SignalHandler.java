@@ -273,6 +273,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                         //                 null,
                                         //             null,
                                         //                 null));
+                                        
                                         roomService.leaveRoom(roomId, guestUser);
                                         WebSocketSession guestSession = Guestclient.getValue();
                                         if (guestSession.isOpen()) {
