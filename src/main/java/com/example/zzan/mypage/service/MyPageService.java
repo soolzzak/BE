@@ -27,11 +27,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 
@@ -48,9 +51,13 @@ public class MyPageService {
     @Transactional
     public ResponseDto<MypageChangeDto> saveMyPage(MultipartFile userImage, String username, String email, String introduction) throws IOException {
         String storedFileName = null;
-        if (userImage != null && !userImage.isEmpty()) {
-            storedFileName = s3Uploader.upload(userImage, "mainImage");
+
+        File originalImageFile = convertMultipartFileToFile(userImage);
+
+        if (originalImageFile != null) {
+            storedFileName = s3Uploader.compressAndUpload(originalImageFile, "mainImage", 250, 250);
         }
+
         User myPage = findUser(email);
         if (myPage != null) {
             if (username != null && !username.trim().isEmpty()) {
@@ -65,7 +72,6 @@ public class MyPageService {
             if (storedFileName != null) {
                 myPage.UserImgurl(storedFileName);
             }
-            userRepository.save(myPage);
             if (introduction != null && !introduction.trim().isEmpty()) {
                 if (hasBadWord(introduction)) {
                     throw new ApiException(NOT_ALLOWED_INTRODUCTION);
@@ -79,6 +85,7 @@ public class MyPageService {
         }
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
     }
+
 
     @Transactional
     public ResponseDto<MyPageResponseDto> getUserInfo(User user) {
@@ -175,4 +182,24 @@ public class MyPageService {
         }
         return false;
     }
+
+    private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return null;
+        }
+        String originalFileName = multipartFile.getOriginalFilename();
+        String ext = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
+
+        if (!ext.equalsIgnoreCase(".png") && !ext.equalsIgnoreCase(".jpg") && !ext.equalsIgnoreCase(".jpeg") && !ext.equalsIgnoreCase(".gif")) {
+            throw new ApiException(INVALID_FILE);
+        }
+        String uuidFileName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+        File convertFile = new File(uuidFileName);
+        try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+            fos.write(multipartFile.getBytes());
+        }
+        return convertFile;
+    }
+
 }
