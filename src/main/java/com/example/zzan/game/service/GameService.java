@@ -21,9 +21,9 @@ import java.util.*;
 @Getter
 public class GameService {
     private static final String WORDS_FILE_PATH = "4LetterWords.txt";
-    private static final int INITIAL_DELAY_MS = 2000;
-    private static final int PARTIAL_WORD_DELAY_MS = 5000;
-    private static final int FULL_WORD_DELAY_MS = 6000;
+    private static final int INITIAL_DELAY_MS = 3000;
+    private static final int PARTIAL_WORD_DELAY_MS = 6000;
+    private static final int FULL_WORD_DELAY_MS = 7000;
     private final List<String> words;
     private boolean gameRunning;
     private boolean gamePaused;
@@ -148,9 +148,6 @@ public class GameService {
             for (WebSocketSession session : gamePlayers.values()) {
                 signalHandler.gameSendMessage(session, gameResponseDto);
             }
-            startCountNumberThree(gamePlayers);
-            startCountNumberTwo(gamePlayers);
-            startCountNumberOne(gamePlayers);
             resumeGame(gamePlayers);
         }
     }
@@ -287,7 +284,7 @@ public class GameService {
                 }
             }
         };
-        gameTimer.schedule(task, 3000);
+        gameTimer.schedule(task, 4000);
     }
 
     public void countNumberOneWithWord(Map<Long, WebSocketSession> gamePlayers) {
@@ -302,6 +299,6 @@ public class GameService {
                 }
             }
         };
-        gameTimer.schedule(task, 4000);
+        gameTimer.schedule(task, 5000);
     }
 }
