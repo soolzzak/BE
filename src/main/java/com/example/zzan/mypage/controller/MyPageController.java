@@ -52,12 +52,10 @@ public class MyPageController {
 			User currentUser = myPageService.findUser(principal.getName());
 			ResponseDto<List<UserSearchDto>> response = myPageService.searchUserByUsername(username, currentUser);
 			return ResponseEntity.ok(response);
+		} catch (ApiException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.setBadRequest(e.getMessage()));
 		} catch (Exception e) {
-			if (e instanceof ApiException) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.setBadRequest(e.getMessage()));
-			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseDto.setBadRequest("Internal server error."));
-			}
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseDto.setBadRequest("Internal server error."));
 		}
 	}
 }

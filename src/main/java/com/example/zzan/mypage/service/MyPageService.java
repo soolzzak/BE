@@ -160,13 +160,8 @@ public class MyPageService {
         return ResponseDto.setSuccess("Successfully checked the record.", new RelatedUserResponseDto(targetUser, isFollowing, isBlocked));
     }
 
-    public ResponseDto<List<UserSearchDto>> searchUserByUsername(String username, User currentUser) throws ApiException {
-        List<User> users = userRepository.findByUsernameIgnoreCase(username);
-
-        if (users.isEmpty()) {
-            throw new ApiException(USER_NOT_FOUND);
-        }
-
+    public ResponseDto<List<UserSearchDto>> searchUserByUsername(String username, User currentUser) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCase(username);
         List<UserSearchDto> searchResults = new ArrayList<>();
 
         for (User user : users) {
@@ -176,7 +171,6 @@ public class MyPageService {
             UserSearchDto userSearchDto = new UserSearchDto(user, followedByCurrentUser, blockedByCurrentUser);
             searchResults.add(userSearchDto);
         }
-
         return ResponseDto.setSuccess("User search results.", searchResults);
     }
 
