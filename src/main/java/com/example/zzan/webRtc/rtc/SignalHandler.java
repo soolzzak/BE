@@ -89,7 +89,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     realroom.roomDelete(true);
                     roomRepository.saveAndFlush(realroom);
                 } else if (!roomDto.getHostId().equals(sessionUserId)) {
-                    realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
+                    realroom.setRoomCapacity(realroom.getRoomCapacity() - 1);
                     roomRepository.saveAndFlush(realroom);
                 }
             }
