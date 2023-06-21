@@ -55,7 +55,12 @@ public class MyPageService {
         File originalImageFile = convertMultipartFileToFile(userImage);
 
         if (originalImageFile != null) {
-            storedFileName = s3Uploader.compressAndUpload(originalImageFile, "mainImage", 250, 250);
+            String fileExtension = getFileExtension(userImage.getOriginalFilename());
+            if (fileExtension.equalsIgnoreCase("jpeg") || fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("png")) {
+                storedFileName = s3Uploader.compressAndUpload(originalImageFile, "mainImage", 250, 250);
+            } else {
+                storedFileName = s3Uploader.upload(originalImageFile, "mainImage");
+            }
         }
 
         User myPage = findUser(email);
@@ -183,6 +188,14 @@ public class MyPageService {
         return false;
     }
 
+    private String getFileExtension(String filename) {
+        int dotIndex = filename.lastIndexOf(".");
+        if (dotIndex != -1 && dotIndex < filename.length() - 1) {
+            return filename.substring(dotIndex + 1).toLowerCase();
+        }
+        return "";
+    }
+
     private File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
@@ -201,5 +214,4 @@ public class MyPageService {
         }
         return convertFile;
     }
-
 }
