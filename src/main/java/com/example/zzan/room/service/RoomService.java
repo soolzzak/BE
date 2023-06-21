@@ -241,7 +241,7 @@ public class RoomService {
         if (room.getHostUser().getId().equals(user.getId())) {
             room.roomDelete(true);
         } else if (!room.getHostUser().getId().equals(user.getId())) {
-            room.setRoomCapacity(room.getRoomCapacity() - 1);
+            // room.setRoomCapacity(room.getRoomCapacity() - 1);
             roomRepository.save(room);
         }
         return ResponseDto.setSuccess("Successfully exited the room", null);
