@@ -69,6 +69,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_PAUSEYOUTUBE = "pauseYoutube";
     private static final String MSG_TYPE_STOPYOUTUBE = "stopYoutube";
     private static final String MSG_TYPE_ICEBREAKER = "iceBreaker";
+    private static final String MSG_TYPE_SENDPICTURE = "sendpicture";
+    private static final String MSG_TYPE_CONFIRMPICTURE = "confirmpicture";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -217,7 +219,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE,MSG_TYPE_SENDPICTURE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -265,6 +267,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             if (client.getKey().equals(hostIdInRoom)) {
                                 for (Map.Entry<Long, WebSocketSession> Guestclient : clientsInRoom.entrySet()) {
                                     if (!Guestclient.getKey().equals(hostIdInRoom)) {
+
                                         Long guestId = Guestclient.getKey();
                                         User guestUser = userRepository.findById(guestId).get();
                                         // sendMessage(Guestclient.getValue(),
@@ -297,7 +300,6 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 e.printStackTrace();
                                             }
                                         }
-
                                     }
                                 }
                             }
@@ -380,6 +382,29 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
                     iceBreakerService.displayQuestion(iceBreaker);
                     break;
+
+
+                case MSG_TYPE_CONFIRMPICTURE:
+                    room = rooms.get(message.getData());
+
+                    Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
+                    for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
+                        if (client.getKey().equals(userId)) {
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null));
+                        }
+                    }
+                    break;
+
+
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
