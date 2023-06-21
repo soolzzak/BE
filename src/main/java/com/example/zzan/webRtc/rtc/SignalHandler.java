@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -71,6 +72,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_HOSTDISCONNECT= "guestDisconnect";
 
     @Override
+    @Transactional
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         Long sessionUserId = sessions.get(session);
         Long sessionRoomId = sessions2.get(session);
@@ -84,7 +86,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
             Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
-                if (!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)) {
+                if (!client.getKey().equals(sessionUserId)&&client.getKey().equals(hostId)) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -95,7 +97,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
-                }else if(!client.getKey().equals(sessionUserId)&&client.getKey().equals(hostId)){
+                }else if(!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)){
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -108,16 +110,15 @@ public class SignalHandler extends TextWebSocketHandler {
                             null));
                 }
 
-
             }
 
             if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
                     realroom.roomDelete(true);
-                    roomRepository.save(realroom);
+                    roomRepository.saveAndFlush(realroom);
                 } else if (!roomDto.getHostId().equals(sessionUserId)) {
                     realroom.setRoomCapacity(roomDto.getRoomCapacity() - 1);
-                    roomRepository.save(realroom);
+                    roomRepository.saveAndFlush(realroom);
                 }
             }
         }
@@ -241,7 +242,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         roomRepository.save(realroom);
                         break;
                     } else if (!room.getHostId().equals(userId)) {
-                        realroom.setRoomCapacity(room.getRoomCapacity() - 1);
+                        // realroom.setRoomCapacity(room.getRoomCapacity() - 1);
                         roomRepository.save(realroom);
                         break;
                     }
@@ -298,16 +299,6 @@ public class SignalHandler extends TextWebSocketHandler {
 
                                         Long guestId = Guestclient.getKey();
                                         User guestUser = userRepository.findById(guestId).get();
-                                        // sendMessage(Guestclient.getValue(),
-                                        //         new WebSocketMessage(
-                                        //                 userId,
-                                        //                 message.getType(),
-                                        //                 roomId,
-                                        //                 0,
-                                        //                 null,
-                                        //                 null,
-                                        //             null,
-                                        //                 null));
 
                                         roomService.leaveRoom(roomId, guestUser);
                                         WebSocketSession guestSession = Guestclient.getValue();
