@@ -310,35 +310,14 @@ public class SignalHandler extends TextWebSocketHandler {
                 case MSG_TYPE_STARTGAME:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> startGamePlayers = rtcChatService.getUser(room);
-                    int delay = 1000;
                     for (Map.Entry<Long, WebSocketSession> client : startGamePlayers.entrySet()) {
-                        AtomicInteger num = new AtomicInteger(4);
-                        TimerTask task = new TimerTask() {
-                            @Override
-                            public void run() {
-                                int currentCount = num.getAndDecrement();
-                                if (currentCount >= 1) {
-                                    gameSendMessage(client.getValue(),
-                                            new GameResponseDto(
-                                                    userId,
-                                                    message.getType(),
-                                                    currentCount,
-                                                    null,
-                                                    null));
-                                } else {
-                                    gameSendMessage(client.getValue(),
-                                            new GameResponseDto(
-                                                    userId,
-                                                    message.getType(),
-                                                    "게임 시작!",
-                                                    null,
-                                                    null));
-                                    cancel();
-                                }
-                            }
-                        };
-                        gameTimer.schedule(task, delay);
-                        delay += 1000;
+                        gameSendMessage(client.getValue(),
+                                new GameResponseDto(
+                                        userId,
+                                        message.getType(),
+                                        "게임 시작!",
+                                        null,
+                                        null));
                     }
                     gameService.startGame(startGamePlayers);
                     break;
