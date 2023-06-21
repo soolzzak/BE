@@ -19,21 +19,21 @@ import java.util.*;
 @Service
 @Slf4j
 @Getter
-public class IdiomGameService {
-    private static final String WORDS_FILE_PATH = "4LetterIdiom.txt";
+public class GameService {
+    private static final String WORDS_FILE_PATH = "4LetterWords.txt";
     private static final int INITIAL_DELAY_MS = 4000;
     private static final int PARTIAL_WORD_DELAY_MS = 7000;
     private static final int FULL_WORD_DELAY_MS = 8000;
-    private final List<String> idioms;
+    private final List<String> words;
     private boolean gameRunning;
     private boolean gamePaused;
     private Timer gameTimer;
-    private String currentIdiom;
+    private String currentWord;
     private final ApplicationContext context;
 
-    public IdiomGameService(ApplicationContext context) {
+    public GameService(ApplicationContext context) {
         this.context = context;
-        this.idioms = loadIdiomsFromFile();
+        this.words = loadWordsFromFile();
     }
 
     public void startGame(Map<Long, WebSocketSession> gamePlayers) {
@@ -50,7 +50,7 @@ public class IdiomGameService {
 
                 @Override
                 public void run() {
-                    currentIdiom = getRandomIdiom();
+                    currentWord = getRandomWord();
 
                     countNumberThree(gamePlayers);
                     countNumberTwo(gamePlayers);
@@ -88,7 +88,7 @@ public class IdiomGameService {
 
                 @Override
                 public void run() {
-                    currentIdiom = getRandomIdiom();
+                    currentWord = getRandomWord();
 
                     countNumberThree(gamePlayers);
                     countNumberTwo(gamePlayers);
@@ -183,7 +183,7 @@ public class IdiomGameService {
             public void run() {
                 if (gameRunning) {
                     SignalHandler signalHandler = context.getBean(SignalHandler.class);
-                    String fullWord = currentIdiom;
+                    String fullWord = currentWord;
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", fullWord, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
                         signalHandler.gameSendMessage(session, gameResponseDto);
@@ -207,20 +207,20 @@ public class IdiomGameService {
     }
 
     public String generatePartialWord() {
-        if (currentIdiom != null && currentIdiom.length() >= 2) {
-            return currentIdiom.substring(0, 2);
+        if (currentWord != null && currentWord.length() >= 2) {
+            return currentWord.substring(0, 2);
         }
-        return currentIdiom;
+        return currentWord;
     }
 
-    public String getRandomIdiom() {
+    public String getRandomWord() {
         Random random = new Random();
-        int randomIndex = random.nextInt(idioms.size());
-        return idioms.get(randomIndex);
+        int randomIndex = random.nextInt(words.size());
+        return words.get(randomIndex);
     }
 
-    public List<String> loadIdiomsFromFile() {
-        List<String> idioms = new ArrayList<>();
+    public List<String> loadWordsFromFile() {
+        List<String> words = new ArrayList<>();
         try {
             InputStream inputStream = new ClassPathResource(WORDS_FILE_PATH).getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -228,14 +228,14 @@ public class IdiomGameService {
             while ((line = reader.readLine()) != null) {
                 String trimmedLine = StringUtils.trimWhitespace(line);
                 if (!StringUtils.isEmpty(trimmedLine)) {
-                    idioms.add(trimmedLine);
+                    words.add(trimmedLine);
                 }
             }
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return idioms;
+        return words;
     }
 
     public void countNumberThree(Map<Long, WebSocketSession> gamePlayers) {
