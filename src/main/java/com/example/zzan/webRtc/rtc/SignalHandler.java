@@ -298,17 +298,17 @@ public class SignalHandler extends TextWebSocketHandler {
                                         WebSocketSession guestSession = Guestclient.getValue();
                                         if (guestSession.isOpen()) {
                                             try {
-                                                guestSession.close();
                                                 sendMessage(Guestclient.getValue(),
-                                                        new WebSocketMessage(
-                                                                userId,
-                                                                message.getType(),
-                                                                roomId,
-                                                                0,
-                                                                null,
-                                                                "강퇴 되었습니다",
-                                                                null,
-                                                                null));
+                                                    new WebSocketMessage(
+                                                        userId,
+                                                        message.getType(),
+                                                        roomId,
+                                                        0,
+                                                        null,
+                                                        "강퇴 되었습니다",
+                                                        null,
+                                                        null));
+                                                guestSession.close();
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
