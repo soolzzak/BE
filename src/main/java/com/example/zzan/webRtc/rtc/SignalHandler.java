@@ -67,6 +67,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_ICEBREAKER = "iceBreaker";
     private static final String MSG_TYPE_SENDPICTURE = "sendPicture";
     private static final String MSG_TYPE_CONFIRMPICTURE = "confirmPicture";
+    private static final String MSG_TYPE_GUESTDISCONNECT= "guestDisconnect";
+    private static final String MSG_TYPE_HOSTDISCONNECT= "guestDisconnect";
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -82,18 +84,31 @@ public class SignalHandler extends TextWebSocketHandler {
 
             Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
-                if (!client.getKey().equals(sessionUserId)) {
+                if (!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
-                            MSG_TYPE_JOIN,
+                            MSG_TYPE_GUESTDISCONNECT,
                             null,
                             0,
                             null,
-                            "상대가 방을 나갔습니다",
+                            "The guest has left the room.",
+                            null,
+                            null));
+                }else if(!client.getKey().equals(sessionUserId)&&client.getKey().equals(hostId)){
+                    sendMessage(client.getValue(),
+                        new WebSocketMessage(
+                            sessionUserId,
+                            MSG_TYPE_HOSTDISCONNECT,
+                            null,
+                            0,
+                            null,
+                            "The host has left the room.",
                             null,
                             null));
                 }
+
+
             }
 
             if (hostId != null) {
@@ -298,17 +313,17 @@ public class SignalHandler extends TextWebSocketHandler {
                                         WebSocketSession guestSession = Guestclient.getValue();
                                         if (guestSession.isOpen()) {
                                             try {
-                                                guestSession.close();
                                                 sendMessage(Guestclient.getValue(),
-                                                        new WebSocketMessage(
-                                                                userId,
-                                                                message.getType(),
-                                                                roomId,
-                                                                0,
-                                                                null,
-                                                                "강퇴 되었습니다",
-                                                                null,
-                                                                null));
+                                                    new WebSocketMessage(
+                                                        userId,
+                                                        message.getType(),
+                                                        roomId,
+                                                        0,
+                                                        null,
+                                                        "강퇴 되었습니다",
+                                                        null,
+                                                        null));
+                                                guestSession.close();
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
