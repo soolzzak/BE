@@ -69,7 +69,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_SENDPICTURE = "sendPicture";
     private static final String MSG_TYPE_CONFIRMPICTURE = "confirmPicture";
     private static final String MSG_TYPE_GUESTDISCONNECT= "guestDisconnect";
-    private static final String MSG_TYPE_HOSTDISCONNECT= "guestDisconnect";
+    private static final String MSG_TYPE_HOSTDISCONNECT= "hostDisconnect";
 
     @Override
     @Transactional
@@ -81,7 +81,6 @@ public class SignalHandler extends TextWebSocketHandler {
             return;
         }
 
-        // if (rooms.get(sessionRoomId) != null) {
             RoomResponseDto roomDto = rooms.get(sessionRoomId);
 
         if (roomDto == null) {
@@ -93,7 +92,7 @@ public class SignalHandler extends TextWebSocketHandler {
             Long hostId = roomDto.getHostId();
 
 
-            if (hostId != null) {
+            // if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
                     realroom.roomDelete(true);
                     roomRepository.saveAndFlush(realroom);
@@ -101,7 +100,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     realroom.setRoomCapacity(realroom.getRoomCapacity() - 1);
                     roomRepository.saveAndFlush(realroom);
                 }
-            }
+            // }
 
             Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
@@ -129,7 +128,6 @@ public class SignalHandler extends TextWebSocketHandler {
                             null));
                 }
             }
-        // }
     }
 
     @Override
@@ -210,7 +208,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     Room existingRoom = roomRepository.findById(room.getRoomId())
                             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-                    if (existingRoom.getRoomCapacity() < 2) {
+                    // if (existingRoom.getRoomCapacity() < 2) {
                         rtcChatService.addUser(room, userId, session);
 
                         rooms.put(roomId, room);
@@ -231,7 +229,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             }
                         }
 
-                    }
+                    // }
                     // else {
                     //     Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
                     //     session.close();
