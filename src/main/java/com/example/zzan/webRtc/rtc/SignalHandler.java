@@ -212,10 +212,10 @@ public class SignalHandler extends TextWebSocketHandler {
                     logger.info("[ws] {} has joined Room: #{}", userId, message.getData());
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
-                    // Room existingRoom = roomRepository.findById(room.getRoomId())
-                    //         .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                    Room existingRoom = roomRepository.findById(room.getRoomId())
+                            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-                    // if (existingRoom.getRoomCapacity() < 3) {
+                    if (existingRoom.getRoomCapacity() < 3) {
                         rtcChatService.addUser(room, userId, session);
 
                         rooms.put(roomId, room);
@@ -237,11 +237,11 @@ public class SignalHandler extends TextWebSocketHandler {
                             }
                         }
 
-                    // }
-                    // else {
-                    //     Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-                    //     session.close();
-                    // }
+                    }
+                    else {
+                        Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+                        session.close();
+                    }
 
                     break;
 
@@ -422,7 +422,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-                        // if (!client.getKey().equals(userId)||client.getKey().equals(userId)) {
+                        // if (client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
