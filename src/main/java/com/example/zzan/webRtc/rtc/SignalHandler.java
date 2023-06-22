@@ -413,12 +413,13 @@ public class SignalHandler extends TextWebSocketHandler {
                 case MSG_TYPE_ICEBREAKER:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
+                    String question = iceBreakerService.getRandomQuestion();
                     for (Map.Entry<Long, WebSocketSession> client : iceBreaker.entrySet()) {
                         iceBreakSendMessage(client.getValue(),
                                 new IceBreakerDto(
                                         userId,
                                         message.getType(),
-                                        iceBreakerService.getRandomQuestion(),
+                                        question,
                                         null,
                                         null));
                     }
