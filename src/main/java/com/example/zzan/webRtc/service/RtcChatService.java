@@ -23,11 +23,19 @@ public class RtcChatService {
 
     public ResponseDto addUser(RoomResponseDto roomResponseDto, Long userId, WebSocketSession session) {
 
-        Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
-        userList.put(userId, session);
 
-        SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());
-        SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
-        return ResponseDto.setSuccess("User list has been added.", userList);
+        // Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
+        // userList.put(userId, session);
+
+        if (roomResponseDto != null){
+            Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
+            userList.put(userId, session);
+            SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());}
+        if (userId != null) {
+            SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
+        }
+
+        // return ResponseDto.setSuccess("User list has been added.", userList);
+        return ResponseDto.setSuccess("User list has been added.");
     }
 }
