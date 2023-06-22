@@ -104,7 +104,9 @@ public class SignalHandler extends TextWebSocketHandler {
 
             Map<Long, WebSocketSession> clients = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
-                if (!client.getKey().equals(sessionUserId) && client.getKey().equals(hostId)) {
+                WebSocketSession clientSession = client.getValue();
+
+                if (!client.getKey().equals(sessionUserId) && client.getKey().equals(hostId)&& clientSession.isOpen()) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -116,7 +118,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             null,
                             null));
                     // session.close();
-                } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)) {
+                } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)&& clientSession.isOpen()) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -189,7 +191,8 @@ public class SignalHandler extends TextWebSocketHandler {
                         Map<Long, WebSocketSession> clients = rtcChatService.getUser(roomDto);
 
                         for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
-                            if (!client.getKey().equals(userId)) {
+                            WebSocketSession clientSession = client.getValue();
+                            if (!client.getKey().equals(userId)&& clientSession.isOpen()) {
                                 sendMessage(client.getValue(),
                                         new WebSocketMessage(
                                                 userId,
