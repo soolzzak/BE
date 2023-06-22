@@ -25,14 +25,14 @@ public class IceBreakerService {
     private final ApplicationContext context;
     private String iceBreakerQuestion;
 
-    public void displayQuestion(Map<Long, WebSocketSession> iceBreaker) {
-        iceBreakerQuestion = getRandomQuestion();
-        SignalHandler signalHandler = context.getBean(SignalHandler.class);
-        IceBreakerDto iceBreakerDto = new IceBreakerDto(null, "iceBreaker", iceBreakerQuestion, null, null);
-        for (WebSocketSession session : iceBreaker.values()) {
-            signalHandler.iceBreakSendMessage(session, iceBreakerDto);
-        }
-    }
+//    public void displayQuestion(Map<Long, WebSocketSession> iceBreaker) {
+//        iceBreakerQuestion = getRandomQuestion();
+//        SignalHandler signalHandler = context.getBean(SignalHandler.class);
+//        IceBreakerDto iceBreakerDto = new IceBreakerDto(null, "iceBreaker", iceBreakerQuestion, null, null);
+//        for (WebSocketSession session : iceBreaker.values()) {
+//            signalHandler.iceBreakSendMessage(session, iceBreakerDto);
+//        }
+//    }
 
     public String getRandomQuestion() {
         Random random = new Random();
