@@ -127,6 +127,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
+                            session.close();
                 }
             }
 
@@ -208,8 +209,8 @@ public class SignalHandler extends TextWebSocketHandler {
                     logger.info("[ws] {} has joined Room: #{}", userId, message.getData());
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
-                    Room existingRoom = roomRepository.findById(room.getRoomId())
-                            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                    // Room existingRoom = roomRepository.findById(room.getRoomId())
+                    //         .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
                     // if (existingRoom.getRoomCapacity() < 3) {
                         rtcChatService.addUser(room, userId, session);
