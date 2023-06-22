@@ -58,6 +58,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_KICK = "kick";
     private static final String MSG_TYPE_START = "startShare";
     private static final String MSG_TYPE_STOP = "stopShare";
+    private static final String MSG_TYPE_GAMEINFO = "gameInfo";
     private static final String MSG_TYPE_STARTGAME = "startGame";
     private static final String MSG_TYPE_PAUSEGAME = "pauseGame";
     private static final String MSG_TYPE_STOPGAME = "stopGame";
@@ -257,7 +258,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE,MSG_TYPE_SENDPICTURE:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE, MSG_TYPE_SENDPICTURE, MSG_TYPE_GAMEINFO:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
