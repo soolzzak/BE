@@ -67,7 +67,7 @@ public class GameService {
 
                     count++;
 
-                    if (count >= 50) {
+                    if (count >= 10) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
@@ -107,7 +107,7 @@ public class GameService {
 
                     count++;
 
-                    if (count >= 50) {
+                    if (count >= 10) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
