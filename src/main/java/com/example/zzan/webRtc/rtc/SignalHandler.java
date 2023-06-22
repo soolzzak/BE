@@ -78,20 +78,19 @@ public class SignalHandler extends TextWebSocketHandler {
             Long sessionUserId = sessions.get(session);
             Long sessionRoomId = sessions2.get(session);
 
-        if (sessionUserId == null || sessionRoomId == null) {
-            return;
-        }
+        // if (sessionUserId == null || sessionRoomId == null) {
+        //     return;
+        // }
 
             RoomResponseDto roomDto = rooms.get(sessionRoomId);
 
-        if (roomDto == null) {
-            return;
-        }
-
+        // if (roomDto == null) {
+        //     return;
+        // }
+        if (rooms.get(sessionRoomId) != null) {
             Room realroom = roomRepository.findById(roomDto.getRoomId())
-                    .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
             Long hostId = roomDto.getHostId();
-
 
             if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
@@ -103,9 +102,9 @@ public class SignalHandler extends TextWebSocketHandler {
                 }
             }
 
-            Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
-            for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
-                if (!client.getKey().equals(sessionUserId)&&client.getKey().equals(hostId)) {
+            Map<Long, WebSocketSession> clients = rtcChatService.getUser(roomDto);
+            for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
+                if (!client.getKey().equals(sessionUserId) && client.getKey().equals(hostId)) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -116,8 +115,8 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
-                            // session.close();
-                }else if(!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)){
+                    // session.close();
+                } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
                             sessionUserId,
@@ -128,11 +127,11 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
-                            // session.close();
+                    // session.close();
                 }
             }
 
-
+        }
     }
 
     @Override
@@ -254,7 +253,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         roomRepository.save(realroom);
                         break;
                     } else if (!room.getHostId().equals(userId)) {
-                        // realroom.setRoomCapacity(room.getRoomCapacity() - 1);
+                        realroom.setRoomCapacity(room.getRoomCapacity() - 1);
                         roomRepository.save(realroom);
                         break;
                     }
