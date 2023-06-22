@@ -73,7 +73,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
     @Override
     @Transactional
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException {
             Long sessionUserId = sessions.get(session);
             Long sessionRoomId = sessions2.get(session);
 
@@ -92,7 +92,7 @@ public class SignalHandler extends TextWebSocketHandler {
             Long hostId = roomDto.getHostId();
 
 
-            // if (hostId != null) {
+            if (hostId != null) {
                 if (roomDto.getHostId().equals(sessionUserId)) {
                     realroom.roomDelete(true);
                     roomRepository.saveAndFlush(realroom);
@@ -100,7 +100,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     realroom.setRoomCapacity(realroom.getRoomCapacity() - 1);
                     roomRepository.saveAndFlush(realroom);
                 }
-            // }
+            }
 
             Map<Long, WebSocketSession> clients  = rtcChatService.getUser(roomDto);
             for (Map.Entry<Long, WebSocketSession> client : clients .entrySet()) {
@@ -115,6 +115,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
+                            session.close();
                 }else if(!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)){
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
@@ -128,6 +129,8 @@ public class SignalHandler extends TextWebSocketHandler {
                             null));
                 }
             }
+
+
     }
 
     @Override
@@ -212,7 +215,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         rtcChatService.addUser(room, userId, session);
 
                         rooms.put(roomId, room);
-                        roomRepository.saveAndFlush(existingRoom);
+                        // roomRepository.saveAndFlush(existingRoom);
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
                         for (Map.Entry<Long, WebSocketSession> client : joinClients.entrySet()) {
                             if (client.getKey().equals(userId)) {
