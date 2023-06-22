@@ -74,8 +74,8 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     @Transactional
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        Long sessionUserId = sessions.get(session);
-        Long sessionRoomId = sessions2.get(session);
+            Long sessionUserId = sessions.get(session);
+            Long sessionRoomId = sessions2.get(session);
 
         if (sessionUserId == null || sessionRoomId == null) {
             return;
@@ -208,7 +208,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     Room existingRoom = roomRepository.findById(room.getRoomId())
                             .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
-                    // if (existingRoom.getRoomCapacity() < 2) {
+                    if (existingRoom.getRoomCapacity() < 3) {
                         rtcChatService.addUser(room, userId, session);
 
                         rooms.put(roomId, room);
@@ -229,11 +229,11 @@ public class SignalHandler extends TextWebSocketHandler {
                             }
                         }
 
-                    // }
-                    // else {
-                    //     Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-                    //     session.close();
-                    // }
+                    }
+                    else {
+                        Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
+                        session.close();
+                    }
 
                     break;
 
