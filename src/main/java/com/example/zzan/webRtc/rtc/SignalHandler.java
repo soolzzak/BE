@@ -422,7 +422,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-                        if (client.getKey().equals(userId)) {
+                        // if (!client.getKey().equals(userId)||client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
@@ -433,7 +433,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                     null,
                                     null,
                                     null));
-                        }
+                        // }
                     }
                     break;
 
