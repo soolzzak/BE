@@ -71,6 +71,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private static final String MSG_TYPE_CONFIRMPICTURE = "confirmPicture";
     private static final String MSG_TYPE_GUESTDISCONNECT= "guestDisconnect";
     private static final String MSG_TYPE_HOSTDISCONNECT= "hostDisconnect";
+    private static final String MSG_TYPE_DENYPICTURE = "denyPicture";
 
     @Override
     @Transactional
@@ -262,7 +263,7 @@ public class SignalHandler extends TextWebSocketHandler {
                     }
                     break;
 
-                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE, MSG_TYPE_SENDPICTURE, MSG_TYPE_GAMEINFO:
+                case MSG_TYPE_TOAST, MSG_TYPE_START, MSG_TYPE_STOP, MSG_TYPE_PAUSEYOUTUBE, MSG_TYPE_STOPYOUTUBE, MSG_TYPE_SENDPICTURE, MSG_TYPE_GAMEINFO,MSG_TYPE_DENYPICTURE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
@@ -446,6 +447,7 @@ public class SignalHandler extends TextWebSocketHandler {
                         // }
                     }
                     break;
+
 
 
 
