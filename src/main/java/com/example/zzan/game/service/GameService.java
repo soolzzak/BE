@@ -67,14 +67,14 @@ public class GameService {
 
                     count++;
 
-                    if (count >= 10) {
+                    if (count >= 250) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 0, FULL_WORD_DELAY_MS);
+            gameTimer.schedule(gameTask, 0, PARTIAL_WORD_DELAY_MS);
         }
     }
 
@@ -107,14 +107,14 @@ public class GameService {
 
                     count++;
 
-                    if (count >= 10) {
+                    if (count >= 250) {
                         cancel();
                         scheduleNextGame(gamePlayers);
                     }
                 }
             };
             gameTimer = new Timer();
-            gameTimer.schedule(gameTask, 0, FULL_WORD_DELAY_MS);
+            gameTimer.schedule(gameTask, 0, PARTIAL_WORD_DELAY_MS);
         }
     }
 
