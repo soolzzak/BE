@@ -116,7 +116,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
-                            session.close();
+                            // session.close();
                 }else if(!client.getKey().equals(sessionUserId)&&!client.getKey().equals(hostId)){
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
@@ -128,7 +128,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
-                            session.close();
+                            // session.close();
                 }
             }
 
@@ -220,7 +220,8 @@ public class SignalHandler extends TextWebSocketHandler {
                         // roomRepository.saveAndFlush(existingRoom);
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
                         for (Map.Entry<Long, WebSocketSession> client : joinClients.entrySet()) {
-                            if (client.getKey().equals(userId)) {
+                            WebSocketSession clientSession = client.getValue();
+                            if (client.getKey().equals(userId)&& clientSession.isOpen()) {
                                 sendMessage(client.getValue(),
                                         new WebSocketMessage(
                                                 userId,
