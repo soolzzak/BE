@@ -118,7 +118,6 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
-                    // session.close();
                 } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)&& clientSession.isOpen()) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
@@ -130,10 +129,8 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
-                    // session.close();
                 }
             }
-
         }
     }
 
@@ -237,7 +234,6 @@ public class SignalHandler extends TextWebSocketHandler {
                                                 null));
                             }
                         }
-
                     }
                     else {
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
@@ -424,16 +420,13 @@ public class SignalHandler extends TextWebSocketHandler {
                                         null,
                                         null));
                     }
-//                    iceBreakerService.displayQuestion(iceBreaker);
                     break;
-
 
                 case MSG_TYPE_CONFIRMPICTURE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-                        // if (client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
@@ -444,12 +437,8 @@ public class SignalHandler extends TextWebSocketHandler {
                                     null,
                                     null,
                                     null));
-                        // }
                     }
                     break;
-
-
-
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
