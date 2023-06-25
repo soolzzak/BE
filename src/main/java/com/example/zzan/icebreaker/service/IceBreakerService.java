@@ -1,11 +1,15 @@
 package com.example.zzan.icebreaker.service;
 
+import com.example.zzan.icebreaker.dto.IceBreakerDto;
+import com.example.zzan.webRtc.rtc.SignalHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.WebSocketSession;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +23,16 @@ public class IceBreakerService {
     private static final String ICE_BREAKER_QUESTION = "IceBreakerQuestion.txt";
     private final List<String> questions;
     private final ApplicationContext context;
+    private String iceBreakerQuestion;
+
+    public void displayQuestion(Map<Long, WebSocketSession> iceBreaker) {
+        iceBreakerQuestion = getRandomQuestion();
+        SignalHandler signalHandler = context.getBean(SignalHandler.class);
+        IceBreakerDto iceBreakerDto = new IceBreakerDto(null, "iceBreaker", iceBreakerQuestion, null, null);
+        for (WebSocketSession session : iceBreaker.values()) {
+            signalHandler.iceBreakSendMessage(session, iceBreakerDto);
+        }
+    }
 
     public String getRandomQuestion() {
         Random random = new Random();
