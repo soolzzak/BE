@@ -414,7 +414,17 @@ public class SignalHandler extends TextWebSocketHandler {
                 case MSG_TYPE_ICEBREAKER:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
-                    iceBreakerService.displayQuestion(iceBreaker);
+                    String question = iceBreakerService.getRandomQuestion();
+                    for (Map.Entry<Long, WebSocketSession> client : iceBreaker.entrySet()) {
+                        iceBreakSendMessage(client.getValue(),
+                            new IceBreakerDto(
+                                userId,
+                                message.getType(),
+                                question,
+                                null,
+                                null));
+                    }
+                    //                    iceBreakerService.displayQuestion(iceBreaker);
                     break;
 
 
