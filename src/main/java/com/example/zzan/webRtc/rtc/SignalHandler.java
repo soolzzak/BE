@@ -76,14 +76,14 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     @Transactional
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException {
-            Long sessionUserId = sessions.get(session);
-            Long sessionRoomId = sessions2.get(session);
+        Long sessionUserId = sessions.get(session);
+        Long sessionRoomId = sessions2.get(session);
 
         // if (sessionUserId == null || sessionRoomId == null) {
         //     return;
         // }
 
-            RoomResponseDto roomDto = rooms.get(sessionRoomId);
+        RoomResponseDto roomDto = rooms.get(sessionRoomId);
 
         // if (roomDto == null) {
         //     return;
@@ -118,6 +118,7 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
+                    // session.close();
                 } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)&& clientSession.isOpen()) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
@@ -129,8 +130,10 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
+                    // session.close();
                 }
             }
+
         }
     }
 
@@ -179,9 +182,9 @@ public class SignalHandler extends TextWebSocketHandler {
                     Object sdp = message.getSdp();
 
                     logger.info("[ws] Signal: {}",
-                            candidate != null
-                                    ? candidate.toString().substring(0, 64)
-                                    : sdp.toString().substring(0, 64));
+                        candidate != null
+                            ? candidate.toString().substring(0, 64)
+                            : sdp.toString().substring(0, 64));
 
                     RoomResponseDto roomDto = rooms.get(roomId);
 
@@ -192,15 +195,15 @@ public class SignalHandler extends TextWebSocketHandler {
                             WebSocketSession clientSession = client.getValue();
                             if (!client.getKey().equals(userId)&& clientSession.isOpen()) {
                                 sendMessage(client.getValue(),
-                                        new WebSocketMessage(
-                                                userId,
-                                                message.getType(),
-                                                roomId,
-                                                0,
-                                                null,
-                                                null,
-                                                candidate,
-                                                sdp));
+                                    new WebSocketMessage(
+                                        userId,
+                                        message.getType(),
+                                        roomId,
+                                        0,
+                                        null,
+                                        null,
+                                        candidate,
+                                        sdp));
                             }
                         }
                     }
@@ -211,7 +214,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     room = UserListMap.getInstance().getUserMap().get(roomId);
                     Room existingRoom = roomRepository.findById(room.getRoomId())
-                            .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+                        .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
 
                     if (existingRoom.getRoomCapacity() < 3) {
                         rtcChatService.addUser(room, userId, session);
@@ -223,17 +226,18 @@ public class SignalHandler extends TextWebSocketHandler {
                             WebSocketSession clientSession = client.getValue();
                             if (client.getKey().equals(userId)&& clientSession.isOpen()) {
                                 sendMessage(client.getValue(),
-                                        new WebSocketMessage(
-                                                userId,
-                                                message.getType(),
-                                                roomId,
-                                                0,
-                                                null,
-                                                null,
-                                                null,
-                                                null));
+                                    new WebSocketMessage(
+                                        userId,
+                                        message.getType(),
+                                        roomId,
+                                        0,
+                                        null,
+                                        null,
+                                        null,
+                                        null));
                             }
                         }
+
                     }
                     else {
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
@@ -266,15 +270,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
                         if (!client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
-                                    new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            0,
-                                            null,
-                                            null,
-                                            null,
-                                            null));
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null));
                         }
                     }
                     break;
@@ -286,15 +290,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     WebSocketSession hostSession = pingUser.get(hostId);
 
                     sendMessage(hostSession,
-                            new WebSocketMessage(
-                                    userId,
-                                    message.getType(),
-                                    roomId,
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null));
+                        new WebSocketMessage(
+                            userId,
+                            message.getType(),
+                            roomId,
+                            0,
+                            null,
+                            null,
+                            null,
+                            null));
                     break;
 
                 case MSG_TYPE_KICK:
@@ -344,12 +348,12 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> startGamePlayers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : startGamePlayers.entrySet()) {
                         gameSendMessage(client.getValue(),
-                                new GameResponseDto(
-                                        userId,
-                                        message.getType(),
-                                        "게임 시작!",
-                                        null,
-                                        null));
+                            new GameResponseDto(
+                                userId,
+                                message.getType(),
+                                "게임 시작!",
+                                null,
+                                null));
                     }
                     gameService.startGame(startGamePlayers);
                     break;
@@ -374,15 +378,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     for (Map.Entry<Long, WebSocketSession> client : youtubeViewers.entrySet()) {
                         if (!client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
-                                    new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            time,
-                                            null,
-                                            null,
-                                            null,
-                                            null));
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    time,
+                                    null,
+                                    null,
+                                    null,
+                                    null));
                         }
                     }
                     break;
@@ -394,15 +398,15 @@ public class SignalHandler extends TextWebSocketHandler {
                     for (Map.Entry<Long, WebSocketSession> client : usersWatchingYoutube.entrySet()) {
                         if (!client.getKey().equals(userId)) {
                             sendMessage(client.getValue(),
-                                    new WebSocketMessage(
-                                            userId,
-                                            message.getType(),
-                                            roomId,
-                                            0,
-                                            youtubeUrl,
-                                            null,
-                                            null,
-                                            null));
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    youtubeUrl,
+                                    null,
+                                    null,
+                                    null));
                         }
                     }
                     break;
@@ -410,35 +414,32 @@ public class SignalHandler extends TextWebSocketHandler {
                 case MSG_TYPE_ICEBREAKER:
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
-                    String question = iceBreakerService.getRandomQuestion();
-                    for (Map.Entry<Long, WebSocketSession> client : iceBreaker.entrySet()) {
-                        iceBreakSendMessage(client.getValue(),
-                                new IceBreakerDto(
-                                        userId,
-                                        message.getType(),
-                                        question,
-                                        null,
-                                        null));
-                    }
+                    iceBreakerService.displayQuestion(iceBreaker);
                     break;
+
 
                 case MSG_TYPE_CONFIRMPICTURE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-                            sendMessage(client.getValue(),
-                                new WebSocketMessage(
-                                    userId,
-                                    message.getType(),
-                                    roomId,
-                                    0,
-                                    null,
-                                    null,
-                                    null,
-                                    null));
+                        // if (client.getKey().equals(userId)) {
+                        sendMessage(client.getValue(),
+                            new WebSocketMessage(
+                                userId,
+                                message.getType(),
+                                roomId,
+                                0,
+                                null,
+                                null,
+                                null,
+                                null));
+                        // }
                     }
                     break;
+
+
+
 
                 default:
                     logger.info("[ws] Type of the received message {} is undefined!", message.getType());
