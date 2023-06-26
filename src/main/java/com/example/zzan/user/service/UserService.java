@@ -8,7 +8,7 @@ import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
-import com.example.zzan.redis.Service.RedisTokenService;
+// import com.example.zzan.redis.Service.RedisTokenService; 
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.user.dto.DeleteAccountRequestDto;
 import com.example.zzan.user.dto.PasswordRequestDto;
@@ -44,7 +44,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
-    private final RedisTokenService redisTokenService;
+    // private final RedisTokenService redisTokenService;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
@@ -126,11 +126,11 @@ public class UserService {
                 RefreshToken savedRefreshToken = refreshToken.get();
                 RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
                 refreshTokenRepository.save(updateToken);
-                redisTokenService.storeRefreshToken(user.getEmail(),updateToken.getRefreshToken());
+                // redisTokenService.storeRefreshToken(user.getEmail(),updateToken.getRefreshToken());
             } else {
                 RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail, user.getId());
                 refreshTokenRepository.save(newToken);
-                redisTokenService.storeRefreshToken(user.getEmail(),newToken.getRefreshToken());
+                // redisTokenService.storeRefreshToken(user.getEmail(),newToken.getRefreshToken());
             }
             setHeader(response, tokenDto, user.getEmail());
 

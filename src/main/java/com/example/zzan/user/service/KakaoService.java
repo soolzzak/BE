@@ -6,7 +6,7 @@ import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
-import com.example.zzan.redis.Service.RedisTokenService;
+// import com.example.zzan.redis.Service.RedisTokenService;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
@@ -46,7 +46,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final S3Uploader s3Uploader;
-    private final RedisTokenService redisTokenService;
+    // private final RedisTokenService redisTokenService;
 
     public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
@@ -84,18 +84,17 @@ public class KakaoService {
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
-        redisTokenService.storeRefreshToken(user.getEmail(), refreshToken);
 
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
 
         if (existingRefreshToken.isPresent()) {
             existingRefreshToken.get().setToken(refreshToken);
             refreshTokenRepository.save(existingRefreshToken.get());
-            redisTokenService.storeRefreshToken(user.getEmail(), existingRefreshToken.get().getRefreshToken());
+            // redisTokenService.storeRefreshToken(user.getEmail(), existingRefreshToken.get().getRefreshToken());
         } else {
             RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
             refreshTokenRepository.save(newRefreshToken);
-            redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
+            // redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
         }
 
         Map<String, String> tokens = new HashMap<>();
