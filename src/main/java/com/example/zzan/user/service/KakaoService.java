@@ -84,6 +84,7 @@ public class KakaoService {
         String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
+        redisTokenService.storeRefreshToken(user.getEmail(), refreshToken);
 
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
 
