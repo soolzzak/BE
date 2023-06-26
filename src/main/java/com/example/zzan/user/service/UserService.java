@@ -46,7 +46,7 @@ public class UserService {
     private final S3Uploader s3Uploader;
     private final RedisTokenService redisTokenService;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
-
+ 
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
         validateUsername(requestDto.getUsername());
