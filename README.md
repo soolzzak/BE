@@ -25,7 +25,8 @@
 
 🛠 Project Architecture
 ---------------------------------------
-![image](https://github.com/Jello92/BE/assets/128972031/e5bb7ae0-e697-4c80-a1f0-c63158deaced)
+![아키텍쳐](https://github.com/soolzzak/BE/assets/128972031/d512fe9a-74fb-4f53-b4df-9bd7fdd44ea4)
+
 
 
 📅 API 명세서
