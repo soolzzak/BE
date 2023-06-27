@@ -33,7 +33,7 @@ import java.util.Optional;
 import static com.example.zzan.global.exception.ExceptionEnum.*;
 import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
-
+import jakarta.servlet.http.Cookie;
 
 @Service
 @Slf4j
@@ -46,7 +46,7 @@ public class UserService {
     private final S3Uploader s3Uploader;
     private final RedisTokenService redisTokenService;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
- 
+
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
         validateUsername(requestDto.getUsername());
@@ -142,11 +142,32 @@ public class UserService {
         }
     }
 
+    // private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
+    //     response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
+    //     response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
+    //     response.addHeader("USER-EMAIL", userEmail);
+    // }
+
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
-        response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
-        response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
+        // HttpOnly 속성을 추가하여 쿠키를 설정하는 새로운 코드
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, tokenDto.getAccessToken());
+        accessTokenCookie.setHttpOnly(true); // HttpOnly 속성 설정
+        accessTokenCookie.setPath("/"); // 쿠키의 경로 설정 (예시)
+
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, tokenDto.getRefreshToken());
+        refreshTokenCookie.setHttpOnly(true); // HttpOnly 속성 설정
+        refreshTokenCookie.setPath("/"); // 쿠키의 경로 설정 (예시)
+
+        // 응답에 쿠키 추가
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
+        // 기타 헤더 설정
         response.addHeader("USER-EMAIL", userEmail);
     }
+
+
+
 
     @Transactional
     public ResponseEntity<?> logout(User user) {
