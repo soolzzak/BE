@@ -152,13 +152,24 @@ public class UserService {
 
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
 
-        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, tokenDto.getAccessToken());
+        String accessToken = tokenDto.getAccessToken();
+        String refreshToken = tokenDto.getRefreshToken();
+
+        if (accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setSecure(true);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
 
-        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, tokenDto.getRefreshToken());
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
@@ -166,6 +177,7 @@ public class UserService {
 
         response.addHeader("USER-EMAIL", userEmail);
     }
+
 
 
 
