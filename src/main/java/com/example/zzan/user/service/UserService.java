@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.servlet.http.Cookie;
 
 import java.util.Date;
 import java.util.Optional;
@@ -142,11 +143,31 @@ public class UserService {
         }
     }
 
+    // private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
+    //     response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
+    //     response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
+    //     response.addHeader("USER-EMAIL", userEmail);
+    // }
+
+
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
-        response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
-        response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
+
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, tokenDto.getAccessToken());
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        response.addCookie(accessTokenCookie);
+
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, tokenDto.getRefreshToken());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
+
         response.addHeader("USER-EMAIL", userEmail);
     }
+
+
 
     @Transactional
     public ResponseEntity<?> logout(User user) {
