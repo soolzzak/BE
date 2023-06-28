@@ -79,21 +79,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(ACCESS_KEY)) {
-                    access_token = "Bearer " + cookie.getValue();
+                    access_token = cookie.getValue();
                 } else if (cookie.getName().equals(REFRESH_KEY)) {
-                    refresh_token = "Bearer " + cookie.getValue();
+                    refresh_token = cookie.getValue();
                 }
             }
         }
 
         if (access_token != null) {
-            String validationError = jwtUtil.validateToken(access_token);
+            String validationError = jwtUtil.validateToken("Bearer " + access_token);
             if (validationError == null) {
                 String userEmail = jwtUtil.getUserInfoFromToken(access_token);
                 setAuthentication(userEmail);
             }
         } else if (refresh_token != null) {
-            if (jwtUtil.refreshTokenValidation(refresh_token)) {
+            if (jwtUtil.refreshTokenValidation("Bearer " + refresh_token)) {
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
@@ -113,6 +113,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 
 
     private void sendErrorResponse(HttpServletResponse response, ExceptionEnum exceptionEnum) throws IOException {
