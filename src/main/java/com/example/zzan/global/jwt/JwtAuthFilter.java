@@ -87,13 +87,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (access_token != null) {
-            String validationError = jwtUtil.validateToken("Bearer " + access_token);
+            String validationError = jwtUtil.validateToken(access_token);
             if (validationError == null) {
                 String userEmail = jwtUtil.getUserInfoFromToken(access_token);
                 setAuthentication(userEmail);
             }
         } else if (refresh_token != null) {
-            if (jwtUtil.refreshTokenValidation("Bearer " + refresh_token)) {
+            if (jwtUtil.refreshTokenValidation(refresh_token)) {
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
@@ -113,7 +113,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
 
 
     private void sendErrorResponse(HttpServletResponse response, ExceptionEnum exceptionEnum) throws IOException {
