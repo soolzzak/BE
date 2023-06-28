@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
@@ -78,9 +79,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(ACCESS_KEY)) {
-                    access_token = cookie.getValue();
+                    access_token = URLDecoder.decode(cookie.getValue(), "UTF-8");
                 } else if (cookie.getName().equals(REFRESH_KEY)) {
-                    refresh_token = cookie.getValue();
+                    refresh_token = URLDecoder.decode(cookie.getValue(), "UTF-8");
                 }
             }
         }
