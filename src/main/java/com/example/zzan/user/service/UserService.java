@@ -154,7 +154,7 @@ public class UserService {
         String accessToken = tokenDto.getAccessToken().replace(" ", "%20");
         String refreshToken = tokenDto.getRefreshToken().replace(" ", "%20");
 
-        String domain = "api.honsoolzzak.com";
+        String domain = "honsoolzzak.com";
 
 
         Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
