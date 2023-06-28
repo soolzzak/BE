@@ -33,6 +33,7 @@ public enum ExceptionEnum {
     FAILED_SEND_MAIL(HttpStatus.BAD_REQUEST.value(), "Failed to send the verification email."),
     ROOM_ALREADY_FULL(HttpStatus.BAD_REQUEST.value(), "Another user has already joined the room."),
 
+
     BLOCKED_USER(HttpStatus.BAD_REQUEST.value(), "This user is blocked."),
     USER_NOT_IN_ROOM(HttpStatus.NOT_FOUND.value(), "The user is not in the room."),
 
