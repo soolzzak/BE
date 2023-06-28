@@ -151,17 +151,21 @@ public class UserService {
 
 
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
-        String accessToken = tokenDto.getAccessToken();
-        String refreshToken = tokenDto.getRefreshToken();
 
+
+        // String accessToken = tokenDto.getAccessToken();
+        // String refreshToken = tokenDto.getRefreshToken();
+
+        String accessToken = tokenDto.getAccessToken().replace(" ", "%20");
+        String refreshToken = tokenDto.getRefreshToken().replace(" ", "%20");
+        // if (accessToken.startsWith("Bearer ")) {
+        //     accessToken = accessToken.substring(7);
+        // }
+        //
+        // if (refreshToken.startsWith("Bearer ")) {
+        //     refreshToken = refreshToken.substring(7);
+        // }
         String domain = "honsoolzzak.com";
-        if (accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);
-        }
-
-        if (refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-        }
 
         Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
         accessTokenCookie.setHttpOnly(true);
