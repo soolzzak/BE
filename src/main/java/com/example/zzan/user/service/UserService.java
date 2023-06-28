@@ -156,21 +156,21 @@ public class UserService {
 
         Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
         accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
+        // accessTokenCookie.setSecure(true);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
 
-        String accessTokenSameSiteAttribute = String.format("%s; SameSite=None", accessTokenCookie.toString());
-        response.addHeader("Set-Cookie", accessTokenSameSiteAttribute);
+        // String accessTokenSameSiteAttribute = String.format("%s; SameSite=None", accessTokenCookie.toString());
+        // response.addHeader("Set-Cookie", accessTokenSameSiteAttribute);
 
         Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
+        // refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
 
-        String refreshTokenSameSiteAttribute = String.format("%s; SameSite=None", refreshTokenCookie.toString());
-        response.addHeader("Set-Cookie", refreshTokenSameSiteAttribute);
+        // String refreshTokenSameSiteAttribute = String.format("%s; SameSite=None", refreshTokenCookie.toString());
+        // response.addHeader("Set-Cookie", refreshTokenSameSiteAttribute);
 
         response.addHeader("USER-EMAIL", userEmail);
 
