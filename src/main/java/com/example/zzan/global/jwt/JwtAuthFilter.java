@@ -7,6 +7,7 @@ import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +41,49 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
+    // @Override
+    // protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    //     String access_token = jwtUtil.resolveToken(request, ACCESS_KEY);
+    //     String refresh_token = jwtUtil.resolveToken(request, REFRESH_KEY);
+    //
+    //     if (access_token != null) {
+    //         String validationError = jwtUtil.validateToken(access_token);
+    //         if (validationError == null) {
+    //             String userEmail = jwtUtil.getUserInfoFromToken(access_token);
+    //             setAuthentication(userEmail);
+    //         }
+    //     } else if (refresh_token != null) {
+    //         if (jwtUtil.refreshTokenValidation(refresh_token)) {
+    //             String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
+    //             setAuthentication(userEmail);
+    //             User user = userRepository.findUserByEmail(userEmail).orElseThrow(
+    //                     () -> new ApiException(EMAIL_NOT_FOUND)
+    //             );
+    //             String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
+    //             jwtUtil.setHeaderAccessToken(response, newAccessToken);
+    //         } else {
+    //             sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
+    //             return;
+    //         }
+    //     }
+    //     filterChain.doFilter(request, response);
+    // }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String access_token = jwtUtil.resolveToken(request, ACCESS_KEY);
-        String refresh_token = jwtUtil.resolveToken(request, REFRESH_KEY);
+        String access_token = null;
+        String refresh_token = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(ACCESS_KEY)) {
+                    access_token = cookie.getValue();
+                } else if (cookie.getName().equals(REFRESH_KEY)) {
+                    refresh_token = cookie.getValue();
+                }
+            }
+        }
 
         if (access_token != null) {
             String validationError = jwtUtil.validateToken(access_token);
@@ -56,10 +96,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                        () -> new ApiException(EMAIL_NOT_FOUND)
+                    () -> new ApiException(EMAIL_NOT_FOUND)
                 );
                 String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
-                jwtUtil.setHeaderAccessToken(response, newAccessToken);
+
+                Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
+                newAccessTokenCookie.setHttpOnly(true);
+                newAccessTokenCookie.setPath("/");
+                newAccessTokenCookie.setDomain("honsoolzzak.com");
+                response.addCookie(newAccessTokenCookie);
             } else {
                 sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
                 return;
@@ -67,6 +112,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
 
     private void sendErrorResponse(HttpServletResponse response, ExceptionEnum exceptionEnum) throws IOException {
         response.setCharacterEncoding("UTF-8");
