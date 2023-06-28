@@ -154,23 +154,22 @@ public class UserService {
         String accessToken = tokenDto.getAccessToken().replace(" ", "%20");
         String refreshToken = tokenDto.getRefreshToken().replace(" ", "%20");
 
+        String domain = "api.honsoolzzak.com";
+
+
         Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
         accessTokenCookie.setHttpOnly(true);
-        // accessTokenCookie.setSecure(true);
         accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain(domain);
         response.addCookie(accessTokenCookie);
 
-        // String accessTokenSameSiteAttribute = String.format("%s; SameSite=None", accessTokenCookie.toString());
-        // response.addHeader("Set-Cookie", accessTokenSameSiteAttribute);
 
         Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        // refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setDomain(domain);
         response.addCookie(refreshTokenCookie);
 
-        // String refreshTokenSameSiteAttribute = String.format("%s; SameSite=None", refreshTokenCookie.toString());
-        // response.addHeader("Set-Cookie", refreshTokenSameSiteAttribute);
 
         response.addHeader("USER-EMAIL", userEmail);
 
