@@ -4,6 +4,7 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.BadWords;
 import com.example.zzan.global.jwt.JwtUtil;
+import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
@@ -12,6 +13,7 @@ import com.example.zzan.redis.Service.RedisTokenService;
 import com.example.zzan.room.dto.RoomResponseDto;
 import com.example.zzan.user.dto.DeleteAccountRequestDto;
 import com.example.zzan.user.dto.PasswordRequestDto;
+import com.example.zzan.user.dto.UserInfoDto;
 import com.example.zzan.user.dto.UserLoginDto;
 import com.example.zzan.user.dto.UserRequestDto;
 import com.example.zzan.user.entity.Gender;
@@ -258,4 +260,11 @@ public class UserService {
         return ResponseDto.setSuccess("Your account has been successfully deleted");
     }
 
+    public ResponseDto getUserInfo(User user) {
+         User infoUser  =userRepository.findById(user.getId())
+             .orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
+
+        UserInfoDto userInfoDto = new UserInfoDto(infoUser);
+        return ResponseDto.setSuccess("Successfully retrieved user information",userInfoDto);
+    }
 }

@@ -74,4 +74,9 @@ public class UserController {
         return kakaoService.kakaoDeleteAccount(code,response);
     }
 
+    @GetMapping("/userinfo")
+    public ResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUserInfo(userDetails.getUser());
+    }
+
 }
