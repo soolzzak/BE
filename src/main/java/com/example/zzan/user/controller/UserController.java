@@ -45,15 +45,8 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
-        String tokenJson = kakaoService.kakaoLogin(code, response);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
-
-        jwtUtil.setHeaderAccessToken(response, tokenDto.getAccessToken());
-        jwtUtil.setHeaderRefreshToken(response, tokenDto.getRefreshToken());
-
-        return ResponseEntity.ok().body(ResponseDto.setSuccess("Token has been issued."));
+        return kakaoService.kakaoLogin(code, response);
     }
 
     @PostMapping("/login")

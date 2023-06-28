@@ -3,6 +3,7 @@ package com.example.zzan.user.service;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
+import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
@@ -17,6 +18,8 @@ import com.example.zzan.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -35,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.jwt.JwtUtil.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -48,12 +54,13 @@ public class KakaoService {
     private final S3Uploader s3Uploader;
     private final RedisTokenService redisTokenService;
 
-    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
         String ageRange = kakaoInfoDto.getAgeRange();
         String[] ages = ageRange.split("~");
         int lowerAge = Integer.parseInt(ages[0]);
+        String domain = "honsoolzzak.com";
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
@@ -97,15 +104,33 @@ public class KakaoService {
             redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
         }
 
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", createToken);
-        tokens.put("refreshToken", refreshToken);
+        if (accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonTokens = objectMapper.writeValueAsString(tokens);
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain(domain);
 
-        return jsonTokens;
+
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setDomain(domain);
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
+        return new ResponseEntity(ResponseDto.setSuccess("Successfully login.", null), HttpStatus.OK);
     }
+
+
+
+
 
     private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
