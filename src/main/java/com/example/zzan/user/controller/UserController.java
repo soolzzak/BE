@@ -1,5 +1,7 @@
 package com.example.zzan.user.controller;
 
+import static com.example.zzan.global.jwt.JwtUtil.*;
+
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.UserDetailsImpl;
@@ -14,6 +16,7 @@ import com.example.zzan.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +48,37 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
+        String tokenJson = kakaoService.kakaoLogin(code, response);
 
-        return kakaoService.kakaoLogin(code, response);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
+
+        String accessToken = tokenDto.getAccessToken();
+        String refreshToken = tokenDto.getRefreshToken();
+
+        if (accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
+        String domain = "honsoolzzak.com";
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain(domain);
+        response.addCookie(accessTokenCookie);
+
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setDomain(domain);
+        response.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok().body(ResponseDto.setSuccess("Token has been issued."));
     }
 
     @PostMapping("/login")
