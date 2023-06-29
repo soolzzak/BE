@@ -91,6 +91,14 @@ public class KakaoService {
         String createdAccessToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
         String createdrefreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
+        if (createdAccessToken.startsWith("Bearer ")) {
+            createdAccessToken = createdAccessToken.substring(7);
+        }
+
+        if (createdrefreshToken.startsWith("Bearer ")) {
+            createdrefreshToken = createdrefreshToken.substring(7);
+        }
+
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
 
         if (existingRefreshToken.isPresent()) {
