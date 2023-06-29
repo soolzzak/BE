@@ -268,7 +268,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> clients = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : clients.entrySet()) {
-                        if (!client.getKey().equals(userId)) {
+                        if (!client.getKey().equals(userId)&& client.getValue().isOpen()) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
