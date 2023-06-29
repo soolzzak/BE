@@ -88,36 +88,34 @@ public class KakaoService {
                 () -> new ApiException(EMAIL_NOT_FOUND)
         );
 
-        String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
-
+        String createdAccessToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
+        String createdrefreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
 
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
 
         if (existingRefreshToken.isPresent()) {
-            existingRefreshToken.get().setToken(refreshToken);
+            existingRefreshToken.get().setToken(createdrefreshToken);
             refreshTokenRepository.save(existingRefreshToken.get());
             redisTokenService.storeRefreshToken(user.getEmail(), existingRefreshToken.get().getRefreshToken());
         } else {
-            RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
+            RefreshToken newRefreshToken = new RefreshToken(createdrefreshToken, user.getEmail(), user.getId());
             refreshTokenRepository.save(newRefreshToken);
             redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
         }
 
-        if (accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);
+        if (createdAccessToken.startsWith("Bearer ")) {
+            createdAccessToken = createdAccessToken.substring(7);
         }
-        if (refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
+        if (createdrefreshToken.startsWith("Bearer ")) {
+            createdrefreshToken = createdrefreshToken.substring(7);
         }
 
-        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, accessToken);
+        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, createdAccessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setDomain(domain);
 
-
-        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
+        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, createdrefreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setDomain(domain);
@@ -127,8 +125,6 @@ public class KakaoService {
 
         return new ResponseEntity(ResponseDto.setSuccess("Successfully login.", null), HttpStatus.OK);
     }
-
-
 
 
 
