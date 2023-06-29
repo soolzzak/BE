@@ -54,13 +54,12 @@ public class KakaoService {
     private final S3Uploader s3Uploader;
     private final RedisTokenService redisTokenService;
 
-    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
         KakaoInfoDto kakaoInfoDto = getUserInfo(accessToken);
         String ageRange = kakaoInfoDto.getAgeRange();
         String[] ages = ageRange.split("~");
         int lowerAge = Integer.parseInt(ages[0]);
-        String domain = "honsoolzzak.com";
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
@@ -71,7 +70,6 @@ public class KakaoService {
                 Date birthday = null;
                 String password= UUID.randomUUID().toString();
                 User user;
-
                 try {
                     birthday=formatter.parse(birthdayString);
                 }catch (ParseException e){
@@ -83,56 +81,32 @@ public class KakaoService {
                 throw new ApiException(NOT_AN_ADULT);
             }
         }
-
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
-                () -> new ApiException(EMAIL_NOT_FOUND)
+            () -> new ApiException(EMAIL_NOT_FOUND)
         );
-
-        String createdAccessToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-        String createdrefreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
-
-        if (createdAccessToken.startsWith("Bearer ")) {
-            createdAccessToken = createdAccessToken.substring(7);
-        }
-
-        if (createdrefreshToken.startsWith("Bearer ")) {
-            createdrefreshToken = createdrefreshToken.substring(7);
-        }
-
+        String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
+        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
-
         if (existingRefreshToken.isPresent()) {
-            existingRefreshToken.get().setToken(createdrefreshToken);
+            existingRefreshToken.get().setToken(refreshToken);
             refreshTokenRepository.save(existingRefreshToken.get());
             redisTokenService.storeRefreshToken(user.getEmail(), existingRefreshToken.get().getRefreshToken());
         } else {
-            RefreshToken newRefreshToken = new RefreshToken(createdrefreshToken, user.getEmail(), user.getId());
+            RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
             refreshTokenRepository.save(newRefreshToken);
             redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
         }
 
-        if (createdAccessToken.startsWith("Bearer ")) {
-            createdAccessToken = createdAccessToken.substring(7);
-        }
-        if (createdrefreshToken.startsWith("Bearer ")) {
-            createdrefreshToken = createdrefreshToken.substring(7);
-        }
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", createToken);
+        tokens.put("refreshToken", refreshToken);
 
-        Cookie accessTokenCookie = new Cookie(ACCESS_KEY, createdAccessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setDomain(domain);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonTokens = objectMapper.writeValueAsString(tokens);
 
-        Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, createdrefreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setDomain(domain);
-
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
-
-        return new ResponseEntity(ResponseDto.setSuccess("Successfully login.", null), HttpStatus.OK);
+        return jsonTokens;
     }
+
 
 
 
