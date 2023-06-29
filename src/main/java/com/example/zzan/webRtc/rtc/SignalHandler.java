@@ -79,15 +79,10 @@ public class SignalHandler extends TextWebSocketHandler {
         Long sessionUserId = sessions.get(session);
         Long sessionRoomId = sessions2.get(session);
 
-        // if (sessionUserId == null || sessionRoomId == null) {
-        //     return;
-        // }
 
         RoomResponseDto roomDto = rooms.get(sessionRoomId);
 
-        // if (roomDto == null) {
-        //     return;
-        // }
+
         if (rooms.get(sessionRoomId) != null) {
             Room realroom = roomRepository.findById(roomDto.getRoomId())
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
@@ -118,7 +113,6 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The guest has left the room.",
                             null,
                             null));
-                    // session.close();
                 } else if (!client.getKey().equals(sessionUserId) && !client.getKey().equals(hostId)&& clientSession.isOpen()) {
                     sendMessage(client.getValue(),
                         new WebSocketMessage(
@@ -130,7 +124,6 @@ public class SignalHandler extends TextWebSocketHandler {
                             "The host has left the room.",
                             null,
                             null));
-                    // session.close();
                 }
             }
 
@@ -141,21 +134,6 @@ public class SignalHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         Long sessionUserId = sessions.get(session);
 
-        // Long sessionRoomId = sessions2.get(session);
-        //
-        // RoomResponseDto room = UserListMap.getInstance().getUserMap().get(sessionRoomId);
-        // Room existingRoom = roomRepository.findById(room.getRoomId())
-        //     .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
-        // if (existingRoom.getRoomCapacity() < 3) {
-        //     existingRoom.setRoomCapacity(existingRoom.getRoomCapacity() + 1);
-        //     roomRepository.saveAndFlush(existingRoom);
-        // } else {
-        //         // throw new ApiException(ROOM_ALREADY_FULL);
-        //
-        //         // Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
-        //         session.close();
-        //         // WebSocketSession guestSession = joinClients.get();
-        //     }
 
         sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null, null, null));
     }
@@ -220,7 +198,6 @@ public class SignalHandler extends TextWebSocketHandler {
                         rtcChatService.addUser(room, userId, session);
 
                         rooms.put(roomId, room);
-                        // roomRepository.saveAndFlush(existingRoom);
                         Map<Long, WebSocketSession> joinClients = rtcChatService.getUser(room);
                         for (Map.Entry<Long, WebSocketSession> client : joinClients.entrySet()) {
                             WebSocketSession clientSession = client.getValue();
@@ -433,7 +410,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-                        // if (client.getKey().equals(userId)) {
+
                         sendMessage(client.getValue(),
                             new WebSocketMessage(
                                 userId,
@@ -444,7 +421,7 @@ public class SignalHandler extends TextWebSocketHandler {
                                 null,
                                 null,
                                 null));
-                        // }
+
                     }
                     break;
 
