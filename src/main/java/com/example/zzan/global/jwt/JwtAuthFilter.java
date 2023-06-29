@@ -71,7 +71,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                     () -> new ApiException(EMAIL_NOT_FOUND)
                 );
-                String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
+                String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
 
                 Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
                 newAccessTokenCookie.setHttpOnly(true);
