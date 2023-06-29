@@ -84,8 +84,8 @@ public class KakaoService {
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
             () -> new ApiException(EMAIL_NOT_FOUND)
         );
-        String createToken =  jwtUtil.createToken(user, UserRole.USER, "Access");
-        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "Refresh");
+        String createToken =  jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
+        String refreshToken = jwtUtil.createToken(user, UserRole.USER, "REFRESH_KEY");
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
         if (existingRefreshToken.isPresent()) {
             existingRefreshToken.get().setToken(refreshToken);
