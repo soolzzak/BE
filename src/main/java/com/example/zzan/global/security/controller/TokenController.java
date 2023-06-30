@@ -35,37 +35,37 @@ public class TokenController {
 
     @PostMapping("/getAccessToken")
     public ResponseEntity<ResponseDto<TokenDto>> getAccessTokenFromRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (REFRESH_KEY.equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        if (refreshToken == null) {
-            throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
-        }
-
-        if (jwtUtil.refreshTokenValidation(refreshToken)) {
-            String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
-            User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                () -> new ApiException(EMAIL_NOT_FOUND)
-            );
-            String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
-            Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
-            newAccessTokenCookie.setHttpOnly(true);
-            newAccessTokenCookie.setPath("/");
-            newAccessTokenCookie.setDomain("honsoolzzak.com");
-            int oneMinute = 60;
-            newAccessTokenCookie.setMaxAge(oneMinute);
-            response.addCookie(newAccessTokenCookie);
+        // String refreshToken = null;
+        // if (request.getCookies() != null) {
+        //     for (Cookie cookie : request.getCookies()) {
+        //         if (REFRESH_KEY.equals(cookie.getName())) {
+        //             refreshToken = cookie.getValue();
+        //             break;
+        //         }
+        //     }
+        // }
+        // if (refreshToken == null) {
+        //     throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
+        // }
+        //
+        // if (jwtUtil.refreshTokenValidation(refreshToken)) {
+        //     String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
+        //     User user = userRepository.findUserByEmail(userEmail).orElseThrow(
+        //         () -> new ApiException(EMAIL_NOT_FOUND)
+        //     );
+        //     String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
+        //     if (newAccessToken.startsWith("Bearer ")) {
+        //         newAccessToken = newAccessToken.substring(7);
+        //     }
+        //     Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
+        //     newAccessTokenCookie.setHttpOnly(true);
+        //     newAccessTokenCookie.setPath("/");
+        //     newAccessTokenCookie.setDomain("honsoolzzak.com");
+        //     int oneMinute = 60;
+        //     newAccessTokenCookie.setMaxAge(oneMinute);
+        //     response.addCookie(newAccessTokenCookie);
             return ResponseEntity.ok().body(ResponseDto.setSuccess("Successfully reissued Access Token."));
-
         }
-        throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
-    }
+    //     throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
+    // }
 }

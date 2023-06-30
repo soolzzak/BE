@@ -73,6 +73,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 );
                 String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
 
+                if (newAccessToken.startsWith("Bearer ")) {
+                    newAccessToken = newAccessToken.substring(7);
+                }
+
                 Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
                 newAccessTokenCookie.setHttpOnly(true);
                 newAccessTokenCookie.setPath("/");
