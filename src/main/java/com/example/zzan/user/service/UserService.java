@@ -173,6 +173,8 @@ public class UserService {
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setDomain(domain);
+        int oneMinute = 60;
+        accessTokenCookie.setMaxAge(oneMinute);
         response.addCookie(accessTokenCookie);
 
 

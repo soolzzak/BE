@@ -77,6 +77,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 newAccessTokenCookie.setHttpOnly(true);
                 newAccessTokenCookie.setPath("/");
                 newAccessTokenCookie.setDomain("honsoolzzak.com");
+                int oneMinute = 60;
+                newAccessTokenCookie.setMaxAge(oneMinute);
                 response.addCookie(newAccessTokenCookie);
             } else {
                 sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
