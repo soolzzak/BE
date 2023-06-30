@@ -324,13 +324,16 @@ public class SignalHandler extends TextWebSocketHandler {
                     room = rooms.get(message.getData());
                     Map<Long, WebSocketSession> startGamePlayers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : startGamePlayers.entrySet()) {
-                        gameSendMessage(client.getValue(),
-                            new GameResponseDto(
-                                userId,
-                                message.getType(),
-                                "게임 시작!",
-                                null,
-                                null));
+                        if (client.getValue().isOpen()) {
+                            gameSendMessage(client.getValue(),
+                                new GameResponseDto(
+                                    userId,
+                                    message.getType(),
+                                    "게임 시작!",
+                                    null,
+                                    null));
+
+                        }
                     }
                     gameService.startGame(startGamePlayers);
                     break;
@@ -353,7 +356,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> youtubeViewers = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : youtubeViewers.entrySet()) {
-                        if (!client.getKey().equals(userId)) {
+                        if (!client.getKey().equals(userId)&& client.getValue().isOpen()) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
@@ -373,7 +376,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                     Map<Long, WebSocketSession> usersWatchingYoutube = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : usersWatchingYoutube.entrySet()) {
-                        if (!client.getKey().equals(userId)) {
+                        if (!client.getKey().equals(userId)&& client.getValue().isOpen()) {
                             sendMessage(client.getValue(),
                                 new WebSocketMessage(
                                     userId,
@@ -393,35 +396,37 @@ public class SignalHandler extends TextWebSocketHandler {
                     Map<Long, WebSocketSession> iceBreaker = rtcChatService.getUser(room);
                     String question = iceBreakerService.getRandomQuestion();
                     for (Map.Entry<Long, WebSocketSession> client : iceBreaker.entrySet()) {
-                        iceBreakSendMessage(client.getValue(),
-                            new IceBreakerDto(
-                                userId,
-                                message.getType(),
-                                question,
-                                null,
-                                null));
+
+                        if (client.getValue().isOpen()) {
+                            iceBreakSendMessage(client.getValue(),
+                                new IceBreakerDto(
+                                    userId,
+                                    message.getType(),
+                                    question,
+                                    null,
+                                    null));
+                        }
                     }
                     //                    iceBreakerService.displayQuestion(iceBreaker);
                     break;
-
 
                 case MSG_TYPE_CONFIRMPICTURE:
                     room = rooms.get(message.getData());
 
                     Map<Long, WebSocketSession> pictureTakingUsers  = rtcChatService.getUser(room);
                     for (Map.Entry<Long, WebSocketSession> client : pictureTakingUsers .entrySet()) {
-
-                        sendMessage(client.getValue(),
-                            new WebSocketMessage(
-                                userId,
-                                message.getType(),
-                                roomId,
-                                0,
-                                null,
-                                null,
-                                null,
-                                null));
-
+                        if (client.getValue().isOpen()) {
+                            sendMessage(client.getValue(),
+                                new WebSocketMessage(
+                                    userId,
+                                    message.getType(),
+                                    roomId,
+                                    0,
+                                    null,
+                                    null,
+                                    null,
+                                    null));
+                        }
                     }
                     break;
 
