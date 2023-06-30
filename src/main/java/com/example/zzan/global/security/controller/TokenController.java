@@ -5,6 +5,7 @@ import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.user.entity.User;
+import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.exception.ExceptionEnum.REFRESH_TOKEN_NOT_FOUND;
-import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
+import static com.example.zzan.global.jwt.JwtUtil.*;
 
 @Slf4j
 @Tag(name = "TokenController", description = "토큰 파트")
@@ -35,25 +36,36 @@ public class TokenController {
     @PostMapping("/getAccessToken")
     public ResponseEntity<ResponseDto<TokenDto>> getAccessTokenFromRefreshToken(HttpServletRequest request, HttpServletResponse response) {
 
-        // String refreshToken = null;
-        //
-        // if (request.getCookies() != null) {
-        //     for (Cookie cookie : request.getCookies()) {
-        //         if (REFRESH_KEY.equals(cookie.getName())) {
-        //             refreshToken = cookie.getValue();
-        //             break;
-        //         }
-        //     }
-        // }
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (REFRESH_KEY.equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
-        // if (refreshToken.startsWith("Bearer ")) {
-        //     refreshToken = refreshToken.substring("Bearer ".length());
-        // }
+        if (refreshToken == null) {
+            throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
+        }
 
-        // if (jwtUtil.refreshTokenValidation(refreshToken)) {
-
+        if (jwtUtil.refreshTokenValidation(refreshToken)) {
+            String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
+            User user = userRepository.findUserByEmail(userEmail).orElseThrow(
+                () -> new ApiException(EMAIL_NOT_FOUND)
+            );
+            String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
+            Cookie newAccessTokenCookie = new Cookie(ACCESS_KEY, newAccessToken);
+            newAccessTokenCookie.setHttpOnly(true);
+            newAccessTokenCookie.setPath("/");
+            newAccessTokenCookie.setDomain("honsoolzzak.com");
+            int oneMinute = 60;
+            newAccessTokenCookie.setMaxAge(oneMinute);
+            response.addCookie(newAccessTokenCookie);
             return ResponseEntity.ok().body(ResponseDto.setSuccess("Successfully reissued Access Token."));
-        // }
-        // throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
+
+        }
+        throw new ApiException(REFRESH_TOKEN_NOT_FOUND);
     }
 }
