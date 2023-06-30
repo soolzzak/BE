@@ -126,7 +126,9 @@ public class GameService {
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
-                signalHandler.gameSendMessage(session, gameResponseDto);
+                if (session.isOpen()) {
+                    signalHandler.gameSendMessage(session, gameResponseDto);
+                }
             }
         }
     }
@@ -139,7 +141,9 @@ public class GameService {
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "stopGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
-                signalHandler.gameSendMessage(session, gameResponseDto);
+                if (session.isOpen()) {
+                    signalHandler.gameSendMessage(session, gameResponseDto);
+                }
             }
         }
     }
@@ -152,13 +156,17 @@ public class GameService {
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "pauseGame", "게임 멈춤!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
-                signalHandler.gameSendMessage(session, gameResponseDto);
+                if (session.isOpen()) {
+                    signalHandler.gameSendMessage(session, gameResponseDto);
+                }
             }
         } else if (gameRunning && gamePaused) {
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "pauseGame", "게임 재시작!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
-                signalHandler.gameSendMessage(session, gameResponseDto);
+                if (session.isOpen()) {
+                    signalHandler.gameSendMessage(session, gameResponseDto);
+                }
             }
             resumeGame(gamePlayers);
         }
@@ -173,7 +181,9 @@ public class GameService {
                     String partialWord = generatePartialWord();
                     GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", partialWord, 3, null, null);
                     for (WebSocketSession session : gamePlayers.values()) {
-                        signalHandler.gameSendMessage(session, gameResponseDto);
+                        if (session.isOpen()) {
+                            signalHandler.gameSendMessage(session, gameResponseDto);
+                        }
                     }
                 }
             }
