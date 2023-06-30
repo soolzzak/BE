@@ -66,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         } else if (refresh_token != null) {
             if (jwtUtil.refreshTokenValidation(refresh_token)) {
-                String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
+                String userEmail = jwtUtil.getUserInfoFromRefreshtoken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                     () -> new ApiException(EMAIL_NOT_FOUND)
