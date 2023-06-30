@@ -164,7 +164,7 @@ public class JwtUtil {
         if (validationError != null){
             return false;
         }
-        String userEmail = getUserInfoFromToken(token);
+        String userEmail = getUserInfoFromRefreshtoken(token);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
         String actualRefreshToken = refreshToken.get().getRefreshToken();
         return refreshToken.isPresent() && token.equals(actualRefreshToken);
