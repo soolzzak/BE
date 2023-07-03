@@ -39,9 +39,9 @@
 <details>
 <summary>유저플로우</summary>
 
-```
-![userflow](https://github.com/soolzzak/BE/assets/128972031/733f0182-1a93-4665-80dd-c313c8e921f7)
-```
+
+![userflow](https://github.com/Jello92/BE/assets/128972031/f409c90c-4ff2-47c3-a509-6f449e6803bc)
+
 </details>
 
 
