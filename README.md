@@ -1,4 +1,4 @@
-![Artboard 2@3x](https://github.com/soolzzak/BE/assets/128972031/0c2d2eda-8439-4982-9184-3c69dcff6381)
+![Thumbnail](https://github.com/Jello92/BE/assets/128972031/27c2dcbf-3f82-4c1c-aaa4-c69041e4d096)
 
 
 # 🍻혼술짝 (HonSoolZZAK)
@@ -36,7 +36,13 @@
 
 👨‍💻 Userflow
 ---------------------------------------
+<details>
+<summary>유저플로우</summary>
+
+```
 ![userflow](https://github.com/soolzzak/BE/assets/128972031/733f0182-1a93-4665-80dd-c313c8e921f7)
+```
+</details>
 
 
 🗝 ERD 
