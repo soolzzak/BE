@@ -22,6 +22,86 @@
 | Back-end | 김상우 | https://github.com/kimsangwoo0505|
 | Designer | 곽준희 | |
 
+🍹 주요 기능 및 서비스
+--------------------------------------
+<details>
+<summary> 짠! 버튼 </summary>
+
+- 짠 버튼을 눌러 상대방과 기분 좋게 짠을 같이  할 수 있습니다.
+ ![짠_기능](https://github.com/princesssana/todolist_lv2/assets/90277176/9335cf0a-d58d-4ebc-927a-4326c2f9fc32)
+
+</details>
+<details>
+<summary> 아이스 브레이킹 카드 </summary>
+
+- 처음 본 짝꿍과 어색해서 무슨 말을 해야할지 모를때! 아이스 브레이커 질문 카드를 이용하여 짝꿍과 대화를 할 수 있습니다.
+ ![아이스브레이커](https://github.com/princesssana/todolist_lv2/assets/90277176/567382aa-c308-4469-b046-a64a38ed37d4)
+
+</details>
+<details>
+<summary> 게임 </summary>
+
+- 이어말하기 게임을 통하여 상대방과 재미있게 게임도 하고 친해질 수 있습니다.
+ ![게임-min](https://github.com/princesssana/todolist_lv2/assets/90277176/9d4078a0-9ae4-4008-9e8f-90636c94f93e)
+
+</details>
+<details>
+<summary> 유튜브 동시 시청 </summary>
+
+- 유튜브 링크를 넣으면 짝궁과 원하는 영상을 동시에 시청할 수 있습니다.
+ ![Youtube_(1) (online-video-cutter com) (1)](https://github.com/princesssana/todolist_lv2/assets/90277176/05855783-3f98-4459-b822-7feda8645cfc)
+
+</details>
+<details>
+<summary> 함께 사진찍기 </summary>
+
+- 만약 짝꿍과 즐거운 시간을 보냈다면, 함께 사진을 찍어 기록할 수 있는 기능이 있습니다. 상대방은 사진 찍는 것에 대한 여부를 선택할 수 있습니다.
+ ![사진찍기-min](https://github.com/princesssana/todolist_lv2/assets/90277176/c1caf1b1-a04e-43b3-bbcf-fb5e08608f11)
+
+</details>
+<details>
+<summary> 최근에 만난 유저, 팔로잉, 차단 유저 목록 </summary>
+
+- 마이페이지에서 최근에 만난 유저, 팔로잉 하는 유저 및 차단한 유저 목록들을 확인 할 수 있습니다. 
+ ![마이페이지_목록](https://github.com/princesssana/todolist_lv2/assets/90277176/527fe200-11e8-46f0-a493-b0ece19debd3)
+
+</details>
+<details>
+<summary> 도수 레벨 </summary>
+
+- 도수 레벨은 상대방의 매너를 평가해주는 시스템입니다. 도수가 높으면 높을 수록 매너가 좋은 유저를 의미합니다. 
+ ![도수기능-min](https://github.com/princesssana/todolist_lv2/assets/90277176/7f931634-a099-4eea-a3db-9e8e1af3fa54)
+
+</details>
+<details>
+<summary> 쪽지 기능 </summary>
+
+- 쪽지 기능을 통하여 유저 간 소통하고 쪽지를 주고 받을 수 있습니다. 
+ ![KakaoTalk_20230720_230035470](https://github.com/princesssana/todolist_lv2/assets/90277176/36b2da37-301a-4477-bb36-a362709c7921)
+
+</details>
+<details>
+<summary> 유저 찾기 </summary>
+
+- 유저 찾기를 통하여, 다른 유저를 찾아서 팔로우, 신고, 차단, 쪽지 보내기 및 도수 올리기 등 사용 할 수 있습니다.
+ ![유저찾기-min](https://github.com/princesssana/todolist_lv2/assets/90277176/d75cfbcf-2951-4f5d-b6c6-3d345f02e02e)
+
+</details>
+<details>
+<summary> 방 별 카테고리 </summary>
+
+- 방 별로 카테고리가 있어, 원하는 카테고리에 방을 생성 하거나, 입장 하실 수 있습니다.
+ ![방별_카테고리](https://github.com/princesssana/todolist_lv2/assets/90277176/e6c916a2-97a3-439d-af57-a64555fcf757)
+
+</details>
+<details>
+<summary> 방 설정 기능 </summary>
+
+- 방 설정 기능을 통하여, 조금 더 세부적으로 원하는 방을 찾아볼 수 있습니다.
+ ![방_설정-min](https://github.com/princesssana/todolist_lv2/assets/90277176/b69b506c-aeb5-43db-84c4-0c47a5a7b854)
+
+</details>
+
 
 🛠 Project Architecture
 ---------------------------------------
