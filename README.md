@@ -34,16 +34,6 @@
 [혼술짝! RESTful API](https://fate-starfish-b23.notion.site/adfd01d3d12a465095c39b7e1a8f796a?v=c4c7b5d149e846bdb61357331bf241ed)
 
 
-👨‍💻 Userflow
----------------------------------------
-<details>
-<summary>유저플로우</summary>
-
-
-![userflow](https://github.com/Jello92/BE/assets/128972031/f409c90c-4ff2-47c3-a509-6f449e6803bc)
-
-</details>
-
 
 🗝 ERD 
 ---------------------------------------
@@ -54,4 +44,17 @@
 
 🛠 트러블 슈팅
 ---------------------------------------
-[트러블 슈팅](https://www.notion.so/040989c5b0c74b1287eb2a4b1cc2860f?pvs=4)
+<details>
+<summary>동일 검색 쿼리를 검색했을 때 결과값을 새로 불러오지 않았던 문제</summary>
+
+**`문제사항`**
+
+검색 input으로 이전과 동일 검색어를 임력했을 때 값을 새로 불러오지 않음. 
+
+**`해결방안`**
+
+검색어가 atom으로 메인페이지 컴포넌트에 전달되어 값의 update가 있을 경우 useMutation으로 방 리스트 불러옴.
+
+그러나 이전과 동일 값을 입력할 경우 값의 변화가 없기 때문에, trigger용 boolean atom을 만들어서 useEffect를 활용해 검색 성공
+
+</details>
