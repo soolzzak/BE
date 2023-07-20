@@ -29,6 +29,30 @@
 
 
 
+💻Technical Decisions
+---------------------------------------
+
+|  | 사용 기술 | 기술 설명 |
+| --- | --- | --- |
+| 공통 | WebRTC | 서버와 같은 중간자를 거치지 않고 브라우저 간을 P2P로 연결 할 수 있고, 실시간으로 상호작용을 할 수 있다는 특성을 바탕으로 개인화되고 참여 유도적인 웹 서비스에 적합 |
+| 공통 | Websockets | WebRTC의 signal channel로 사용 |
+| 공통 | https | WebRTC에서 카메라 사용 권한 및 보안을 위하여 https 사용 |
+| 공통 | Oauth2.0 | oauth2.0를 이용한 카카오 소셜로그인 기능을 추가하여 사용자가 더욱 편리하게 로그인 및 서비스를 이용할 수 있게함 |
+| 공통 | SSE | 서버에서 초기 요청을 하지 않고도 필요할 때마다 데이터를 보내줄 수 있으며, 쪽지를 받거나  팔로잉하고 있는 유저의 방 개설시, 알림을 보내주는 용도임으로 SSE를 사용하여 단일 단방향 채널을 열어줌 |
+| FE | Typescript | 효율적인 Refactoring, 협업 및 유지보수 & 안전하게 Type 활용 가능 |
+| FE | React Query | 비동기 요청을 해서 받아온 데이터 캐싱, 무효화, stale time 등을 할 수 있게 도와주는 도구로 사용 |
+| FE | Jotai | 프로젝트의 구성을 고려하여 Redux와 같은 Flux 기반 상태관리보다 atomic 상태관리 선택. Recoil보다 더 가볍고 boilerplate가 적은 Jotai 선택 |
+| FE | CloudFront | React 프로젝트가 배포된 s3 버킷에 HTTPS를 적용시키기 위해 사용 |
+| FE | CI/CD (FE) | Code Build, Code Deploy & Code Pipeline을 사용하여 배포 및 관리 |
+| BE | CI/CD (BE) | Jenkins와 Github Actions (CI) + AWS CodeDeploy(CD) 중 고민을 하였지만, Jenkins의 경우 Docker를 사용해야하며 규모가 작은 프로젝트이므로 설정하는데 리소스 낭비가 발생할 수 있으므로, 설정이 비교적 간단하고 관리에 용이한 GithubAction, Code Deploy 를 사용하여 배포 및 관리 |
+| BE | Redis | 인메모리 DB인 Redis를 이용해 데이터에 대한 접근시간을 빠르게 만들고 한정된 시간만 유효한 Refresh Token에 대해 유효시간을 설정하여 효율적으로 메모리 사용량 관리 |
+| BE | Swagger | 프론트와 백엔드의 효율적이고 직관적인 의사소통을 위하여 API의 기능을 문서화하고 테스트 하기 위해 적용 |
+| BE | S3 | 이미지를 직접 DB에 저장하면 DB의 크기가 커져서 성능에 영향을 미칠 수 있으므로, S3와 같은 스토리지 서비스에 이미지를 저장하여 이미지 업로드 기능 구현 |
+| BE | Gradle | 스크립트 길이와 가독성 면에서도 우수하고, 의존성이 늘어날수록 성능과 스크립트의 품질의 차이가 나며, 빌드 타임 속도도 빠름 |
+| BE | Docker | Docker 컨테이너로 실행하고 EC2 인스턴스에서 여러 개의 Redis 컨테이너를 실행하여 데이터 처리 및 캐싱 작업에 효과적임 |
+| BE | Junit | 테스트 작업을 자동화하여 개발자의 작업 시간 절약 및 테스트 코드와 실제 코드를 분리하여 작성 할 수 있어 유지 보수에 효과적임. 테스트 결과를 표시하는데 사용하기 쉬운 형식 제공하여 가독성이 좋음 |
+
+
 📅 API 명세서
 ---------------------------------------
 [혼술짝! RESTful API](https://fate-starfish-b23.notion.site/adfd01d3d12a465095c39b7e1a8f796a?v=c4c7b5d149e846bdb61357331bf241ed)
