@@ -39,7 +39,7 @@
 
 </details>
 <details>
-<summary> 게임 </summary>
+<summary> 이어말하기 게임 </summary>
 
 - 이어말하기 게임을 통하여 상대방과 재미있게 게임도 하고 친해질 수 있습니다.
  ![게임-min](https://github.com/princesssana/todolist_lv2/assets/90277176/9d4078a0-9ae4-4008-9e8f-90636c94f93e)
@@ -48,7 +48,7 @@
 <details>
 <summary> 유튜브 동시 시청 </summary>
 
-- 유튜브 링크를 넣으면 짝궁과 원하는 영상을 동시에 시청할 수 있습니다.
+- 유튜브 링크를 넣으면 짝궁과 원하는 영상을 동시 시청 및 제어할 수 있습니다.
  ![Youtube_(1) (online-video-cutter com) (1)](https://github.com/princesssana/todolist_lv2/assets/90277176/05855783-3f98-4459-b822-7feda8645cfc)
 
 </details>
@@ -106,8 +106,11 @@
 🛠 Project Architecture
 ---------------------------------------
 ![아키텍쳐](https://github.com/soolzzak/BE/assets/128972031/d512fe9a-74fb-4f53-b4df-9bd7fdd44ea4)
-  
-### FRONTEND TECH STACK  
+
+
+📚 Tech Stack
+---------------------------------------
+FRONTEND  
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
@@ -117,7 +120,7 @@
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) 
 ![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white)
 
-### BACKEND TECH STACK   
+BACKEND   
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) 
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) 
