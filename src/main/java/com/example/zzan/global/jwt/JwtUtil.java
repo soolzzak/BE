@@ -164,11 +164,11 @@ public class JwtUtil {
             return false;
         }
         String userEmail = getUserInfoFromRefreshtoken(token);
-        // Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
-        Optional<String> refreshToken = redisTokenService.retrieveRefreshToken(userEmail);
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
+        // Optional<String> refreshToken = redisTokenService.retrieveRefreshToken(userEmail);
 
-        // String actualRefreshToken = refreshToken.get().getRefreshToken();
-        String actualRefreshToken = refreshToken.get();
+        String actualRefreshToken = refreshToken.get().getRefreshToken();
+        // String actualRefreshToken = refreshToken.get();
         return refreshToken.isPresent() && token.equals(actualRefreshToken);
     }
 
