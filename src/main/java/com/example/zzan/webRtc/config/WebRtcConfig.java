@@ -11,18 +11,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @RequiredArgsConstructor
 public class WebRtcConfig implements WebSocketConfigurer {
-
     private final SignalHandler signalHandler;
-//    private final WebSocketConfig webSocketConfig;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(signalHandler, "/signal")
                 .setAllowedOrigins("*");
     }
-
-//    @Bean
-//    public MusicGameService musicGameService() throws IOException {
-//        return webSocketConfig.musicGameService();
-//    }
 }

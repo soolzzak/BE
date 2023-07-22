@@ -10,23 +10,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class BlockList extends Timestamped {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(nullable = false)
-	private Long id;
+    @ManyToOne
+    @JoinColumn(name = "BLACKLISTEDUSER_ID", nullable = false)
+    private User blockListedUser;
 
-	@ManyToOne
-	@JoinColumn(name ="BLACKLISTEDUSER_ID",nullable = false)
-	private User blockListedUser;
+    @ManyToOne
+    @JoinColumn(name = "BLACKLISTINGUSER_ID", nullable = false)
+    private User blockListingUser;
 
-	@ManyToOne
-	@JoinColumn(name = "BLACKLISTINGUSER_ID", nullable = false)
-	private User blockListingUser;
-
-	public BlockList(User blockListedUser, User blockListingUser){
-
-		this.blockListedUser = blockListedUser;
-		this.blockListingUser = blockListingUser;
-	}
+    public BlockList(User blockListedUser, User blockListingUser) {
+        this.blockListedUser = blockListedUser;
+        this.blockListingUser = blockListingUser;
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.zzan.user.controller;
 
-import static com.example.zzan.global.jwt.JwtUtil.*;
-
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.jwt.JwtUtil;
 import com.example.zzan.global.security.UserDetailsImpl;
@@ -25,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
+import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
+
 @Tag(name = "UserController", description = "로그인 및 회원가입 파트")
 @Slf4j
 @CrossOrigin
@@ -47,9 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response)  throws JsonProcessingException {
+    public ResponseEntity<ResponseDto<TokenDto>> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
         String tokenJson = kakaoService.kakaoLogin(code, response);
-
 
         ObjectMapper objectMapper = new ObjectMapper();
         TokenDto tokenDto = objectMapper.readValue(tokenJson, TokenDto.class);
@@ -97,18 +97,17 @@ public class UserController {
     }
 
     @PostMapping("/deleteAccount")
-    public ResponseDto deleteAccount(@Valid @RequestBody DeleteAccountRequestDto deleteAccountRequestDto,@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.deleteAccount(deleteAccountRequestDto,userDetails.getUser());
+    public ResponseDto deleteAccount(@Valid @RequestBody DeleteAccountRequestDto deleteAccountRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.deleteAccount(deleteAccountRequestDto, userDetails.getUser());
     }
 
     @GetMapping("/kakaoDeleteAccount")
-    public ResponseDto<RoomResponseDto> kakaoDeleteAccount(@RequestParam("code") String code,HttpServletResponse response) throws JsonProcessingException {
-        return kakaoService.kakaoDeleteAccount(code,response);
+    public ResponseDto<RoomResponseDto> kakaoDeleteAccount(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoDeleteAccount(code, response);
     }
 
     @GetMapping("/userinfo")
     public ResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.getUserInfo(userDetails.getUser());
     }
-
 }

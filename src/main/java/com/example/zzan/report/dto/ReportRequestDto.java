@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ReportRequestDto {
-	private String reportKind;
-
-	@Nullable
-	private String another;
+    private String reportKind;
+    @Nullable
+    private String another;
 }

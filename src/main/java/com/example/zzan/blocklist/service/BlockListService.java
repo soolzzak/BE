@@ -18,29 +18,28 @@ import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FO
 @RequiredArgsConstructor
 @Service
 public class BlockListService {
+    private final BlockListRepository blockListRepository;
+    private final UserRepository userRepository;
 
-	private final BlockListRepository blockListRepository;
-	private final UserRepository userRepository;
+    @Transactional
+    public ResponseDto updateBlock(Long blockListedUserId, User user) {
+        Optional<User> blockListedUserOptional = userRepository.findById(blockListedUserId);
 
-	@Transactional
-	public ResponseDto updateBlock(Long blockListedUserId, User user) {
-		Optional<User> blockListedUserOptional = userRepository.findById(blockListedUserId);
+        User blockListedUser = blockListedUserOptional.orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
 
-		User blockListedUser = blockListedUserOptional.orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
+        if (user.getId().equals(blockListedUser.getId())) {
+            throw new ApiException(NOT_ALLOWED_SELF_BLOCK);
+        }
 
-		if (user.getId().equals(blockListedUser.getId())) {
-			throw new ApiException(NOT_ALLOWED_SELF_BLOCK);
-		}
+        Optional<BlockList> existingBlock = blockListRepository.findByBlockListedUserAndBlockListingUser(blockListedUser, user);
 
-		Optional<BlockList> existingBlock = blockListRepository.findByBlockListedUserAndBlockListingUser(blockListedUser, user);
-
-		if (existingBlock.isPresent()) {
-			blockListRepository.delete(existingBlock.get());
-			return ResponseDto.setSuccess("Successfully unblocked the user.");
-		} else {
-			BlockList blockList = new BlockList(blockListedUser, user);
-			blockListRepository.save(blockList);
-			return ResponseDto.setSuccess("Successfully blocked the user.");
-		}
-	}
+        if (existingBlock.isPresent()) {
+            blockListRepository.delete(existingBlock.get());
+            return ResponseDto.setSuccess("Successfully unblocked the user.");
+        } else {
+            BlockList blockList = new BlockList(blockListedUser, user);
+            blockListRepository.save(blockList);
+            return ResponseDto.setSuccess("Successfully blocked the user.");
+        }
+    }
 }

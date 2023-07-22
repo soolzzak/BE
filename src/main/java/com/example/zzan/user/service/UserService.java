@@ -4,22 +4,17 @@ import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.exception.BadWords;
 import com.example.zzan.global.jwt.JwtUtil;
-import com.example.zzan.global.security.UserDetailsImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
-import com.example.zzan.redis.Service.RedisTokenService;
-import com.example.zzan.room.dto.RoomResponseDto;
-import com.example.zzan.user.dto.DeleteAccountRequestDto;
-import com.example.zzan.user.dto.PasswordRequestDto;
-import com.example.zzan.user.dto.UserInfoDto;
-import com.example.zzan.user.dto.UserLoginDto;
-import com.example.zzan.user.dto.UserRequestDto;
+import com.example.zzan.redis.RedisTokenService;
+import com.example.zzan.user.dto.*;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.servlet.http.Cookie;
 
 import java.util.Date;
 import java.util.Optional;
@@ -49,7 +43,7 @@ public class UserService {
     private final S3Uploader s3Uploader;
     private final RedisTokenService redisTokenService;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
- 
+
     @Transactional
     public ResponseEntity<?> signup(UserRequestDto requestDto) {
         validateUsername(requestDto.getUsername());
@@ -74,7 +68,7 @@ public class UserService {
             user.setDeleteAccount(false);
         } else {
             user = new User(requestDto.getEmail(), userPassword, requestDto.getUsername(),
-                requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER, s3Uploader.getRandomImage("profile"), requestDto.getGender());
+                    requestDto.isAdmin() ? UserRole.ADMIN : UserRole.USER, s3Uploader.getRandomImage("profile"), requestDto.getGender());
             user.setBirthday(requestDto.getBirthday());
         }
 
@@ -129,11 +123,11 @@ public class UserService {
                 RefreshToken savedRefreshToken = refreshToken.get();
                 RefreshToken updateToken = savedRefreshToken.updateToken(tokenDto.getRefreshToken().substring(7));
                 refreshTokenRepository.save(updateToken);
-                redisTokenService.storeRefreshToken(user.getEmail(),updateToken.getRefreshToken());
+                redisTokenService.storeRefreshToken(user.getEmail(), updateToken.getRefreshToken());
             } else {
                 RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken().substring(7), userEmail, user.getId());
                 refreshTokenRepository.save(newToken);
-                redisTokenService.storeRefreshToken(user.getEmail(),newToken.getRefreshToken());
+                redisTokenService.storeRefreshToken(user.getEmail(), newToken.getRefreshToken());
             }
             setHeader(response, tokenDto, user.getEmail());
 
@@ -145,21 +139,10 @@ public class UserService {
         }
     }
 
-    // private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
-    //     response.addHeader(ACCESS_KEY, tokenDto.getAccessToken());
-    //     response.addHeader(REFRESH_KEY, tokenDto.getRefreshToken());
-    //     response.addHeader("USER-EMAIL", userEmail);
-    // }
-
-
     private void setHeader(HttpServletResponse response, TokenDto tokenDto, String userEmail) {
-
-
         String accessToken = tokenDto.getAccessToken();
         String refreshToken = tokenDto.getRefreshToken();
 
-        // String accessToken = tokenDto.getAccessToken().replace(" ", "%20");
-        // String refreshToken = tokenDto.getRefreshToken().replace(" ", "%20");
         if (accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7);
         }
@@ -177,21 +160,14 @@ public class UserService {
         accessTokenCookie.setMaxAge(oneHour);
         response.addCookie(accessTokenCookie);
 
-
         Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setDomain(domain);
         response.addCookie(refreshTokenCookie);
 
-
         response.addHeader("USER-EMAIL", userEmail);
-
     }
-
-
-
-
 
     @Transactional
     public ResponseEntity<?> logout(User user) {
@@ -207,16 +183,19 @@ public class UserService {
         if (hasBadWord(username)) {
             throw new ApiException(NOT_ALLOWED_USERNAME);
         }
-        if (userRepository.findByUsername(username).isPresent()&&!userRepository.findByUsername(username).get().isDeleteAccount() ) {
+
+        if (userRepository.findByUsername(username).isPresent() && !userRepository.findByUsername(username).get().isDeleteAccount()) {
             throw new ApiException(USER_DUPLICATION);
         }
     }
 
     private void validateEmail(String email) {
         Optional<User> found = userRepository.findUserByEmail(email);
-        if (found.isPresent()&& !found.get().isDeleteAccount()) {
+
+        if (found.isPresent() && !found.get().isDeleteAccount()) {
             throw new ApiException(EMAIL_DUPLICATION);
         }
+
         if (email == null || !email.matches("^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\\.[A-Za-z0-9\\-]+$")) {
             throw new ApiException(INVALID_EMAIL);
         }
@@ -250,11 +229,10 @@ public class UserService {
         return BadWords.koreaWord.stream().anyMatch(input::contains);
     }
 
-    public ResponseDto deleteAccount(DeleteAccountRequestDto deleteAccountRequestDto,User user) {
-
-        if(!passwordEncoder.matches(deleteAccountRequestDto.getPassword(), user.getPassword())){
+    public ResponseDto deleteAccount(DeleteAccountRequestDto deleteAccountRequestDto, User user) {
+        if (!passwordEncoder.matches(deleteAccountRequestDto.getPassword(), user.getPassword())) {
             throw new ApiException(INVALID_ADMIN_INPUT);
-        }else {
+        } else {
             user.setDeleteAccount(true);
             userRepository.save(user);
         }
@@ -263,10 +241,10 @@ public class UserService {
     }
 
     public ResponseDto getUserInfo(User user) {
-         User infoUser  =userRepository.findById(user.getId())
-             .orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
+        User infoUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new ApiException(TARGET_USER_NOT_FOUND));
 
         UserInfoDto userInfoDto = new UserInfoDto(infoUser);
-        return ResponseDto.setSuccess("Successfully retrieved user information",userInfoDto);
+        return ResponseDto.setSuccess("Successfully retrieved user information", userInfoDto);
     }
 }

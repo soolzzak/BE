@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity signValidException (MethodArgumentNotValidException exception){
+    public ResponseEntity signValidException(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
         StringBuilder builder = new StringBuilder();
 
-        for (FieldError fieldError : bindingResult.getFieldErrors()){
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
             builder.append("[");
             builder.append(fieldError.getField());
             builder.append("] ");
@@ -28,8 +27,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponseDto> handleErrorException (ApiException e){
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto (e.getExceptionEnum().getStatus(),e.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleErrorException(ApiException e) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getExceptionEnum().getStatus(), e.getMessage());
         return ResponseEntity.status(e.getExceptionEnum().getStatus()).body(errorResponseDto);
     }
 }

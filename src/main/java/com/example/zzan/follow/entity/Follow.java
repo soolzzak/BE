@@ -10,24 +10,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class Follow extends Timestamped {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @ManyToOne
+    @JoinColumn(name = "FOLLOWING_ID", nullable = false)
+    private User followingUser;
 
-	@ManyToOne
-	@JoinColumn(name ="FOLLOWING_ID",nullable = false)
-	private User followingUser;
+    @ManyToOne
+    @JoinColumn(name = "FOLLOWER_ID", nullable = false)
+    private User followerUser;
 
-	@ManyToOne
-	@JoinColumn(name = "FOLLOWER_ID", nullable = false)
-	private User followerUser;
+    public Follow(User followingUser, User followerUser) {
+        this.followingUser = followingUser;
+        this.followerUser = followerUser;
+    }
 
-	public Follow(User followingUser, User followerUser){
-		this.followingUser = followingUser;
-		this.followerUser = followerUser;
-	}
-	public User getFollowerUser() {
-		return followerUser;
-	}
+    public User getFollowerUser() {
+        return followerUser;
+    }
 }

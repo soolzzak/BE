@@ -52,8 +52,9 @@ public class SseService {
         SseEmitter emitter = emitters.get(username);
         if (emitter == null) {
             emitter = new SseEmitter();
-            emitters.put(username,emitter);
+            emitters.put(username, emitter);
         }
+
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().data(message));

@@ -21,10 +21,11 @@ public class RefreshToken {
 
     @NotBlank
     private String userEmail;
+
     @NotNull
     private Long userId;
 
-    public RefreshToken(String token, String userEmail,Long userId) {
+    public RefreshToken(String token, String userEmail, Long userId) {
         this.refreshToken = token;
         this.userEmail = userEmail;
         this.userId = userId;
@@ -34,6 +35,7 @@ public class RefreshToken {
         this.refreshToken = token;
         return this;
     }
+
     public void setToken(String refreshToken) {
     }
 }

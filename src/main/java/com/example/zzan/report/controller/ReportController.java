@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class ReportController {
+    private final ReportService reportService;
 
-	private final ReportService reportService;
-
-	@PostMapping("api/report/{userId}")
-	public ResponseDto userReport(@PathVariable("userId") Long userId, @RequestBody ReportRequestDto ReportRequestDto,@AuthenticationPrincipal
-		UserDetailsImpl userDetails){
-		return reportService.userReport(userId,ReportRequestDto,userDetails.getUser());
-	}
+    @PostMapping("api/report/{userId}")
+    public ResponseDto userReport(@PathVariable("userId") Long userId, @RequestBody ReportRequestDto ReportRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return reportService.userReport(userId, ReportRequestDto, userDetails.getUser());
+    }
 }

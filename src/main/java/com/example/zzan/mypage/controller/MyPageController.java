@@ -28,35 +28,34 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/mypage")
 public class MyPageController {
+    private final MyPageService myPageService;
 
-	private final MyPageService myPageService;
+    @ResponseBody
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value = "userImage", required = false) MultipartFile userImage, @RequestParam(value = "username", required = false) String username, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(value = "introduction", required = false) String introduction) throws IOException {
+        return myPageService.saveMyPage(userImage, username, userDetails.getUser().getEmail(), introduction);
+    }
 
-	@ResponseBody
-	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseDto<MypageChangeDto> saveImg(@RequestParam(value="userImage", required=false) MultipartFile userImage, @RequestParam(value="username", required=false) String username,@AuthenticationPrincipal UserDetailsImpl userDetails,  @RequestParam(value="introduction", required=false) String introduction) throws IOException {
-		return myPageService.saveMyPage(userImage, username, userDetails.getUser().getEmail(), introduction);
-	}
+    @GetMapping
+    public ResponseDto<MyPageResponseDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.getUserInfo(userDetails.getUser());
+    }
 
-	@GetMapping
-	public ResponseDto<MyPageResponseDto> getUserInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return myPageService.getUserInfo(userDetails.getUser());
-	}
+    @GetMapping("/{targetId}")
+    public ResponseDto<RelatedUserResponseDto> UserInfoFromId(@PathVariable Long targetId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.UserInfoFromId(targetId, userDetails.getUser());
+    }
 
-	@GetMapping("/{targetId}")
-	public ResponseDto<RelatedUserResponseDto> UserInfoFromId (@PathVariable Long targetId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return myPageService.UserInfoFromId(targetId,userDetails.getUser());
-	}
-	@GetMapping("/search")
-	public ResponseEntity<ResponseDto<List<UserSearchDto>>> searchUsersByUsername(@RequestParam("username") String username, Principal principal) {
-		try {
-			User currentUser = myPageService.findUser(principal.getName());
-			ResponseDto<List<UserSearchDto>> response = myPageService.searchUserByUsername(username, currentUser);
-			return ResponseEntity.ok(response);
-		} catch (ApiException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.setBadRequest(e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseDto.setBadRequest("Internal server error."));
-		}
-	}
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<List<UserSearchDto>>> searchUsersByUsername(@RequestParam("username") String username, Principal principal) {
+        try {
+            User currentUser = myPageService.findUser(principal.getName());
+            ResponseDto<List<UserSearchDto>> response = myPageService.searchUserByUsername(username, currentUser);
+            return ResponseEntity.ok(response);
+        } catch (ApiException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.setBadRequest(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseDto.setBadRequest("Internal server error."));
+        }
+    }
 }
-

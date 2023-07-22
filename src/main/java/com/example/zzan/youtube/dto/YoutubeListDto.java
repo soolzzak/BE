@@ -6,20 +6,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class YoutubeListDto {
-	private String videoId;
+    private String videoId;
 
-	public YoutubeListDto() {
-	}
+    public YoutubeListDto() {
+    }
 
-	public YoutubeListDto(String videoId) {
-		this.videoId = videoId;
-	}
+    public YoutubeListDto(String videoId) {
+        this.videoId = videoId;
+    }
 
-	public String getVideoId() {
-		return videoId;
-	}
+    public String getVideoId() {
+        return videoId;
+    }
 
-	public void setVideoId(String videoId) {
-		this.videoId = videoId;
-	}
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
 }

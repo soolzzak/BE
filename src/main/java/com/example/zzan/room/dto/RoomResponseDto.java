@@ -32,7 +32,7 @@ public class RoomResponseDto {
     private boolean roomDelete;
     private Map<Long, WebSocketSession> userList;
 
-    public RoomResponseDto(Room room){
+    public RoomResponseDto(Room room) {
         this.roomId = room.getId();
         this.hostId = room.getHostUser().getId();
         this.title = room.getTitle();
@@ -47,6 +47,6 @@ public class RoomResponseDto {
         this.roomImageUrl = room.getRoomImage();
         this.userList = new HashMap<>();
         this.roomCapacity = room.getRoomCapacity();
-        this.roomDelete=room.isRoomDelete();
+        this.roomDelete = room.isRoomDelete();
     }
 }

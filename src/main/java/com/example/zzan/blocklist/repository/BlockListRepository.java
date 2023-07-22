@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface BlockListRepository extends JpaRepository<BlockList,Long> {
-	List<BlockList> findAllByBlockListingUserOrderByCreatedAtDesc(User user);
-	Optional<BlockList> findByBlockListedUserAndBlockListingUser(User blockListedUser, User blockListingUser);
-	List<BlockList> findAllByBlockListedUserOrderByCreatedAtDesc(User user);
+public interface BlockListRepository extends JpaRepository<BlockList, Long> {
+    List<BlockList> findAllByBlockListingUserOrderByCreatedAtDesc(User user);
+    Optional<BlockList> findByBlockListedUserAndBlockListingUser(User blockListedUser, User blockListingUser);
+    List<BlockList> findAllByBlockListedUserOrderByCreatedAtDesc(User user);
 }

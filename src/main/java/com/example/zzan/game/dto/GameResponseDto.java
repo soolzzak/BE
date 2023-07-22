@@ -1,6 +1,7 @@
 package com.example.zzan.game.dto;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data

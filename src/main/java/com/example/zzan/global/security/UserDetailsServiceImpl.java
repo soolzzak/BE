@@ -14,7 +14,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     private final UserRepository userRepository;
 
     @Override

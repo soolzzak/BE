@@ -13,14 +13,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class YoutubeController {
+    private final YoutubeService youtubeService;
 
-	private final YoutubeService youtubeService;
-
-	@GetMapping(value = "/youtubeSearch")
-	public ResponseDto<List<YoutubeListDto>> callVideoList(
-		@RequestParam("page") int page,
-		@RequestParam("size") int size,
-		@RequestParam("youtubeSearch") String youtubeSearch){
-		return youtubeService.callVideoList(page,size,youtubeSearch);
-	}
+    @GetMapping(value = "/youtubeSearch")
+    public ResponseDto<List<YoutubeListDto>> callVideoList(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("youtubeSearch") String youtubeSearch) {
+        return youtubeService.callVideoList(page, size, youtubeSearch);
+    }
 }

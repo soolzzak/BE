@@ -30,7 +30,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class RoomController {
     private final RoomService roomService;
-//
+
     @GetMapping("/main")
     public ResponseDto<Page<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam(required = false) GenderSetting genderSetting,
@@ -41,10 +41,10 @@ public class RoomController {
     }
 
     @GetMapping("/rooms")
-    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC)  Pageable pageable,
-            @RequestParam("category") Category category,
-            @RequestParam(required = false) GenderSetting genderSetting,
-            @RequestParam(required = false) Boolean roomCapacityCheck) {
+    public ResponseDto<Page<RoomResponseDto>> getRoomsBySettingAndCategory(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                           @RequestParam("category") Category category,
+                                                                           @RequestParam(required = false) GenderSetting genderSetting,
+                                                                           @RequestParam(required = false) Boolean roomCapacityCheck) {
 
         Optional<GenderSetting> genderSettingOptional = Optional.ofNullable(genderSetting);
         Optional<Boolean> roomCapacityCheckOptional = Optional.ofNullable(roomCapacityCheck);
@@ -73,7 +73,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}/check")
-    public ResponseDto checkRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto checkRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.checkRoom(roomId, userDetails.getUser());
     }
 

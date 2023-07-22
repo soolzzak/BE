@@ -8,16 +8,14 @@ import com.example.zzan.message.repository.MessageRepository;
 import com.example.zzan.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
+import static com.example.zzan.global.exception.ExceptionEnum.INTERNAL_SERVER_ERROR;
+import static com.example.zzan.global.exception.ExceptionEnum.MESSAGE_NOT_FOUND;
 
 @Slf4j
 @Service

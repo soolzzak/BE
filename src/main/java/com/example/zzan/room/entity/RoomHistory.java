@@ -11,17 +11,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RoomHistory {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ROOMHISTORY_ID")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ROOMHISTORY_ID")
+    private Long id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "ROOM_ID")
-	@JsonBackReference
-	private Room room;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ROOM_ID")
+    @JsonBackReference
+    private Room room;
 
-	public RoomHistory(Room room){
-		this.room = room;
-	}
+    public RoomHistory(Room room) {
+        this.room = room;
+    }
 }

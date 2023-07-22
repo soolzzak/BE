@@ -15,28 +15,26 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Tag(name = "My Controller", description = "This is swagger")
 public class SwaggerConfig {
+    @Bean
+    public OpenAPI openAPI() {
+        Info info = new Info()
+                .version("v2.0.0")
+                .title("zzan")
+                .description("Api Description");
 
-	private final JwtUtil jwtUtil;
-	@Bean
-	public OpenAPI openAPI() {
-		Info info = new Info()
-			.version("v2.0.0")
-			.title("zzan")
-			.description("Api Description");
+        String token_header = JwtUtil.AUTHORIZATION_HEADER;
 
-		String token_header = JwtUtil.AUTHORIZATION_HEADER;
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(token_header);
 
-		SecurityRequirement securityRequirement = new SecurityRequirement().addList(token_header);
+        Components components = new Components()
+                .addSecuritySchemes(token_header, new SecurityScheme()
+                        .name(token_header)
+                        .type(SecurityScheme.Type.APIKEY)
+                        .in(SecurityScheme.In.HEADER));
 
-		Components components = new Components()
-			.addSecuritySchemes(token_header, new SecurityScheme()
-				.name(token_header)
-				.type(SecurityScheme.Type.APIKEY)
-				.in(SecurityScheme.In.HEADER));
-
-		return new OpenAPI()
-			.info(info)
-			.addSecurityItem(securityRequirement)
-			.components(components);
-	}
+        return new OpenAPI()
+                .info(info)
+                .addSecurityItem(securityRequirement)
+                .components(components);
+    }
 }

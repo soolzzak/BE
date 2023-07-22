@@ -15,27 +15,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class RtcChatService {
-
     public Map<Long, WebSocketSession> getUser(RoomResponseDto roomResponseDto) {
         Optional<RoomResponseDto> roomDto = Optional.ofNullable(roomResponseDto);
         return roomDto.get().getUserList();
     }
 
     public ResponseDto addUser(RoomResponseDto roomResponseDto, Long userId, WebSocketSession session) {
-
-
-        // Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
-        // userList.put(userId, session);
-
-        if (roomResponseDto != null){
+        if (roomResponseDto != null) {
             Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
             userList.put(userId, session);
-            SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());}
+            SessionListMap.getInstance().getSessionMapToRoom().put((session), roomResponseDto.getRoomId());
+        }
+
         if (userId != null) {
             SessionListMap.getInstance().getSessionMapToUserId().put((session), userId);
         }
 
-        // return ResponseDto.setSuccess("User list has been added.", userList);
         return ResponseDto.setSuccess("User list has been added.");
     }
 }

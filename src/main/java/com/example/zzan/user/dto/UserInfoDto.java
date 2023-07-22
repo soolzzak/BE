@@ -1,15 +1,14 @@
 package com.example.zzan.user.dto;
 
-import java.util.Date;
-
 import com.example.zzan.room.entity.Room;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Setter
 @Getter

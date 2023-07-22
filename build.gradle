@@ -1,9 +1,3 @@
-//buildscript {         //QUERY DSL 관련
-//    ext {
-//        queryDslVersion = "5.0.0"
-//    }
-//}
-
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'

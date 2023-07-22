@@ -10,31 +10,29 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Report {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
+    private Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(nullable = false)
-	private Long id;
+    @Column(nullable = false)
+    private String reportKind;
 
-	@Column(nullable = false)
-	private String reportKind;
+    @Column(nullable = true)
+    private String another;
 
-	@Column(nullable = true)
-	private String another;
+    @ManyToOne
+    @JoinColumn(name = "ReportedUser_Id", nullable = false)
+    private User reportedUser;
 
-	@ManyToOne
-	@JoinColumn(name = "ReportedUser_Id",nullable = false)
-	private User reportedUser;
+    @ManyToOne
+    @JoinColumn(name = "ReportingUser_Id", nullable = false)
+    private User reportingUser;
 
-	@ManyToOne
-	@JoinColumn(name = "ReportingUser_Id",nullable = false)
-	private User reportingUser;
-
-	public Report(User reportedUser,ReportRequestDto reportRequestDto,User user){
-
-		this.reportedUser = reportedUser;
-		this.reportKind = reportRequestDto.getReportKind();
-		this.another = reportRequestDto.getAnother();
-		this.reportingUser = user;
-	}
+    public Report(User reportedUser, ReportRequestDto reportRequestDto, User user) {
+        this.reportedUser = reportedUser;
+        this.reportKind = reportRequestDto.getReportKind();
+        this.another = reportRequestDto.getAnother();
+        this.reportingUser = user;
+    }
 }

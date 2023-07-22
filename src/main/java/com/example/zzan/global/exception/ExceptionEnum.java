@@ -9,7 +9,7 @@ public enum ExceptionEnum {
     INVALID_EMAIL(HttpStatus.BAD_REQUEST.value(), "Please enter a valid email address."),
     INVALID_BIRTHDAY(HttpStatus.BAD_REQUEST.value(), "Please specify your date of birth."),
     INVALID_GENDER(HttpStatus.BAD_REQUEST.value(), "Please specify your gender."),
-    NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(),"The username contains forbidden words. Please choose a different username."),
+    NOT_ALLOWED_USERNAME(HttpStatus.BAD_REQUEST.value(), "The username contains forbidden words. Please choose a different username."),
     NOT_ALLOWED_ROOMTITLE(HttpStatus.BAD_REQUEST.value(), "The room title contains forbidden words. Please use different room title."),
     NOT_ALLOWED_INTRODUCTION(HttpStatus.BAD_REQUEST.value(), "The introduction contains forbidden words, Please rewrite introduction"),
     REQUIRE_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Please set password to create a private room."),
@@ -25,14 +25,12 @@ public enum ExceptionEnum {
     INVALID_FORMAT(HttpStatus.BAD_REQUEST.value(), "The input does not match the required format."),
     NOT_AN_ADULT(HttpStatus.BAD_REQUEST.value(), "Cannot register because you are not an adult."),
     REPORT_NOT_REASONABLE(HttpStatus.BAD_REQUEST.value(), "The reason for reporting is not appropriate."),
-    KAKAO_UNLINK_FAILED(HttpStatus.BAD_REQUEST.value(), "Failed to unlink Kakao account"),
-
+    KAKAO_UNLINK_FAILED(HttpStatus.BAD_REQUEST.value(), "Failed to unlink Kakao account."),
 
     TARGET_USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The specified user cannot be found."),
-    ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(),"You are already following this user."),
+    ALREADY_FOLLOWING(HttpStatus.BAD_REQUEST.value(), "You are already following this user."),
     FAILED_SEND_MAIL(HttpStatus.BAD_REQUEST.value(), "Failed to send the verification email."),
     ROOM_ALREADY_FULL(HttpStatus.BAD_REQUEST.value(), "Another user has already joined the room."),
-
 
     BLOCKED_USER(HttpStatus.BAD_REQUEST.value(), "This user is blocked."),
     USER_NOT_IN_ROOM(HttpStatus.NOT_FOUND.value(), "The user is not in the room."),
@@ -41,7 +39,7 @@ public enum ExceptionEnum {
     NOT_ALLOWED_SELF_FOLLOW(HttpStatus.BAD_REQUEST.value(), "You cannot follow yourself."),
     NOT_ALLOWED_SELF_REPORT(HttpStatus.BAD_REQUEST.value(), "You cannot report yourself."),
     NOT_ALLOWED_SELF_BLOCK(HttpStatus.BAD_REQUEST.value(), "You cannot block yourself."),
-    NOT_ALLOWED_SELF_MESSAGE(HttpStatus.BAD_REQUEST.value(),"You cannot message yourself."),
+    NOT_ALLOWED_SELF_MESSAGE(HttpStatus.BAD_REQUEST.value(), "You cannot message yourself."),
 
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The room does not exist."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "The username does not exist."),
@@ -60,13 +58,12 @@ public enum ExceptionEnum {
     MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "There is no message."),
     INTERNAL_SERVER_ERROR(HttpStatus.BAD_REQUEST.value(), "Internal Server Problem."),
     NO_MESSAGE(HttpStatus.BAD_REQUEST.value(), "There is no message to be sent."),
-    USER_HAS_LEFT(HttpStatus.BAD_REQUEST.value(),"The user has already left the service.");
-
+    USER_HAS_LEFT(HttpStatus.BAD_REQUEST.value(), "The user has already left the service.");
 
     private final int status;
     private final String message;
 
-    ExceptionEnum(int status, String message){
+    ExceptionEnum(int status, String message) {
         this.status = status;
         this.message = message;
     }

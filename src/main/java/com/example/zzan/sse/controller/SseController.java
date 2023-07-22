@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseController {
     private final SseService sseService;
-
     private final Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     @CrossOrigin

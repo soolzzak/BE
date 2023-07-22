@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class FollowController {
+    private final FollowService followService;
 
-	private final FollowService followService;
-
-	@PutMapping("/follow/{followId}")
-	public ResponseDto<FollowResponseDto> toggleFollow(@PathVariable Long followId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		User user = userDetails.getUser();
-		return followService.updateFollow( followId, user);
-	}
+    @PutMapping("/follow/{followId}")
+    public ResponseDto<FollowResponseDto> toggleFollow(@PathVariable Long followId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        return followService.updateFollow(followId, user);
+    }
 }
