@@ -123,6 +123,7 @@ public class GameService {
             gameRunning = false;
             gamePaused = false;
             gameTimer.cancel();
+
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "startGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {
@@ -138,6 +139,7 @@ public class GameService {
             gameRunning = false;
             gamePaused = false;
             gameTimer.cancel();
+
             SignalHandler signalHandler = context.getBean(SignalHandler.class);
             GameResponseDto gameResponseDto = new GameResponseDto(null, "stopGame", "게임 끝!", null, null);
             for (WebSocketSession session : gamePlayers.values()) {

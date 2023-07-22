@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class LikeController {
-
     private final LikeService likeService;
 
     @PutMapping("/alcohol/like/{targetId}")

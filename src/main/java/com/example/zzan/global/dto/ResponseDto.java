@@ -6,23 +6,22 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@AllArgsConstructor (staticName = "set")
+@AllArgsConstructor(staticName = "set")
 public class ResponseDto<T> {
-
     private int status;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    public static <T> ResponseDto <T> setSuccess (String message, T data) {
+    public static <T> ResponseDto<T> setSuccess(String message, T data) {
         return ResponseDto.set(HttpStatus.OK.value(), message, data);
     }
 
-    public static <T> ResponseDto <T> setSuccess (String message) {
+    public static <T> ResponseDto<T> setSuccess(String message) {
         return ResponseDto.set(HttpStatus.OK.value(), message, null);
     }
 
-    public static <T> ResponseDto <T> setBadRequest(String message) {
-        return ResponseDto.set(HttpStatus.BAD_REQUEST.value(), message,null);
+    public static <T> ResponseDto<T> setBadRequest(String message) {
+        return ResponseDto.set(HttpStatus.BAD_REQUEST.value(), message, null);
     }
 }

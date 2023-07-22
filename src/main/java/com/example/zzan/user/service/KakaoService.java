@@ -3,11 +3,10 @@ package com.example.zzan.user.service;
 import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.global.jwt.JwtUtil;
-import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
 import com.example.zzan.global.util.S3Uploader;
-import com.example.zzan.redis.Service.RedisTokenService;
+import com.example.zzan.redis.RedisTokenService;
 import com.example.zzan.user.dto.KakaoInfoDto;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.KakaoUser;
@@ -18,8 +17,6 @@ import com.example.zzan.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -39,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.example.zzan.global.exception.ExceptionEnum.*;
-import static com.example.zzan.global.jwt.JwtUtil.*;
 
 @Slf4j
 @Service
@@ -63,30 +58,33 @@ public class KakaoService {
 
         if (!kakaoUserRepository.existsByKakaoId(kakaoInfoDto.getKakaoId().toString())) {
             kakaoUserRepository.save(new KakaoUser(kakaoInfoDto));
-            if(lowerAge>=20){
+            if (lowerAge >= 20) {
                 String year = "1990";
                 String birthdayString = year + kakaoInfoDto.getBirthday();
-                SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMDD");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMDD");
                 Date birthday = null;
-                String password= UUID.randomUUID().toString();
+                String password = UUID.randomUUID().toString();
                 User user;
                 try {
-                    birthday=formatter.parse(birthdayString);
-                }catch (ParseException e){
+                    birthday = formatter.parse(birthdayString);
+                } catch (ParseException e) {
                     throw new ApiException(INVALID_FORMAT);
                 }
-                user = new User(kakaoInfoDto,password, UserRole.USER,s3Uploader.getRandomImage("profile"),birthday);
+                user = new User(kakaoInfoDto, password, UserRole.USER, s3Uploader.getRandomImage("profile"), birthday);
                 userRepository.saveAndFlush(user);
-            }else {
+            } else {
                 throw new ApiException(NOT_AN_ADULT);
             }
         }
+
         User user = userRepository.findUserByEmail(kakaoInfoDto.getEmail()).orElseThrow(
-            () -> new ApiException(EMAIL_NOT_FOUND)
+                () -> new ApiException(EMAIL_NOT_FOUND)
         );
-        String createToken =  jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
+
+        String createToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
         String refreshToken = jwtUtil.createToken(user, UserRole.USER, "REFRESH_KEY");
         Optional<RefreshToken> existingRefreshToken = refreshTokenRepository.findByUserEmail(user.getEmail());
+
         if (existingRefreshToken.isPresent()) {
             existingRefreshToken.get().setToken(refreshToken);
             refreshTokenRepository.save(existingRefreshToken.get());
@@ -94,7 +92,7 @@ public class KakaoService {
         } else {
             RefreshToken newRefreshToken = new RefreshToken(refreshToken, user.getEmail(), user.getId());
             refreshTokenRepository.save(newRefreshToken);
-            redisTokenService.storeRefreshToken(user.getEmail(),newRefreshToken.getRefreshToken());
+            redisTokenService.storeRefreshToken(user.getEmail(), newRefreshToken.getRefreshToken());
         }
 
         Map<String, String> tokens = new HashMap<>();
@@ -106,9 +104,6 @@ public class KakaoService {
 
         return jsonTokens;
     }
-
-
-
 
     private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
@@ -136,6 +131,7 @@ public class KakaoService {
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         HttpEntity<MultiValueMap<String, String>> UserInfoRequest = new HttpEntity<>(headers);
+
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
@@ -162,7 +158,7 @@ public class KakaoService {
         return kakaoInfoDto;
     }
 
-    public ResponseDto kakaoDeleteAccount(String code,HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto kakaoDeleteAccount(String code, HttpServletResponse response) throws JsonProcessingException {
         String accessToken = getToken(code);
 
         HttpHeaders headers = new HttpHeaders();
@@ -172,16 +168,13 @@ public class KakaoService {
 
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> responseEntity = rt.exchange(
-            "https://kapi.kakao.com/v1/user/unlink",
-            HttpMethod.POST, requestEntity, String.class);
+                "https://kapi.kakao.com/v1/user/unlink",
+                HttpMethod.POST, requestEntity, String.class);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return ResponseDto.setSuccess("Your account has been successfully deleted");
         } else {
             throw new ApiException(KAKAO_UNLINK_FAILED);
         }
-
     }
-
-
 }

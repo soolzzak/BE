@@ -19,18 +19,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 
 import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_NOT_FOUND;
 import static com.example.zzan.global.jwt.JwtUtil.ACCESS_KEY;
 import static com.example.zzan.global.jwt.JwtUtil.REFRESH_KEY;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor()
 public class JwtAuthFilter extends OncePerRequestFilter {
-
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
@@ -69,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String userEmail = jwtUtil.getUserInfoFromRefreshtoken(refresh_token);
                 setAuthentication(userEmail);
                 User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-                    () -> new ApiException(EMAIL_NOT_FOUND)
+                        () -> new ApiException(EMAIL_NOT_FOUND)
                 );
                 String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "ACCESS_KEY");
 
@@ -91,7 +88,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
 
     private void sendErrorResponse(HttpServletResponse response, ExceptionEnum exceptionEnum) throws IOException {
         response.setCharacterEncoding("UTF-8");

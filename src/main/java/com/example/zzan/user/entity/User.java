@@ -72,7 +72,7 @@ public class User {
     @Column(nullable = false)
     private boolean deleteAccount = false;
 
-    @Column(name="INTRODUCTION")
+    @Column(name = "INTRODUCTION")
     private String introduction;
 
     @PrePersist
@@ -96,8 +96,8 @@ public class User {
         this.kakaoId = kakaoInfoDto.getKakaoId().toString();
     }
 
-    public User(KakaoInfoDto kakaoInfoDto,String password,UserRole role,String userImage,Date birthday) {
-        this.kakaoId =kakaoInfoDto.getKakaoId().toString();
+    public User(KakaoInfoDto kakaoInfoDto, String password, UserRole role, String userImage, Date birthday) {
+        this.kakaoId = kakaoInfoDto.getKakaoId().toString();
         this.email = kakaoInfoDto.getEmail();
         this.password = password;
         this.username = kakaoInfoDto.getUsername();
@@ -127,5 +127,4 @@ public class User {
     public void addReportPoints(int points) {
         this.reportPoints += points;
     }
-
 }

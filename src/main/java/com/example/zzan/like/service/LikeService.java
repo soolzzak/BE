@@ -21,7 +21,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.TARGET_USER_NOT_FO
 @Service
 @RequiredArgsConstructor
 public class LikeService {
-
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 

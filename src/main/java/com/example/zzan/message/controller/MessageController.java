@@ -19,13 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/message")
 public class MessageController {
-
     private final MessageSendService messageSendService;
     private final MessageCheckService messageCheckService;
 
     @PostMapping("/send")
     public ResponseDto<?> sendMessage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                     @RequestBody MessageSendRequestDto messageSendRequestDto) {
+                                      @RequestBody MessageSendRequestDto messageSendRequestDto) {
         return messageSendService.sendMessage(userDetails.getUser(), messageSendRequestDto);
     }
 

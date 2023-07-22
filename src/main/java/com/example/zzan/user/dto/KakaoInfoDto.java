@@ -17,7 +17,7 @@ public class KakaoInfoDto {
     private String ageRange;
     private String birthday;
 
-    public KakaoInfoDto(String username, Long kakaoId, String kakaoImage, String email, Gender gender, String ageRange, String birthday){
+    public KakaoInfoDto(String username, Long kakaoId, String kakaoImage, String email, Gender gender, String ageRange, String birthday) {
         this.username = username;
         this.kakaoId = kakaoId;
         this.kakaoImage = kakaoImage;

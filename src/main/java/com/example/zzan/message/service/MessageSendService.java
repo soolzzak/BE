@@ -18,7 +18,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 @Service
 @RequiredArgsConstructor
 public class MessageSendService {
-
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
     private final SseService sseService;
@@ -30,16 +29,16 @@ public class MessageSendService {
         );
         String messageContent = messageSendRequestDto.getContent();
 
-        if(messageReceiver.getUsername().equals(user.getUsername())){
+        if (messageReceiver.getUsername().equals(user.getUsername())) {
             throw new ApiException(NOT_ALLOWED_SELF_MESSAGE);
         }
 
-        if(messageContent.isEmpty()){
+        if (messageContent.isEmpty()) {
             throw new ApiException(NO_MESSAGE);
         }
 
         saveMessage(user, messageReceiver, messageContent);
-        sseService.sendSseMessage(messageReceiver.getUsername(), user.getUsername() );
+        sseService.sendSseMessage(messageReceiver.getUsername(), user.getUsername());
 
         return ResponseDto.setSuccess("Message successfully sent.");
     }

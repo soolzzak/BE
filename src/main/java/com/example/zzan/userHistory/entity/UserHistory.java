@@ -11,31 +11,32 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserHistory extends Timestamped {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_REPORT_ID")
+    Long id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "USER_REPORT_ID")
-	Long id;
+    @ManyToOne
+    @JoinColumn(name = "HOST_ID", nullable = false)
+    private User hostUser;
 
-	@ManyToOne
-	@JoinColumn(name ="HOST_ID",nullable = false)
-	private User hostUser;
+    @ManyToOne
+    @JoinColumn(name = "GUEST_ID", nullable = false)
+    private User guestUser;
 
-	@ManyToOne
-	@JoinColumn(name = "GUEST_ID", nullable = false)
-	private User guestUser;
+    @ManyToOne
+    @JoinColumn(name = "ROOMHISTORY_ID", nullable = false)
+    private Room room;
 
-	@ManyToOne
-	@JoinColumn(name = "ROOMHISTORY_ID", nullable = false)
-	private Room room;
+    public void setHostUser(User hostUser) {
+        this.hostUser = hostUser;
+    }
 
-	public void setHostUser(User hostUser) {
-		this.hostUser = hostUser;
-	}
+    public void setGuestUser(User user) {
+        this.guestUser = user;
+    }
 
-	public void setGuestUser(User user) {
-		this.guestUser = user;
-	}
-
-	public void setRoom(Room room){this.room=room;}
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 }

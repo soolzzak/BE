@@ -58,11 +58,11 @@ public class RoomService {
 
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
-            throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
+            throw new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
 
         if (roomRequestDto.getIsPrivate() && (roomRequestDto.getRoomPassword() == null || roomRequestDto.getRoomPassword().isEmpty())) {
-            throw  new ApiException(REQUIRE_PASSWORD);
+            throw new ApiException(REQUIRE_PASSWORD);
         }
 
         user.setRoomTitle(roomTitle);
@@ -79,7 +79,8 @@ public class RoomService {
 
         roomHistoryRepository.saveAndFlush(roomHistory);
         roomRepository.saveAndFlush(room);
-        sseService.notifyFollowers( room, room.getHostUser().getUsername());
+
+        sseService.notifyFollowers(room, room.getHostUser().getUsername());
         RoomResponseDto roomResponseDto = new RoomResponseDto(room);
         roomResponseDto.setUserList(new HashMap<Long, WebSocketSession>());
         UserListMap.getInstance().getUserMap().put((room.getId()), roomResponseDto);
@@ -91,6 +92,7 @@ public class RoomService {
                                                        Optional<GenderSetting> genderSettingOptional,
                                                        Optional<Boolean> roomCapacityCheckOptional) {
         Page<Room> roomPage;
+
         if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent()) {
             if (roomCapacityCheckOptional.get()) {
                 roomPage = roomRepository.findByGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(genderSettingOptional.get(), 2, pageable);
@@ -102,6 +104,7 @@ public class RoomService {
         } else {
             roomPage = roomRepository.findAllByRoomDeleteIsFalse(pageable);
         }
+
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("조건에 맞는 방 조회 성공", roomList);
     }
@@ -111,6 +114,7 @@ public class RoomService {
                                                                            Optional<GenderSetting> genderSettingOptional,
                                                                            Optional<Boolean> roomCapacityCheckOptional) {
         Page<Room> roomPage;
+
         if (genderSettingOptional.isPresent() && roomCapacityCheckOptional.isPresent() && roomCapacityCheckOptional.get()) {
             roomPage = roomRepository.findByCategoryAndGenderSettingAndRoomCapacityLessThanAndRoomDeleteIsFalse(category, pageable, genderSettingOptional.get(), 2);
         } else if (genderSettingOptional.isPresent()) {
@@ -120,6 +124,7 @@ public class RoomService {
         } else {
             roomPage = roomRepository.findByCategoryAndRoomDeleteIsFalse(category, pageable);
         }
+
         Page<RoomResponseDto> roomList = roomPage.map(RoomResponseDto::new);
         return ResponseDto.setSuccess("Successfully matched room lookups.", roomList);
     }
@@ -146,7 +151,7 @@ public class RoomService {
 
         String roomTitle = roomRequestDto.getTitle();
         if (hasBadWord(roomTitle)) {
-            throw  new ApiException(NOT_ALLOWED_ROOMTITLE);
+            throw new ApiException(NOT_ALLOWED_ROOMTITLE);
         }
 
         roomRepository.save(room);
@@ -158,6 +163,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new ApiException(ROOM_NOT_FOUND)
         );
+
         if (room.getHostUser().getId().equals(user.getId())) {
             roomRepository.delete(room);
             return ResponseDto.setSuccess("Successfully deleted the room.", null);
@@ -238,6 +244,7 @@ public class RoomService {
     public ResponseDto leaveRoom(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ApiException(ROOM_NOT_FOUND));
+
         if (room.getHostUser().getId().equals(user.getId())) {
             room.roomDelete(true);
         } else if (!room.getHostUser().getId().equals(user.getId())) {

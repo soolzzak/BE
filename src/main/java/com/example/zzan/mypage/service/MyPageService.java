@@ -1,6 +1,5 @@
 package com.example.zzan.mypage.service;
 
-
 import com.example.zzan.blocklist.dto.BlockListDto;
 import com.example.zzan.blocklist.entity.BlockList;
 import com.example.zzan.blocklist.repository.BlockListRepository;
@@ -41,7 +40,6 @@ import static com.example.zzan.global.exception.ExceptionEnum.*;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
     private final UserHistoryRepository userHistoryRepository;
@@ -90,7 +88,6 @@ public class MyPageService {
         }
         return ResponseDto.setSuccess("Mypage has been saved", new MypageChangeDto(myPage));
     }
-
 
     @Transactional
     public ResponseDto<MyPageResponseDto> getUserInfo(User user) {

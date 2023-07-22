@@ -29,4 +29,3 @@ public class UserSearchDto {
         this.blockedByCurrentUser = blockedByCurrentUser;
     }
 }
-

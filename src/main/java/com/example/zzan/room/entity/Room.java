@@ -29,7 +29,7 @@ public class Room extends Timestamped {
 
     private String roomImage;
 
-    @Column(name ="CATEGORY",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
+    @Column(name = "CATEGORY", columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
     @NotNull(message = "카테고리를 설정해주세요.")
     private Category category;
 
@@ -78,7 +78,7 @@ public class Room extends Timestamped {
         this.roomDelete = false;
     }
 
-    public void roomDelete(Boolean roomdelete){
-        this.roomDelete =roomdelete;
+    public void roomDelete(Boolean roomdelete) {
+        this.roomDelete = roomdelete;
     }
 }

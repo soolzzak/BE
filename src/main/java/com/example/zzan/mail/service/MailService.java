@@ -1,7 +1,5 @@
 package com.example.zzan.mail.service;
 
-import static com.example.zzan.global.exception.ExceptionEnum.*;
-
 import com.example.zzan.global.exception.ApiException;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.repository.UserRepository;
@@ -18,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
+
+import static com.example.zzan.global.exception.ExceptionEnum.EMAIL_DUPLICATION;
+import static com.example.zzan.global.exception.ExceptionEnum.FAILED_SEND_MAIL;
 
 @PropertySource("classpath:application.yml")
 @Slf4j
@@ -77,13 +78,6 @@ public class MailService {
                 throw new ApiException(EMAIL_DUPLICATION);
             }
         }
-        // if (user == null) {
-        //     throw new ApiException(EMAIL_NOT_FOUND);
-        // }
-
-        // if (emailExists && !user.isDeleteAccount()) {
-        //     throw new ApiException(EMAIL_DUPLICATION);
-        // }
 
         String code = createKey();
         MimeMessage message = createMessage(to, code);

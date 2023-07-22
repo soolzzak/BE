@@ -10,12 +10,9 @@ import com.example.zzan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.example.zzan.global.exception.ExceptionEnum.NOT_ALLOWED_SELF_FOLLOW;
@@ -24,10 +21,8 @@ import static com.example.zzan.global.exception.ExceptionEnum.USER_NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 public class FollowService {
-
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
-    private Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     @Transactional
     public ResponseDto<FollowResponseDto> updateFollow(Long followId, User user) {
