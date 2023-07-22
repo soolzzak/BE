@@ -15,7 +15,7 @@ public class RedisTokenService {
     }
 
     public void storeRefreshToken(String userEmail, String refreshToken) {
-        redisTemplate.opsForValue().set(userEmail, refreshToken, 2, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(userEmail, refreshToken, 7, TimeUnit.DAYS);
     }
 
     public Optional<String> retrieveRefreshToken(String userEmail) {
