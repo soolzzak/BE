@@ -5,6 +5,7 @@ import com.example.zzan.global.security.UserDetailsServiceImpl;
 import com.example.zzan.global.security.dto.TokenDto;
 import com.example.zzan.global.security.entity.RefreshToken;
 import com.example.zzan.global.security.repository.RefreshTokenRepository;
+import com.example.zzan.redis.RedisTokenService;
 import com.example.zzan.user.entity.Gender;
 import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
@@ -44,6 +45,7 @@ public class JwtUtil {
     private static final long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTokenService redisTokenService;
 
     private Key key;
     private Key kakaoKey;
@@ -162,8 +164,11 @@ public class JwtUtil {
             return false;
         }
         String userEmail = getUserInfoFromRefreshtoken(token);
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
-        String actualRefreshToken = refreshToken.get().getRefreshToken();
+        // Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserEmail(userEmail);
+        Optional<String> refreshToken = redisTokenService.retrieveRefreshToken(userEmail);
+
+        // String actualRefreshToken = refreshToken.get().getRefreshToken();
+        String actualRefreshToken = refreshToken.get();
         return refreshToken.isPresent() && token.equals(actualRefreshToken);
     }
 
