@@ -44,8 +44,8 @@ public class SignalHandler extends TextWebSocketHandler {
     private final IceBreakerService iceBreakerService;
     private final UserRepository userRepository;
     private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
-    private Map<WebSocketSession, Long> sessions = SessionListMap.getInstance().getSessionMapToUserId();
-    private Map<WebSocketSession, Long> sessions2 = SessionListMap.getInstance().getSessionMapToRoom();
+    private Map<WebSocketSession, Long> sessionMapToUserId = SessionListMap.getInstance().getSessionMapToUserId();
+    private Map<WebSocketSession, Long> sessionMapToRoom = SessionListMap.getInstance().getSessionMapToRoom();
 
     private static final String MSG_TYPE_INFO = "info";
     private static final String MSG_TYPE_OFFER = "offer";
@@ -76,8 +76,8 @@ public class SignalHandler extends TextWebSocketHandler {
     @Override
     @Transactional
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException {
-        Long sessionUserId = sessions.get(session);
-        Long sessionRoomId = sessions2.get(session);
+        Long sessionUserId = sessionMapToUserId.get(session);
+        Long sessionRoomId = sessionMapToRoom.get(session);
 
         RoomResponseDto roomDto = rooms.get(sessionRoomId);
 
@@ -129,7 +129,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
-        Long sessionUserId = sessions.get(session);
+        Long sessionUserId = sessionMapToUserId.get(session);
 
         sendMessage(session, new WebSocketMessage(sessionUserId, MSG_TYPE_INFO, null, 0, null, null, null, null));
     }
